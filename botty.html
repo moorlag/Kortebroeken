@@ -11,14 +11,11 @@
     --rood:#b52718;
     --groen:#1a5c4a;
     --bg:#f5f9f7;
-    --kaart:#ffffff;
     --teal:#2f8f86;
     --broek:#57b85f;
     --broek-rand:#2e6b34;
     --crème:#fbfbf2;
     --donker:#2b2b2b;
-    --goed:#2f9e58;
-    --slecht:#c8472f;
   }
   *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
   body{
@@ -31,10 +28,7 @@
     align-items:center;
     padding:1.5rem 1rem 3rem;
   }
-  .logo{
-    font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;
-    color:var(--rood);margin-bottom:.4rem;text-align:center;
-  }
+  .logo{font-size:11px;font-weight:900;letter-spacing:.18em;text-transform:uppercase;color:var(--rood);margin-bottom:.4rem;text-align:center;}
   h1{font-size:26px;font-weight:900;color:var(--groen);margin-bottom:.1rem;text-align:center;}
   .ondertitel{font-size:14px;font-weight:400;color:#5a7d72;margin-bottom:1rem;text-align:center;}
 
@@ -47,6 +41,12 @@
     box-shadow:0 18px 40px rgba(26,92,74,.18), inset 0 2px 0 #fff;
   }
 
+  /* ---- Leeftijd / generatie ---- */
+  .leefbalk{display:flex;justify-content:space-between;align-items:center;
+    font-size:12px;font-weight:900;color:var(--groen);margin-bottom:.6rem;
+    background:#eaf4ef;border:1.5px solid #d2e7dd;border-radius:12px;padding:.35rem .7rem;}
+  .leefbalk .gen{color:var(--teal);text-transform:uppercase;letter-spacing:.05em;}
+
   /* ---- Stats ---- */
   .stats{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .7rem;margin-bottom:.7rem;}
   .stat{font-size:12px;font-weight:700;}
@@ -57,54 +57,42 @@
   .b-fit  > span{background:linear-gradient(90deg,#7fd06f,#57b85f);}
   .b-geluk> span{background:linear-gradient(90deg,#ffce54,#f6a623);}
   .b-wijs > span{background:linear-gradient(90deg,#a98be0,#7b5bc4);}
+  .b-energie>span{background:linear-gradient(90deg,#5ec6ff,#2f9fe0);}
+  .stat-vol{font-size:12px;font-weight:700;margin-bottom:.6rem;}
+  .stat-vol .rij{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+  .stat-vol .balk{height:13px;}
 
   /* ---- Scène ---- */
-  .scene{
-    position:relative;
-    height:300px;
-    border-radius:22px;
+  .scene{position:relative;height:300px;border-radius:22px;
     background:linear-gradient(180deg,#dff1ff 0%,#eafaf1 55%,#d6f0dd 100%);
-    overflow:hidden;
-    margin-bottom:.7rem;
-    border:2px solid #cfe6dc;
-  }
+    overflow:hidden;margin-bottom:.7rem;border:2px solid #cfe6dc;}
   .zon{position:absolute;top:16px;right:20px;width:46px;height:46px;border-radius:50%;
     background:radial-gradient(circle,#fff3b0,#ffd54a);box-shadow:0 0 26px #ffe27a;}
   .vloer{position:absolute;left:0;right:0;bottom:0;height:54px;
     background:linear-gradient(180deg,#bfe8c7,#9ed6aa);border-top:2px solid #84c490;}
 
-  .botty-wrap{
-    position:absolute;left:50%;bottom:30px;transform:translateX(-50%);
-    width:170px;transform-origin:50% 100%;
-  }
+  .botty-wrap{position:absolute;left:50%;bottom:30px;width:170px;}
   .botty-wrap svg{width:100%;height:auto;display:block;overflow:visible;}
 
-  /* tekstballon */
-  .ballon{
-    position:absolute;left:50%;top:10px;transform:translateX(-50%);
+  .ballon{position:absolute;left:50%;top:10px;transform:translateX(-50%);
     background:#fff;border:2px solid var(--groen);border-radius:16px;
     padding:.45rem .7rem;font-size:12.5px;font-weight:700;color:var(--groen);
-    max-width:230px;text-align:center;line-height:1.25;
-    box-shadow:0 4px 12px rgba(0,0,0,.12);opacity:0;transition:opacity .3s, transform .3s;
-    pointer-events:none;
-  }
+    max-width:240px;text-align:center;line-height:1.25;
+    box-shadow:0 4px 12px rgba(0,0,0,.12);opacity:0;transition:opacity .3s;pointer-events:none;}
   .ballon.toon{opacity:1;}
   .ballon::after{content:"";position:absolute;left:50%;bottom:-9px;transform:translateX(-50%);
     border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid var(--groen);}
 
-  /* zwevende +punten */
   .floater{position:absolute;font-weight:900;font-size:18px;pointer-events:none;
     animation:zweef 1.1s ease-out forwards;}
   @keyframes zweef{from{opacity:1;transform:translateY(0);}to{opacity:0;transform:translateY(-46px);}}
 
   /* ---- Knoppen ---- */
   .knoppen{display:grid;grid-template-columns:repeat(3,1fr);gap:.55rem;}
-  button.actie{
-    font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;
+  button.actie{font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;
     border:none;border-radius:16px;padding:.7rem .3rem;color:#fff;
     display:flex;flex-direction:column;align-items:center;gap:.2rem;
-    box-shadow:0 4px 0 rgba(0,0,0,.15);transition:transform .08s, box-shadow .08s, filter .2s;
-  }
+    box-shadow:0 4px 0 rgba(0,0,0,.15);transition:transform .08s, box-shadow .08s, filter .2s;}
   button.actie .ico{font-size:22px;line-height:1;}
   button.actie:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15);}
   button.actie:disabled{filter:grayscale(.5) opacity(.6);cursor:default;}
@@ -112,7 +100,7 @@
   .k-beweeg{background:var(--broek);}
   .k-dilemma{background:var(--rood);}
 
-  /* ---- Modal ---- */
+  /* ---- Modals ---- */
   .overlay{position:fixed;inset:0;background:rgba(26,92,74,.45);display:none;
     align-items:center;justify-content:center;padding:1rem;z-index:50;}
   .overlay.open{display:flex;}
@@ -132,7 +120,6 @@
   .reactie .label{display:inline-block;font-size:11px;font-weight:900;text-transform:uppercase;
     letter-spacing:.05em;padding:.15rem .5rem;border-radius:8px;color:#fff;margin-bottom:.4rem;}
 
-  /* ---- Voer-kaarten ---- */
   .kaarten{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.4rem;}
   .voerkaart{border:2px solid #d7e8e0;border-radius:14px;padding:.6rem;cursor:pointer;
     background:#f8fcfa;text-align:center;transition:transform .1s,border-color .15s,opacity .3s;}
@@ -141,58 +128,106 @@
   .voerkaart .nm{font-size:12px;font-weight:700;color:var(--groen);line-height:1.2;}
   .voerkaart.weg{opacity:0;pointer-events:none;}
   .sluit{margin-top:.8rem;width:100%;font-family:inherit;font-weight:900;font-size:14px;cursor:pointer;
-    background:var(--groen);color:#fff;border:none;border-radius:14px;padding:.6rem;}
+    background:var(--groen);color:#fff;border:none;border-radius:14px;padding:.7rem;}
   .hint{font-size:12px;color:#5a7d72;text-align:center;margin-top:.5rem;font-weight:700;}
 
   .terug{margin-top:1.2rem;font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;}
   .terug:hover{text-decoration:underline;}
 
-  /* ---- Botty animaties ---- */
-  .botty-wrap{animation:adem 3.2s ease-in-out infinite;}
+  /* ---- Geboorte ---- */
+  #overlay-geboorte{background:radial-gradient(circle at 50% 35%, #ffffff, #cdeede 70%, #a9ddc3 100%);}
+  .geboorte-inhoud{text-align:center;max-width:340px;}
+  .geboorte-titel{font-size:22px;font-weight:900;color:var(--groen);margin-bottom:.3rem;}
+  .geboorte-titel.groot{font-size:26px;color:var(--rood);}
+  .geboorte-gen{font-size:14px;font-weight:900;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;}
+  .geboorte-hint{font-size:14px;font-weight:700;color:#5a7d72;margin-top:.4rem;}
+  .geboorte-sub{font-size:14px;font-weight:700;color:var(--groen);margin:.6rem 0 0;line-height:1.4;}
+  .bouw-wrap{width:170px;margin:1rem auto;}
+  .bouw-wrap svg{width:100%;height:auto;overflow:visible;}
+  .start-ai{background:var(--rood)!important;letter-spacing:.05em;}
+  /* losse onderdelen die samenklikken tot Botty */
+  #bouw-botty .bp{transform-box:fill-box;transform-origin:center;
+    transition:transform .8s cubic-bezier(.34,1.45,.5,1), opacity .5s ease;opacity:.92;}
+  #bouw-botty .bp-leg-l{transform:translate(-24px,56px) rotate(48deg);}
+  #bouw-botty .bp-leg-r{transform:translate(26px,54px) rotate(-52deg);}
+  #bouw-botty .bp-shorts{transform:translate(-40px,46px) rotate(-16deg);}
+  #bouw-botty .bp-torso{transform:translate(28px,38px) rotate(13deg);}
+  #bouw-botty .bp-arm-l{transform:translate(-58px,42px) rotate(72deg);}
+  #bouw-botty .bp-arm-r{transform:translate(58px,26px) rotate(-68deg);}
+  #bouw-botty .bp-neck{transform:translate(-28px,44px) rotate(38deg);opacity:.7;}
+  #bouw-botty .bp-kop{transform:translate(38px,-18px) rotate(-16deg);}
+  #bouw-botty .bp-ear-l{transform:translate(-58px,-22px) rotate(28deg);}
+  #bouw-botty .bp-ear-r{transform:translate(62px,8px) rotate(-32deg);}
+  #bouw-botty .bp-antenne{transform:translate(-48px,40px) rotate(-58deg);}
+  /* nadat START AI is gedrukt: alles klikt op z'n plek (van onder naar boven) */
+  #bouw-botty.gebouwd .bp{transform:none;opacity:1;}
+  #bouw-botty.gebouwd .bp-leg-l,#bouw-botty.gebouwd .bp-leg-r,#bouw-botty.gebouwd .bp-shorts{transition-delay:0s;}
+  #bouw-botty.gebouwd .bp-torso,#bouw-botty.gebouwd .bp-arm-l,#bouw-botty.gebouwd .bp-arm-r{transition-delay:.12s;}
+  #bouw-botty.gebouwd .bp-neck{transition-delay:.24s;}
+  #bouw-botty.gebouwd .bp-kop{transition-delay:.34s;}
+  #bouw-botty.gebouwd .bp-ear-l,#bouw-botty.gebouwd .bp-ear-r{transition-delay:.46s;}
+  #bouw-botty.gebouwd .bp-antenne{transition-delay:.58s;}
+
+  /* =================== BOTTY ANIMATIES =================== */
+  /* idle: rustig ademen */
+  .botty-wrap{animation:adem 3.4s ease-in-out infinite;transform:translateX(-50%);}
   @keyframes adem{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-5px);}}
 
-  #antenne-bal{transform-origin:center bottom;animation:wieber 2.6s ease-in-out infinite;}
-  @keyframes wieber{0%,100%{transform:rotate(-7deg);}50%{transform:rotate(7deg);}}
+  /* correcte scharnierpunten in SVG-coördinaten */
+  #antenne{transform-box:view-box;transform-origin:100px 46px;animation:wieber 3.4s ease-in-out infinite;}
+  @keyframes wieber{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+  #arm-r{transform-box:view-box;transform-origin:134px 156px;transition:transform .35s ease;}
+  #arm-l{transform-box:view-box;transform-origin:66px 156px;transition:transform .35s ease;}
+  #been-r{transform-box:view-box;transform-origin:114px 212px;transition:transform .3s ease;}
+  #been-l{transform-box:view-box;transform-origin:86px 212px;transition:transform .3s ease;}
+  #kop{transform-box:view-box;transform-origin:100px 124px;transition:transform .35s ease;}
 
-  #arm-r,#arm-l{transform-origin:top center;}
+  /* eten: hapjes naar de mond + kauwen */
+  .botty-wrap.eet #arm-r{animation:eet-arm .7s ease-in-out 4;}
+  @keyframes eet-arm{0%,100%{transform:rotate(0);}50%{transform:rotate(-80deg);}}
+  .botty-wrap.eet #kop{animation:eet-kop .7s ease-in-out 4;}
+  @keyframes eet-kop{0%,100%{transform:rotate(0) translateY(0);}50%{transform:rotate(3deg) translateY(2px);}}
 
-  /* eten */
-  .botty-wrap.eet{animation:adem 3.2s ease-in-out infinite;}
-  .botty-wrap.eet #arm-r{animation:hap 0.55s ease-in-out 5;transform-origin:8px 4px;}
-  @keyframes hap{0%,100%{transform:rotate(0deg);}50%{transform:rotate(-58deg);}}
-  .botty-wrap.eet #kop{animation:kauw 0.55s ease-in-out 5;transform-origin:50% 80%;}
-  @keyframes kauw{0%,100%{transform:translateY(0);}50%{transform:translateY(3px);}}
+  /* bewegen: jumping jack met sprong */
+  .botty-wrap.beweeg{animation:spring .6s ease-in-out 5;}
+  @keyframes spring{0%,100%{transform:translateX(-50%) translateY(0);}45%{transform:translateX(-50%) translateY(-30px);}}
+  .botty-wrap.beweeg #arm-r{animation:jj-r .6s ease-in-out 5;}
+  @keyframes jj-r{0%,100%{transform:rotate(0);}45%{transform:rotate(-150deg);}}
+  .botty-wrap.beweeg #arm-l{animation:jj-l .6s ease-in-out 5;}
+  @keyframes jj-l{0%,100%{transform:rotate(0);}45%{transform:rotate(150deg);}}
+  .botty-wrap.beweeg #been-r{animation:jj-br .6s ease-in-out 5;}
+  @keyframes jj-br{0%,100%{transform:rotate(0);}45%{transform:rotate(-15deg);}}
+  .botty-wrap.beweeg #been-l{animation:jj-bl .6s ease-in-out 5;}
+  @keyframes jj-bl{0%,100%{transform:rotate(0);}45%{transform:rotate(15deg);}}
 
-  /* bewegen (springen / jumping jack) */
-  .botty-wrap.beweeg{animation:spring .5s ease-in-out 6;}
-  @keyframes spring{0%,100%{transform:translateX(-50%) translateY(0);}40%{transform:translateX(-50%) translateY(-34px);}}
-  .botty-wrap.beweeg #arm-r{animation:jjr .5s ease-in-out 6;transform-origin:8px 4px;}
-  .botty-wrap.beweeg #arm-l{animation:jjl .5s ease-in-out 6;transform-origin:8px 4px;}
-  @keyframes jjr{0%,100%{transform:rotate(0deg);}40%{transform:rotate(-120deg);}}
-  @keyframes jjl{0%,100%{transform:rotate(0deg);}40%{transform:rotate(120deg);}}
-  .botty-wrap.beweeg #been-r{animation:bbr .5s ease-in-out 6;transform-origin:top center;}
-  .botty-wrap.beweeg #been-l{animation:bbl .5s ease-in-out 6;transform-origin:top center;}
-  @keyframes bbr{0%,100%{transform:rotate(0);}40%{transform:rotate(-16deg);}}
-  @keyframes bbl{0%,100%{transform:rotate(0);}40%{transform:rotate(16deg);}}
+  /* blij: juichen met sprongetjes */
+  .botty-wrap.blij{animation:huppel .5s ease-in-out 4;}
+  @keyframes huppel{0%,100%{transform:translateX(-50%) translateY(0);}50%{transform:translateX(-50%) translateY(-22px);}}
+  .botty-wrap.blij #arm-r{animation:vier-r .5s ease-in-out 4;}
+  @keyframes vier-r{0%,100%{transform:rotate(0);}50%{transform:rotate(-160deg);}}
+  .botty-wrap.blij #arm-l{animation:vier-l .5s ease-in-out 4;}
+  @keyframes vier-l{0%,100%{transform:rotate(0);}50%{transform:rotate(160deg);}}
 
-  /* nadenken (dilemma) */
-  .botty-wrap.denk #arm-r{transform:rotate(-72deg);transform-origin:8px 4px;transition:transform .4s;}
-  .botty-wrap.denk #antenne-bal{animation:tol .7s linear infinite;}
-  @keyframes tol{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+  /* nadenken: hand aan de kin + tollende antenne (statisch tot keuze) */
+  .botty-wrap.denk #arm-r{transform:rotate(-98deg);}
+  .botty-wrap.denk #kop{transform:rotate(-4deg);}
+  .botty-wrap.denk #antenne{animation:antenne-denk .6s ease-in-out infinite;}
+  @keyframes antenne-denk{0%,100%{transform:rotate(-13deg);}50%{transform:rotate(13deg);}}
 
-  /* blij */
-  .botty-wrap.blij{animation:huppel .45s ease-in-out 4;}
-  @keyframes huppel{0%,100%{transform:translateX(-50%) translateY(0) rotate(0);}
-    50%{transform:translateX(-50%) translateY(-20px) rotate(-4deg);}}
-  .botty-wrap.blij #arm-r{animation:omhoogr .45s ease-in-out 4;transform-origin:8px 4px;}
-  .botty-wrap.blij #arm-l{animation:omhoogl .45s ease-in-out 4;transform-origin:8px 4px;}
-  @keyframes omhoogr{0%,100%{transform:rotate(0);}50%{transform:rotate(-145deg);}}
-  @keyframes omhoogl{0%,100%{transform:rotate(0);}50%{transform:rotate(145deg);}}
+  /* spontaan zwaaien */
+  .botty-wrap.wuif #arm-r{animation:wuif-arm 1.6s ease-in-out 1;}
+  @keyframes wuif-arm{0%{transform:rotate(0);}15%{transform:rotate(-150deg);}
+    30%{transform:rotate(-128deg);}45%{transform:rotate(-150deg);}
+    60%{transform:rotate(-128deg);}75%{transform:rotate(-150deg);}100%{transform:rotate(0);}}
 
-  /* verdrietig / ziek */
-  .botty-wrap.sip{animation:none;transform:translateX(-50%) translateY(6px);}
-  .botty-wrap.sip #kop{transform:translateY(5px) rotate(-5deg);transform-origin:50% 100%;transition:transform .4s;}
-  .botty-wrap.sip #arm-r,.botty-wrap.sip #arm-l{transform:rotate(0);}
+  /* spontaan rondkijken */
+  .botty-wrap.kijk #kop{animation:kijk-kop 2s ease-in-out 1;}
+  @keyframes kijk-kop{0%{transform:rotate(0);}25%{transform:rotate(-9deg);}
+    50%{transform:rotate(0);}75%{transform:rotate(9deg);}100%{transform:rotate(0);}}
+
+  /* verdrietig / hongerig: laat hangen */
+  .botty-wrap.sip{animation:none;transform:translateX(-50%) translateY(4px);}
+  .botty-wrap.sip #kop{transform:rotate(0) translateY(4px);}
 </style>
 </head>
 <body>
@@ -201,18 +236,28 @@
   <p class="ondertitel">Voer haar duurzame data, laat haar bewegen en denk samen na.</p>
 
   <div class="toestel">
+    <div class="leefbalk">
+      <span class="gen" id="leef-gen">Generatie 1</span>
+      <span id="leef-leeftijd">—</span>
+    </div>
+
+    <div class="stat-vol">
+      <div class="rij"><span>⚡ Energie</span><span id="t-energie">0%</span></div>
+      <div class="balk b-energie"><span id="bar-energie" style="width:0%"></span></div>
+    </div>
+
     <div class="stats">
       <div class="stat">
-        <div class="rij"><span>💾 Data</span><span id="t-data">100%</span></div>
-        <div class="balk b-data"><span id="bar-data" style="width:100%"></span></div>
+        <div class="rij"><span>💾 Data</span><span id="t-data">0%</span></div>
+        <div class="balk b-data"><span id="bar-data" style="width:0%"></span></div>
       </div>
       <div class="stat">
-        <div class="rij"><span>🏃 Fitheid</span><span id="t-fit">100%</span></div>
-        <div class="balk b-fit"><span id="bar-fit" style="width:100%"></span></div>
+        <div class="rij"><span>🏃 Fitheid</span><span id="t-fit">0%</span></div>
+        <div class="balk b-fit"><span id="bar-fit" style="width:0%"></span></div>
       </div>
       <div class="stat">
-        <div class="rij"><span>😊 Geluk</span><span id="t-geluk">100%</span></div>
-        <div class="balk b-geluk"><span id="bar-geluk" style="width:100%"></span></div>
+        <div class="rij"><span>😊 Geluk</span><span id="t-geluk">0%</span></div>
+        <div class="balk b-geluk"><span id="bar-geluk" style="width:0%"></span></div>
       </div>
       <div class="stat">
         <div class="rij"><span>🧠 Wijsheid</span><span id="t-wijs">0</span></div>
@@ -225,49 +270,34 @@
       <div class="ballon" id="ballon"></div>
       <div class="vloer"></div>
       <div class="botty-wrap" id="botty">
-        <!-- Botty SVG -->
         <svg viewBox="0 0 200 250" aria-label="Botty de robot">
-          <!-- antenne -->
           <g id="antenne">
-            <line x1="100" y1="44" x2="100" y2="20" stroke="#2b2b2b" stroke-width="3"/>
-            <circle id="antenne-bal" cx="100" cy="16" r="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+            <path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>
           </g>
-
-          <!-- benen -->
-          <g id="been-l"><line x1="86" y1="180" x2="80" y2="222" stroke="#2b2b2b" stroke-width="4"/>
-            <ellipse cx="78" cy="226" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
-          <g id="been-r"><line x1="114" y1="180" x2="120" y2="222" stroke="#2b2b2b" stroke-width="4"/>
-            <ellipse cx="122" cy="226" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
-
-          <!-- armen -->
-          <g id="arm-l"><line x1="64" y1="120" x2="34" y2="150" stroke="#2b2b2b" stroke-width="4"/>
-            <circle cx="32" cy="153" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
-          <g id="arm-r"><line x1="136" y1="120" x2="166" y2="150" stroke="#2b2b2b" stroke-width="4"/>
-            <circle cx="168" cy="153" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
-
-          <!-- korte broek -->
-          <rect x="68" y="158" width="64" height="34" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/>
-          <line x1="100" y1="176" x2="100" y2="192" stroke="#2e6b34" stroke-width="3"/>
-
-          <!-- romp -->
-          <rect x="66" y="104" width="68" height="62" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
-          <rect x="86" y="118" width="28" height="22" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-
-          <!-- kop -->
+          <g id="been-l"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g id="been-r"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g id="arm-l"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g id="arm-r"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <rect x="68" y="184" width="64" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/>
+          <line x1="100" y1="200" x2="100" y2="214" stroke="#2e6b34" stroke-width="3"/>
+          <rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
+          <rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+          <path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>
           <g id="kop">
-            <!-- oren -->
-            <rect x="52" y="58" width="12" height="22" rx="4" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-            <rect x="136" y="58" width="12" height="22" rx="4" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-            <!-- gezicht -->
-            <rect x="60" y="42" width="80" height="62" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
-            <!-- zonnebril -->
-            <g id="bril">
-              <rect x="68" y="60" width="64" height="20" rx="10" fill="#2b2b2b"/>
-              <ellipse cx="84" cy="70" rx="9" ry="6.5" fill="#3a9d94"/>
-              <ellipse cx="116" cy="70" rx="9" ry="6.5" fill="#3a9d94"/>
-            </g>
-            <!-- mond -->
-            <path id="mond" d="M84 90 Q100 100 116 90" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+            <circle cx="52" cy="76" r="6" fill="#bfe3df"/>
+            <circle cx="148" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+            <circle cx="148" cy="76" r="6" fill="#bfe3df"/>
+            <path d="M72,46 Q52,48 52,76 Q52,108 72,122 Q100,134 128,122 Q148,108 148,76 Q148,48 128,46 Q100,40 72,46 Z" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
+            <path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="#3a9d94" stroke="#2b8077" stroke-width="1.5"/>
+            <line x1="90" y1="78" x2="90" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
+            <line x1="110" y1="78" x2="110" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
+            <path id="mond" d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/>
           </g>
         </svg>
       </div>
@@ -306,37 +336,100 @@
     </div>
   </div>
 
+  <!-- Geboorte-modal -->
+  <div class="overlay" id="overlay-geboorte">
+    <div class="geboorte-inhoud">
+      <p class="geboorte-titel" id="geb-titel">Een stapel losse materialen…</p>
+      <p class="geboorte-gen" id="geboorte-gen" style="display:none">Generatie 1</p>
+      <div class="bouw-wrap">
+        <svg id="bouw-botty" viewBox="0 0 200 250" aria-label="Botty wordt in elkaar gezet">
+          <g class="bp bp-antenne">
+            <path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>
+          </g>
+          <g class="bp bp-leg-l"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-leg-r"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-arm-l"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-arm-r"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-shorts">
+            <rect x="68" y="184" width="64" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/>
+            <line x1="100" y1="200" x2="100" y2="214" stroke="#2e6b34" stroke-width="3"/></g>
+          <g class="bp bp-torso">
+            <rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
+            <rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-neck">
+            <path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/></g>
+          <g class="bp bp-ear-l"><circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+            <circle cx="52" cy="76" r="6" fill="#bfe3df"/></g>
+          <g class="bp bp-ear-r"><circle cx="148" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+            <circle cx="148" cy="76" r="6" fill="#bfe3df"/></g>
+          <g class="bp bp-kop">
+            <path d="M72,46 Q52,48 52,76 Q52,108 72,122 Q100,134 128,122 Q148,108 148,76 Q148,48 128,46 Q100,40 72,46 Z" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
+            <path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="#3a9d94" stroke="#2b8077" stroke-width="1.5"/>
+            <line x1="90" y1="78" x2="90" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
+            <line x1="110" y1="78" x2="110" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>
+        </svg>
+      </div>
+      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een goede start!</p>
+      <button class="sluit start-ai" id="start-ai">🔧 START AI</button>
+      <button class="sluit" id="start-knop" style="display:none">Begin het avontuur!</button>
+    </div>
+  </div>
+
 <script>
 (function(){
   "use strict";
 
-  // ---------- State ----------
-  var KEY = "botty-tamagotchi-v1";
+  var KEY = "botty-tamagotchi-v3";
+  var DAG = 86400000;
   var nu = function(){ return Date.now(); };
-  var state = laad();
+
+  // ---------- Opslag: localStorage met cookie-fallback ----------
+  function schrijfRuw(k,v){
+    try{ localStorage.setItem(k,v); }catch(e){}
+    try{ document.cookie = k+"="+encodeURIComponent(v)+";max-age=31536000;path=/;SameSite=Lax"; }catch(e){}
+  }
+  function leesRuw(k){
+    try{ var v=localStorage.getItem(k); if(v!==null && v!==undefined) return v; }catch(e){}
+    try{
+      var m=document.cookie.match(new RegExp("(?:^|; )"+k+"=([^;]*)"));
+      if(m) return decodeURIComponent(m[1]);
+    }catch(e){}
+    return null;
+  }
 
   function standaard(){
-    return { data:80, fit:75, geluk:85, wijs:0, t:nu(), laatsteDilemma:nu() };
+    return { geboren:false, geboortetijd:0, generatie:1,
+             data:0, fit:0, geluk:0, wijs:0, energie:0, t:nu(), laatsteDilemma:nu() };
   }
   function laad(){
     try{
-      var s = JSON.parse(localStorage.getItem(KEY));
-      if(s && typeof s.data === "number") return s;
+      var s = JSON.parse(leesRuw(KEY));
+      if(s && typeof s.data === "number"){
+        if(typeof s.energie !== "number") s.energie = 0;
+        return s;
+      }
     }catch(e){}
     return standaard();
   }
-  function bewaar(){ localStorage.setItem(KEY, JSON.stringify(state)); }
-
+  var state = laad();
+  function bewaar(){ state.t = state.geboren ? state.t : nu(); schrijfRuw(KEY, JSON.stringify(state)); }
   function klem(v){ return Math.max(0, Math.min(100, v)); }
 
-  // verval bijwerken op basis van verstreken tijd
+  // ---------- Verval over tijd (catch-up bij reload) ----------
   function verval(){
-    var dt = (nu() - state.t)/1000; // seconden
+    if(!state.geboren){ return; }
+    var dt = (nu() - state.t)/1000;
     if(dt <= 0){ state.t = nu(); return; }
-    state.data = klem(state.data - dt*0.06);   // ~3,6 / min
-    state.fit  = klem(state.fit  - dt*0.045);  // ~2,7 / min
-    // geluk drijft naar gemiddelde van data & fit
-    var doel = (state.data + state.fit)/2;
+    state.data = klem(state.data - dt*0.06);
+    state.fit  = klem(state.fit  - dt*0.045);
+    state.energie = klem(state.energie - dt*0.09);   // ~5,4 / min — loopt automatisch terug
+    var doel = (state.data + state.fit + state.energie)/3;
     state.geluk = klem(state.geluk + (doel - state.geluk) * Math.min(1, dt*0.01));
     state.t = nu();
   }
@@ -347,31 +440,44 @@
   var mond = el("mond");
   var ballon = el("ballon");
 
+  function leeftijdTekst(){
+    var ms = nu() - state.geboortetijd;
+    var min = ms/60000, uur = min/60, dag = uur/24;
+    if(dag >= 1) return Math.floor(dag) + (Math.floor(dag)===1?" dag":" dagen");
+    if(uur >= 1) return Math.floor(uur) + " uur";
+    if(min >= 1) return Math.floor(min) + " min";
+    return "pasgeboren";
+  }
+
   function render(){
+    el("bar-energie").style.width = state.energie + "%";
     el("bar-data").style.width = state.data + "%";
     el("bar-fit").style.width  = state.fit + "%";
     el("bar-geluk").style.width= state.geluk + "%";
     el("bar-wijs").style.width = Math.min(100, state.wijs*10) + "%";
+    el("t-energie").textContent = Math.round(state.energie) + "%";
     el("t-data").textContent = Math.round(state.data) + "%";
     el("t-fit").textContent  = Math.round(state.fit) + "%";
     el("t-geluk").textContent= Math.round(state.geluk) + "%";
     el("t-wijs").textContent = state.wijs;
+    el("leef-gen").textContent = "Generatie " + state.generatie;
+    el("leef-leeftijd").textContent = state.geboren ? ("🎂 " + leeftijdTekst()) : "—";
     stemming();
   }
 
   // ---------- Mond-expressies ----------
   var monden = {
-    blij:  "M82 88 Q100 104 118 88",
-    neutraal:"M84 92 L116 92",
-    sip:   "M82 98 Q100 86 118 98",
-    open:  "M88 90 Q100 104 112 90 Q100 96 88 90"
+    blij:    "M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z",
+    neutraal:"M94,100 Q100,102 106,100 Q105,106 100,107 Q95,106 94,100 Z",
+    sip:     "M94,108 Q100,102 106,108 Q104,110 100,109 Q96,110 94,108 Z",
+    open:    "M92,96 Q100,99 108,96 Q109,112 100,114 Q91,112 92,96 Z"
   };
   function zetMond(naam){ mond.setAttribute("d", monden[naam] || monden.neutraal); }
 
-  // standaard stemming bepalen door gemiddelde
   function stemming(){
-    if(huidigeAnim) return; // niet overschrijven tijdens actie
-    var gem = (state.data + state.fit + state.geluk)/3;
+    if(huidigeAnim) return;
+    if(!state.geboren) return;
+    var gem = (state.data + state.fit + state.geluk + state.energie)/4;
     botty.classList.remove("sip");
     if(gem < 35){ botty.classList.add("sip"); zetMond("sip"); }
     else if(gem > 75){ zetMond("blij"); }
@@ -382,16 +488,24 @@
   var huidigeAnim = null;
   var animTimer = null;
   function speel(klasse, ms, mondNaam){
-    if(animTimer){ clearTimeout(animTimer); botty.classList.remove(huidigeAnim); }
+    if(animTimer){ clearTimeout(animTimer); }
+    if(huidigeAnim){ botty.classList.remove(huidigeAnim); }
     huidigeAnim = klasse;
     botty.classList.remove("sip");
     botty.classList.add(klasse);
     if(mondNaam) zetMond(mondNaam);
-    animTimer = setTimeout(function(){
-      botty.classList.remove(klasse);
-      huidigeAnim = null; animTimer = null;
-      stemming();
-    }, ms);
+    if(ms < 100000){
+      animTimer = setTimeout(function(){
+        botty.classList.remove(klasse);
+        huidigeAnim = null; animTimer = null;
+        stemming();
+      }, ms);
+    }
+  }
+  function stopAnim(){
+    if(animTimer){ clearTimeout(animTimer); animTimer = null; }
+    if(huidigeAnim){ botty.classList.remove(huidigeAnim); huidigeAnim = null; }
+    stemming();
   }
 
   // ---------- Tekstballon ----------
@@ -403,7 +517,6 @@
     ballonTimer = setTimeout(function(){ ballon.classList.remove("toon"); }, ms || 3200);
   }
 
-  // ---------- Zwevende punten ----------
   function floater(tekst, kleur){
     var f = document.createElement("div");
     f.className = "floater";
@@ -411,9 +524,11 @@
     f.style.color = kleur;
     f.style.left = (45 + Math.random()*30) + "%";
     f.style.top = "120px";
-    el("botty").parentNode.appendChild(f);
+    botty.parentNode.appendChild(f);
     setTimeout(function(){ f.remove(); }, 1100);
   }
+
+  var modalOpen = function(){ return !!document.querySelector(".overlay.open"); };
 
   // ================= VOEREN =================
   var voedsel = [
@@ -430,8 +545,7 @@
     {em:"🗑️", nm:"Verouderde info", goed:false},
     {em:"🚫", nm:"Discriminerende voorbeelden", goed:false}
   ];
-
-  function shuffle(a){ a = a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
 
   function vulKaarten(){
     var goed = shuffle(voedsel.filter(function(v){return v.goed;})).slice(0,3);
@@ -451,44 +565,34 @@
       wrap.appendChild(d);
     });
   }
-
   function eet(v){
-    speel("eet", 2900, "open");
+    speel("eet", 2800, "open");
     if(v.goed){
       state.data = klem(state.data + 14);
+      state.energie = klem(state.energie + 11);
       state.geluk = klem(state.geluk + 5);
       floater("+data", "#2f8f86");
       zeg("Mmm, duurzame data! 😋", 2600);
     }else{
       state.data = klem(state.data - 6);
+      state.energie = klem(state.energie - 6);
       state.geluk = klem(state.geluk - 12);
       floater("⚠ vervuild", "#c8472f");
       zeg("Bah! Deze data is vervuild… 🤢", 2800);
     }
     bewaar(); render();
   }
-
-  el("btn-voer").addEventListener("click", function(){
-    vulKaarten();
-    el("overlay-voer").classList.add("open");
-  });
-  el("sluit-voer").addEventListener("click", function(){
-    el("overlay-voer").classList.remove("open");
-  });
+  el("btn-voer").addEventListener("click", function(){ vulKaarten(); el("overlay-voer").classList.add("open"); });
+  el("sluit-voer").addEventListener("click", function(){ el("overlay-voer").classList.remove("open"); });
 
   // ================= BEWEGEN =================
-  var bewegingen = [
-    "Jumping jacks! 🤸",
-    "Even surfen op de datagolf! 🏄",
-    "Dansje erbij! 💃",
-    "Stretchen en strekken! 🙆",
-    "Rondje rennen! 🏃"
-  ];
+  var bewegingen = ["Jumping jacks! 🤸","Even surfen op de datagolf! 🏄","Dansje erbij! 💃","Stretchen en strekken! 🙆","Rondje rennen! 🏃"];
   el("btn-beweeg").addEventListener("click", function(){
     speel("beweeg", 3000, "blij");
     state.fit = klem(state.fit + 16);
+    state.energie = klem(state.energie + 12);
     state.geluk = klem(state.geluk + 6);
-    state.data = klem(state.data - 3); // bewegen kost wat energie
+    state.data = klem(state.data - 3);
     floater("+fit", "#57b85f");
     zeg(bewegingen[Math.floor(Math.random()*bewegingen.length)], 2800);
     bewaar(); render();
@@ -496,54 +600,30 @@
 
   // ================= DILEMMA'S =================
   var dilemmas = [
-    {
-      v:"Een leerling laat AI haar opstel schrijven. Wat raad jij de school aan?",
-      keuzes:[
-        {t:"AI helemaal verbieden", w:1, r:"Verbieden lijkt veilig, maar leerlingen leren dan niet hoe ze AI verstandig en eerlijk gebruiken. Beter: samen leren."},
-        {t:"Leren hóe je AI eerlijk gebruikt", w:3, r:"Goed gekozen! Leerlingen leren AI als hulpmiddel te gebruiken én eerlijk te zijn over wat ze zelf deden."},
-        {t:"Niks doen", w:0, r:"Zonder afspraken weet niemand wat mag. Duidelijke, eerlijke afspraken helpen iedereen."}
-      ]
-    },
-    {
-      v:"Een AI voorspelt welke leerlingen dreigen uit te vallen. Hoe gebruik je dat?",
-      keuzes:[
-        {t:"Gebruiken om extra hulp te bieden", w:3, r:"Mooi! Voorspellingen mogen helpen, nooit een stempel zijn. De mens beslist, AI ondersteunt."},
-        {t:"Leerlingen apart zetten", w:0, r:"Dat is een stempel dat oneerlijk uitpakt. Voorspellingen mogen kansen niet wegnemen."},
-        {t:"Helemaal niet vertrouwen", w:1, r:"Voorzichtig zijn is goed, maar als de data eerlijk is kan het ook helpen. Blijf wel kritisch."}
-      ]
-    },
-    {
-      v:"Een gratis AI-tool wil álle leerlinggegevens, in ruil voor gratis gebruik.",
-      keuzes:[
-        {t:"Doen, het is gratis!", w:0, r:"Niets is écht gratis: je betaalt met privacy. Persoonsgegevens van kinderen verdienen bescherming."},
-        {t:"Alleen geven wat echt nodig is", w:3, r:"Top! Verzamel zo min mogelijk data (dataminimalisatie). Dat is duurzaam én privacyvriendelijk."},
-        {t:"Eerst toestemming en uitleg vragen", w:3, r:"Heel goed! Transparantie en toestemming horen bij eerlijke data."}
-      ]
-    },
-    {
-      v:"De AI geeft één groep leerlingen steeds makkelijkere opdrachten. Wat is er aan de hand?",
-      keuzes:[
-        {t:"Prima, lekker makkelijk", w:0, r:"Dit kan bias zijn: vooroordelen in de data. Dat is oneerlijk en houdt verschillen in stand."},
-        {t:"Onderzoeken of de data scheef is", w:3, r:"Precies! Controleer altijd op bias zodat iedereen eerlijke kansen krijgt."},
-        {t:"De AI gewoon uitzetten", w:1, r:"Begrijpelijk, maar eerst onderzoeken is slimmer. Misschien is de data te repareren."}
-      ]
-    },
-    {
-      v:"Een AI-model kost enorm veel energie om te trainen. Wat weegt mee?",
-      keuzes:[
-        {t:"Alleen of het goed werkt", w:1, r:"Werken is belangrijk, maar duurzaamheid telt óók. Energie en milieu horen bij de keuze."},
-        {t:"Ook de energie en het milieu", w:3, r:"Goed! Duurzame AI kijkt ook naar energieverbruik. Soms is een kleiner model genoeg."},
-        {t:"Maakt niet uit", w:0, r:"Het maakt wél uit: AI heeft een echte voetafdruk op onze planeet."}
-      ]
-    },
-    {
-      v:"Een chatbot geeft leerlingen soms een fout antwoord met veel zelfvertrouwen.",
-      keuzes:[
-        {t:"Altijd geloven wat AI zegt", w:0, r:"AI kan overtuigend én fout zijn. Blijf altijd zelf nadenken en controleer feiten."},
-        {t:"Leerlingen leren controleren", w:3, r:"Sterk! Kritisch denken en feiten checken is de beste bescherming tegen fouten."},
-        {t:"De chatbot verbieden", w:1, r:"Kan, maar leren omgaan met fouten is waardevoller dan vermijden."}
-      ]
-    }
+    {v:"Een leerling laat AI haar opstel schrijven. Wat raad jij de school aan?",keuzes:[
+      {t:"AI helemaal verbieden", w:1, r:"Verbieden lijkt veilig, maar leerlingen leren dan niet hoe ze AI verstandig en eerlijk gebruiken. Beter: samen leren."},
+      {t:"Leren hóe je AI eerlijk gebruikt", w:3, r:"Goed gekozen! Leerlingen leren AI als hulpmiddel te gebruiken én eerlijk te zijn over wat ze zelf deden."},
+      {t:"Niks doen", w:0, r:"Zonder afspraken weet niemand wat mag. Duidelijke, eerlijke afspraken helpen iedereen."}]},
+    {v:"Een AI voorspelt welke leerlingen dreigen uit te vallen. Hoe gebruik je dat?",keuzes:[
+      {t:"Gebruiken om extra hulp te bieden", w:3, r:"Mooi! Voorspellingen mogen helpen, nooit een stempel zijn. De mens beslist, AI ondersteunt."},
+      {t:"Leerlingen apart zetten", w:0, r:"Dat is een stempel dat oneerlijk uitpakt. Voorspellingen mogen kansen niet wegnemen."},
+      {t:"Helemaal niet vertrouwen", w:1, r:"Voorzichtig zijn is goed, maar als de data eerlijk is kan het ook helpen. Blijf wel kritisch."}]},
+    {v:"Een gratis AI-tool wil álle leerlinggegevens, in ruil voor gratis gebruik.",keuzes:[
+      {t:"Doen, het is gratis!", w:0, r:"Niets is écht gratis: je betaalt met privacy. Persoonsgegevens van kinderen verdienen bescherming."},
+      {t:"Alleen geven wat echt nodig is", w:3, r:"Top! Verzamel zo min mogelijk data (dataminimalisatie). Dat is duurzaam én privacyvriendelijk."},
+      {t:"Eerst toestemming en uitleg vragen", w:3, r:"Heel goed! Transparantie en toestemming horen bij eerlijke data."}]},
+    {v:"De AI geeft één groep leerlingen steeds makkelijkere opdrachten. Wat is er aan de hand?",keuzes:[
+      {t:"Prima, lekker makkelijk", w:0, r:"Dit kan bias zijn: vooroordelen in de data. Dat is oneerlijk en houdt verschillen in stand."},
+      {t:"Onderzoeken of de data scheef is", w:3, r:"Precies! Controleer altijd op bias zodat iedereen eerlijke kansen krijgt."},
+      {t:"De AI gewoon uitzetten", w:1, r:"Begrijpelijk, maar eerst onderzoeken is slimmer. Misschien is de data te repareren."}]},
+    {v:"Een AI-model kost enorm veel energie om te trainen. Wat weegt mee?",keuzes:[
+      {t:"Alleen of het goed werkt", w:1, r:"Werken is belangrijk, maar duurzaamheid telt óók. Energie en milieu horen bij de keuze."},
+      {t:"Ook de energie en het milieu", w:3, r:"Goed! Duurzame AI kijkt ook naar energieverbruik. Soms is een kleiner model genoeg."},
+      {t:"Maakt niet uit", w:0, r:"Het maakt wél uit: AI heeft een echte voetafdruk op onze planeet."}]},
+    {v:"Een chatbot geeft leerlingen soms een fout antwoord met veel zelfvertrouwen.",keuzes:[
+      {t:"Altijd geloven wat AI zegt", w:0, r:"AI kan overtuigend én fout zijn. Blijf altijd zelf nadenken en controleer feiten."},
+      {t:"Leerlingen leren controleren", w:3, r:"Sterk! Kritisch denken en feiten checken is de beste bescherming tegen fouten."},
+      {t:"De chatbot verbieden", w:1, r:"Kan, maar leren omgaan met fouten is waardevoller dan vermijden."}]}
   ];
 
   var actiefDilemma = null;
@@ -554,7 +634,7 @@
     var wrap = el("dilemma-keuzes");
     wrap.style.display = "flex";
     wrap.innerHTML = "";
-    speel("denk", 999999, "neutraal"); // denkstand tot keuze
+    speel("denk", 999999, "neutraal");
     actiefDilemma.keuzes.forEach(function(k){
       var b = document.createElement("button");
       b.className = "keuze";
@@ -564,72 +644,130 @@
     });
     el("overlay-dilemma").classList.add("open");
   }
-
   function kiesDilemma(k){
-    // stop denkstand
-    if(animTimer){ clearTimeout(animTimer); }
-    botty.classList.remove("denk"); huidigeAnim = null; animTimer = null;
-
+    stopAnim();
     state.wijs += k.w;
-    if(k.w >= 3){ state.geluk = klem(state.geluk + 8); speel("blij", 1900, "blij"); floater("+wijsheid","#7b5bc4"); }
+    state.energie = klem(state.energie + 9); // meedenken voedt Botty ook
+    if(k.w >= 3){ state.geluk = klem(state.geluk + 8); speel("blij", 2000, "blij"); floater("+wijsheid","#7b5bc4"); }
     else if(k.w === 0){ state.geluk = klem(state.geluk - 4); speel("sip", 1600, "sip"); }
-    else { stemming(); }
-
     el("dilemma-keuzes").style.display = "none";
     var na = el("dilemma-na");
-    var reactie = el("dilemma-reactie");
     var kleur = k.w >= 3 ? "#2f9e58" : (k.w === 0 ? "#c8472f" : "#f6a623");
     var label = k.w >= 3 ? "Wijs gekozen" : (k.w === 0 ? "Denk er nog eens over" : "Bijna");
-    reactie.innerHTML = '<span class="label" style="background:'+kleur+'">'+label+'</span><br>'+k.r;
+    el("dilemma-reactie").innerHTML = '<span class="label" style="background:'+kleur+'">'+label+'</span><br>'+k.r;
     na.style.display = "block";
     state.laatsteDilemma = nu();
     bewaar(); render();
   }
+  el("btn-dilemma").addEventListener("click", function(){ if(state.geboren) toonDilemma(); });
+  el("sluit-dilemma").addEventListener("click", function(){ el("overlay-dilemma").classList.remove("open"); });
 
-  el("btn-dilemma").addEventListener("click", toonDilemma);
-  el("sluit-dilemma").addEventListener("click", function(){
-    el("overlay-dilemma").classList.remove("open");
-  });
-
-  // ================= SPONTANE BEWEGING + LUS =================
-  var spontaan = ["👀","Hoi!","🎵","Lekker weer hè?","🤖"];
+  // ================= SPONTANE BEWEGING =================
+  var groetjes = ["👀","Hoi!","🎵","Lekker weer hè?","🤖"];
   function spontaneBeweging(){
-    if(huidigeAnim || document.querySelector(".overlay.open")) return;
-    // klein hupje + groet
-    speel("beweeg", 1200, "blij");
-    if(Math.random() < 0.6) zeg(spontaan[Math.floor(Math.random()*spontaan.length)], 2200);
+    if(!state.geboren || huidigeAnim || modalOpen()) return;
+    if(Math.random() < 0.5){ speel("wuif", 1600, "blij"); if(Math.random()<0.6) zeg(groetjes[Math.floor(Math.random()*groetjes.length)], 2000); }
+    else { speel("kijk", 2000, "neutraal"); }
   }
 
-  // hoofd-tick: elke 3s verval + render + herinneringen
+  // ================= GEBOORTE + CONFETTI =================
+  function confetti(duur){
+    var cv = document.createElement("canvas");
+    cv.style.cssText = "position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:9999;";
+    document.body.appendChild(cv);
+    var ctx = cv.getContext("2d");
+    function size(){ cv.width = window.innerWidth; cv.height = window.innerHeight; }
+    size();
+    var kleuren = ["#b52718","#1a5c4a","#2f8f86","#57b85f","#f6a623","#7b5bc4","#ffd54a"];
+    var stuks = [];
+    for(var i=0;i<170;i++){
+      stuks.push({x:Math.random()*cv.width, y:Math.random()*-cv.height,
+        vx:(Math.random()-0.5)*2.4, vy:2+Math.random()*4, g:0.05+Math.random()*0.05,
+        r:Math.random()*Math.PI, vr:(Math.random()-0.5)*0.3,
+        w:6+Math.random()*8, h:8+Math.random()*10, c:kleuren[Math.floor(Math.random()*kleuren.length)]});
+    }
+    var start = performance.now();
+    function frame(t){
+      var verstreken = t - start;
+      ctx.clearRect(0,0,cv.width,cv.height);
+      for(var i=0;i<stuks.length;i++){
+        var p = stuks[i];
+        p.vy += p.g; p.x += p.vx; p.y += p.vy; p.r += p.vr;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r);
+        ctx.globalAlpha = verstreken > duur ? Math.max(0, 1-(verstreken-duur)/700) : 1;
+        ctx.fillStyle = p.c; ctx.fillRect(-p.w/2,-p.h/2,p.w,p.h);
+        ctx.restore();
+      }
+      if(verstreken < duur + 700){ requestAnimationFrame(frame); }
+      else { cv.remove(); window.removeEventListener("resize", size); }
+    }
+    requestAnimationFrame(frame);
+    window.addEventListener("resize", size);
+  }
+
+  var bezigBouwen = false;
+  el("start-ai").addEventListener("click", function(){
+    if(bezigBouwen) return;
+    bezigBouwen = true;
+    el("start-ai").disabled = true;
+    el("geb-titel").textContent = "AI wordt geïnitialiseerd…";
+    el("bouw-botty").classList.add("gebouwd");   // onderdelen klikken samen
+    setTimeout(function(){
+      confetti(2800);
+      el("geb-titel").textContent = "🎉 Botty is in elkaar gezet! 🎉";
+      el("geb-titel").classList.add("groot");
+      el("geboorte-gen").textContent = "Generatie " + state.generatie;
+      el("geboorte-gen").style.display = "";
+      el("geb-sub").style.display = "";
+      el("start-ai").style.display = "none";
+      el("start-knop").style.display = "";
+    }, 1500);
+  });
+
+  el("start-knop").addEventListener("click", function(){
+    state.geboren = true;
+    state.geboortetijd = nu();
+    state.t = nu();
+    state.laatsteDilemma = nu();
+    state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0;
+    bewaar();
+    el("overlay-geboorte").classList.remove("open");
+    render();
+    setTimeout(function(){ zeg("Ik ben net geboren… geef me duurzame data! 🍃", 4500); }, 500);
+  });
+
+  // ================= LUSSEN =================
   setInterval(function(){
+    if(!state.geboren) return;
     verval();
     render();
     bewaar();
-    // herinnering bij honger / lage fitheid
-    if(!huidigeAnim && !document.querySelector(".overlay.open")){
-      if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
-      else if(state.fit < 25 && Math.random() < 0.25){ zeg("Ik wil graag bewegen! 🤸", 2600); speel("beweeg",1500,"neutraal"); }
+    if(!huidigeAnim && !modalOpen()){
+      if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
+      else if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
+      else if(state.fit < 25 && Math.random() < 0.25){ zeg("Ik wil graag bewegen! 🤸", 2600); }
     }
   }, 3000);
 
-  // regelmatig zelf bewegen (elke ~12s)
   setInterval(spontaneBeweging, 12000);
 
-  // periodiek dilemma aanbieden (elke ~75s actief, of na lange afwezigheid)
   setInterval(function(){
-    if(document.querySelector(".overlay.open")) return;
+    if(!state.geboren || modalOpen()) return;
     if(nu() - state.laatsteDilemma > 75000){
-      state.laatsteDilemma = nu();
-      bewaar();
+      state.laatsteDilemma = nu(); bewaar();
       zeg("Ik heb een dilemma voor je… ⚖️", 2500);
-      setTimeout(function(){ if(!document.querySelector(".overlay.open")) toonDilemma(); }, 2600);
+      setTimeout(function(){ if(!modalOpen()) toonDilemma(); }, 2600);
     }
   }, 15000);
 
   // ---------- Start ----------
   verval();
   render();
-  setTimeout(function(){ zeg("Hoi! Ik ben Botty. Voer me duurzame data! 🍃", 4000); }, 600);
+  if(!state.geboren){
+    el("overlay-geboorte").classList.add("open");
+  }else{
+    setTimeout(function(){ zeg("Fijn dat je er weer bent! 👋", 3500); }, 600);
+  }
   bewaar();
 })();
 </script>
