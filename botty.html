@@ -161,11 +161,9 @@
   .k-dilemma{background:var(--rood);}
 
   /* ---- AI-verzorger ---- */
-  .ai-toggle{width:100%;margin-top:.6rem;font-family:inherit;font-weight:900;font-size:14px;cursor:pointer;
-    border:2px solid #2f9fe0;background:#eaf6ff;color:#1f6f9e;border-radius:16px;padding:.6rem;
-    touch-action:manipulation;transition:background .2s,color .2s;}
-  .ai-toggle.aan{background:linear-gradient(90deg,#5ec6ff,#2f9fe0);color:#fff;}
-  .ai-status{font-size:12px;font-weight:700;color:#2f9fe0;text-align:center;margin-top:.45rem;display:none;}
+  .ai-knop{font-size:13px!important;font-weight:900!important;transition:background .2s,color .2s,border-color .2s;}
+  .ai-knop.aan{animation:ai-kleur 2s linear infinite;border-color:transparent!important;color:#fff!important;}
+  @keyframes ai-kleur{0%{background:#5ec6ff;}33%{background:#57b85f;}66%{background:#f6a623;}100%{background:#5ec6ff;}}
   .botty-wrap.ai-zorg svg{animation:ai-gloed 1.9s ease-in-out infinite;}
   @keyframes ai-gloed{0%,100%{filter:drop-shadow(0 0 3px #5ec6ff);}50%{filter:drop-shadow(0 0 9px #5ec6ff);}}
   .ai-druk{animation:ai-druk .7s ease;}
@@ -394,6 +392,7 @@
         <button class="icoon-knop" id="btn-help" aria-label="Uitleg" title="Uitleg">❔</button>
         <button class="icoon-knop" id="btn-share" aria-label="Deel Botty" title="Deel Botty">📤</button>
         <button class="icoon-knop" id="btn-mute" aria-label="Geluid aan of uit" title="Geluid aan/uit">🔊</button>
+        <button class="icoon-knop ai-knop" id="ai-toggle" aria-label="AI-verzorger aan/uit" title="AI-verzorger: uit">⚡</button>
       </span>
     </div>
 
@@ -501,8 +500,6 @@
       <button class="actie k-dilemma" id="btn-dilemma"><span class="ico">⚖️</span>Dilemma</button>
     </div>
 
-    <button class="ai-toggle" id="ai-toggle">🤖 AI-verzorger: uit</button>
-    <div class="ai-status" id="ai-status">🤖 De AI houdt alles in de gaten…</div>
   </div>
 
   <a class="terug" href="index.html">← terug naar de kortebroekenmeter</a>
@@ -1339,12 +1336,12 @@
   // ================= AI-VERZORGER (auto-piloot) =================
   var aiTipGetoond = false;
   function updateAiUI(){
-    el("ai-toggle").textContent = state.aiVerzorger ? "🤖 AI-verzorger: aan" : "🤖 AI-verzorger: uit";
-    el("ai-toggle").classList.toggle("aan", state.aiVerzorger);
-    el("ai-status").style.display = state.aiVerzorger ? "" : "none";
+    var btn = el("ai-toggle");
+    btn.classList.toggle("aan", state.aiVerzorger);
+    btn.title = state.aiVerzorger ? "AI-verzorger: aan" : "AI-verzorger: uit";
     botty.classList.toggle("ai-zorg", state.aiVerzorger);
   }
-  function aiZeg(t){ zeg(t, 2600); el("ai-status").textContent = t; }
+  function aiZeg(t){ zeg(t, 2600); }
   function markeerKnop(id){ var b=el(id); if(!b) return; b.classList.add("ai-druk"); setTimeout(function(){ b.classList.remove("ai-druk"); }, 700); }
 
   function aiVoer(){
