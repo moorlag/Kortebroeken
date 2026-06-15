@@ -128,7 +128,8 @@
     background:linear-gradient(180deg,#bfe8c7,#9ed6aa);border-top:2px solid #84c490;}
 
   .botty-wrap{position:absolute;left:50%;bottom:30px;width:170px;}
-  .botty-wrap svg{width:100%;height:auto;display:block;overflow:visible;}
+  .botty-wrap svg{width:100%;height:auto;display:block;overflow:visible;
+    transform:scale(var(--groei,1));transform-origin:50% 100%;transition:transform 1s ease, filter .5s ease;}
 
   .ballon{position:absolute;left:50%;top:10px;transform:translateX(-50%);
     background:#fff;border:2px solid var(--groen);border-radius:16px;
@@ -330,6 +331,23 @@
     .scene{height:264px;}
   }
   /* ---- Minder beweging ---- */
+  /* ---- Ziekte & levenseinde ---- */
+  .ziek-balk{display:flex;align-items:center;justify-content:center;gap:.5rem;
+    background:#fdecea;border:2px solid #e3a59b;color:#a5372a;font-weight:900;font-size:13px;
+    border-radius:14px;padding:.5rem .7rem;margin-bottom:.6rem;}
+  .ziek-balk button{font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;border:none;
+    background:#c8472f;color:#fff;border-radius:10px;padding:.4rem .8rem;touch-action:manipulation;}
+  .botty-wrap.ziek-look svg{filter:saturate(.5) hue-rotate(35deg) brightness(.96);}
+  .ziek-icoon{position:absolute;left:50%;top:42px;margin-left:18px;font-size:22px;display:none;z-index:5;
+    animation:zweef-ziek 2s ease-in-out infinite;}
+  @keyframes zweef-ziek{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
+
+  #overlay-einde{background:radial-gradient(circle at 50% 35%, #3a3550, #1c1830 80%);}
+  .einde-inhoud{text-align:center;max-width:340px;color:#fff;}
+  .einde-inhoud .groot-emoji{font-size:56px;margin-bottom:.3rem;}
+  .einde-inhoud h2{color:#fff;font-size:24px;margin-bottom:.4rem;}
+  .einde-inhoud .sub{font-size:14px;font-weight:700;opacity:.92;margin-bottom:.5rem;line-height:1.45;}
+
   @media (prefers-reduced-motion: reduce){
     .botty-wrap{animation:none!important;transform:translateX(-50%)!important;}
     #antenne,.wolk,.ster,.vogel{animation:none!important;}
@@ -392,6 +410,7 @@
         <div class="boom boom-3"><div class="boom-schaduw"></div><div class="stam"></div><div class="kruin"></div></div>
       </div>
       <div class="ballon" id="ballon"></div>
+      <div class="ziek-icoon" id="ziek-icoon">🤒</div>
       <div class="botty-wrap" id="botty">
         <svg viewBox="0 0 200 250" aria-label="Botty de robot">
           <g id="antenne">
@@ -424,6 +443,11 @@
           </g>
         </svg>
       </div>
+    </div>
+
+    <div class="ziek-balk" id="ziek-balk" style="display:none">
+      <span id="ziek-tekst">🤒 Botty heeft een bug!</span>
+      <button id="btn-herstel">💊 Herstel</button>
     </div>
 
     <div class="knoppen">
@@ -534,6 +558,17 @@
     </div>
   </div>
 
+  <!-- Levenseinde-modal -->
+  <div class="overlay" id="overlay-einde">
+    <div class="einde-inhoud">
+      <div class="groot-emoji">💤</div>
+      <h2 id="einde-titel">Botty is uitgevallen</h2>
+      <p class="sub" id="einde-tekst"></p>
+      <p class="sub" id="einde-leeftijd"></p>
+      <button class="sluit" id="nieuwe-gen">Start een nieuwe generatie 🥚</button>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
 
 <script>
@@ -561,7 +596,8 @@
   function standaard(){
     return { geboren:false, geboortetijd:0, generatie:1,
              data:0, fit:0, geluk:0, wijs:0, energie:0, t:nu(), laatsteDilemma:nu(),
-             geluid:true, tutorialKlaar:false };
+             geluid:true, tutorialKlaar:false,
+             ziek:false, ziekSinds:0, leegSinds:0, stadium:"baby" };
   }
   function laad(){
     try{
@@ -570,6 +606,10 @@
         if(typeof s.energie !== "number") s.energie = 0;
         if(typeof s.geluid !== "boolean") s.geluid = true;
         if(typeof s.tutorialKlaar !== "boolean") s.tutorialKlaar = false;
+        if(typeof s.ziek !== "boolean") s.ziek = false;
+        if(typeof s.ziekSinds !== "number") s.ziekSinds = 0;
+        if(typeof s.leegSinds !== "number") s.leegSinds = 0;
+        if(typeof s.stadium !== "string") s.stadium = "baby";
         return s;
       }
     }catch(e){}
@@ -584,11 +624,13 @@
     if(!state.geboren){ return; }
     var dt = (nu() - state.t)/1000;
     if(dt <= 0){ state.t = nu(); return; }
-    state.data = klem(state.data - dt*0.06);
-    state.fit  = klem(state.fit  - dt*0.045);
-    state.energie = klem(state.energie - dt*0.09);   // ~5,4 / min — loopt automatisch terug
+    var zf = state.ziek ? 1.8 : 1;                    // ziek → sneller verval
+    state.data = klem(state.data - dt*0.06*zf);
+    state.fit  = klem(state.fit  - dt*0.045*zf);
+    state.energie = klem(state.energie - dt*0.09*zf); // ~5,4 / min — loopt automatisch terug
     var doel = (state.data + state.fit + state.energie)/3;
     state.geluk = klem(state.geluk + (doel - state.geluk) * Math.min(1, dt*0.01));
+    if(state.ziek) state.geluk = klem(state.geluk - dt*0.05);
     state.t = nu();
   }
 
@@ -618,7 +660,7 @@
     el("t-fit").textContent  = Math.round(state.fit) + "%";
     el("t-geluk").textContent= Math.round(state.geluk) + "%";
     el("t-wijs").textContent = state.wijs;
-    el("leef-gen").textContent = "Generatie " + state.generatie;
+    el("leef-gen").textContent = state.geboren ? ("Gen " + state.generatie + " · " + stadium().label) : ("Generatie " + state.generatie);
     el("leef-leeftijd").textContent = state.geboren ? ("🎂 " + leeftijdTekst()) : "—";
     stemming();
   }
@@ -637,6 +679,7 @@
     if(!state.geboren) return;
     var gem = (state.data + state.fit + state.geluk + state.energie)/4;
     botty.classList.remove("sip");
+    if(state.ziek){ botty.classList.add("sip"); zetMond("sip"); return; }
     if(gem < 35){ botty.classList.add("sip"); zetMond("sip"); }
     else if(gem > 75){ zetMond("blij"); }
     else { zetMond("neutraal"); }
@@ -716,7 +759,8 @@
     fout:  function(){ toon(170,0,0.26,"sawtooth",0.14); },
     beweeg:function(){ toon(300,0,0.16,"sine",0.14); toon(540,0.12,0.13,"sine",0.12); },
     denk:  function(){ toon(660,0,0.1,"triangle",0.1); },
-    feest: function(){ [523,659,784,1047].forEach(function(f,i){ toon(f,i*0.11,0.2,"triangle",0.16); }); }
+    feest: function(){ [523,659,784,1047].forEach(function(f,i){ toon(f,i*0.11,0.2,"triangle",0.16); }); },
+    einde: function(){ [523,415,330,262].forEach(function(f,i){ toon(f,i*0.18,0.3,"sine",0.16); }); }
   };
   function updateMuteIcon(){ el("btn-mute").textContent = state.geluid ? "🔊" : "🔇"; }
   el("btn-mute").addEventListener("click", function(){
@@ -911,6 +955,7 @@
       floater("⚠ vervuild", "#c8472f");
       zeg("Bah! Deze data is vervuild… 🤢", 2800);
       setTimeout(sfx.fout, 200); schud();
+      if(Math.random() < 0.3) setTimeout(wordZiek, 900);  // vervuilde data kan ziek maken
     }
     bewaar(); render();
   }
@@ -1067,19 +1112,126 @@
     state.t = nu();
     state.laatsteDilemma = nu();
     state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0;
+    state.ziek = false; state.ziekSinds = 0; state.leegSinds = 0; state.stadium = "baby";
+    el("ziek-balk").style.display = "none"; el("ziek-icoon").style.display = "none";
+    botty.classList.remove("ziek-look");
     bewaar();
     el("overlay-geboorte").classList.remove("open");
     render();
+    pasGroeiToe();
     if(!state.tutorialKlaar){ setTimeout(startTut, 400); }
     setTimeout(function(){ zeg("Ik ben net geboren… geef me duurzame data! 🍃", 4500); }, 500);
+  });
+
+  // ================= LEVENSCYCLUS =================
+  function stadium(){
+    var min = (nu() - state.geboortetijd)/60000;
+    if(min < 30)   return {key:"baby",      label:"baby 👶",  groei:0.66};
+    if(min < 240)  return {key:"kind",      label:"kind",     groei:0.80};
+    if(min < 1440) return {key:"tiener",    label:"tiener",   groei:0.92};
+    return                {key:"volwassen", label:"volwassen",groei:1.0};
+  }
+  function pasGroeiToe(){
+    var svg = document.querySelector("#botty svg");
+    if(svg) svg.style.setProperty("--groei", stadium().groei);
+  }
+  function updateStadium(){
+    if(!state.geboren) return;
+    var st = stadium();
+    if(st.key !== state.stadium){
+      state.stadium = st.key; bewaar();
+      zeg("Kijk, ik ben gegroeid! Nu ben ik " + st.label.replace(" 👶","") + "! 🎉", 3800);
+      sfx.feest(); sparkles();
+    }
+    pasGroeiToe();
+  }
+
+  function wordZiek(){
+    if(state.ziek) return;
+    state.ziek = true; state.ziekSinds = nu(); bewaar();
+    el("ziek-balk").style.display = "";
+    el("ziek-icoon").style.display = "";
+    botty.classList.add("ziek-look");
+    zeg("Oei… ik heb een bug! 🤒 Herstel me alsjeblieft.", 4000);
+    sfx.fout();
+  }
+  function herstel(){
+    if(!state.ziek) return;
+    state.ziek = false; state.ziekSinds = 0;
+    state.geluk = klem(state.geluk + 12); state.energie = klem(state.energie + 8);
+    el("ziek-balk").style.display = "none";
+    el("ziek-icoon").style.display = "none";
+    botty.classList.remove("ziek-look");
+    speel("blij", 1600, "blij"); sfx.goed(); sparkles(); flitsBalk(".b-geluk");
+    zeg("Pff, gepatcht! Dankjewel 💚", 3000);
+    bewaar(); render();
+  }
+  el("btn-herstel").addEventListener("click", herstel);
+
+  function doodTekst(oorzaak){
+    if(oorzaak === "ouderdom") return "Na een lang en wijs leven is Botty vredig uitgeschakeld. 🌙";
+    if(oorzaak === "ziekte")   return "Botty's bug werd niet op tijd verholpen en ze is uitgevallen. 💔";
+    return "Botty kreeg te weinig aandacht en is uitgevallen. 💔";
+  }
+  function gaDood(oorzaak){
+    var leeftijd = leeftijdTekst();
+    state.geboren = false; state.ziek = false;
+    el("ziek-balk").style.display = "none";
+    el("ziek-icoon").style.display = "none";
+    botty.classList.remove("ziek-look");
+    bewaar();
+    el("einde-tekst").textContent = doodTekst(oorzaak);
+    el("einde-leeftijd").textContent = "Generatie " + state.generatie + " · " + leeftijd + " geworden";
+    el("overlay-einde").classList.add("open");
+    sfx.einde();
+  }
+  function checkLeven(){
+    if(!state.geboren) return;
+    // ouderdom (lange generatie)
+    if(nu() - state.geboortetijd > 7*DAG){ gaDood("ouderdom"); return; }
+    // ziek door ernstige verwaarlozing
+    if(!state.ziek && ((state.energie<=0 && state.geluk<=8) || (state.data<=0 && state.fit<=0))){
+      if(Math.random() < 0.15) wordZiek();
+    }
+    // ziek te lang onbehandeld → dood
+    if(state.ziek && (nu() - state.ziekSinds > 90*60000)){ gaDood("ziekte"); return; }
+    // totale verwaarlozing te lang → dood
+    var leeg = (state.energie<=0 && state.data<=0 && state.fit<=0 && state.geluk<=0);
+    if(leeg){
+      if(!state.leegSinds) state.leegSinds = nu();
+      else if(nu() - state.leegSinds > 120*60000){ gaDood("verwaarlozing"); return; }
+    } else { state.leegSinds = 0; }
+  }
+
+  function resetGeboorte(){
+    bezigBouwen = false;
+    el("bouw-botty").classList.remove("gebouwd");
+    el("start-ai").disabled = false; el("start-ai").style.display = "";
+    el("start-knop").style.display = "none";
+    el("geb-titel").textContent = "Een stapel losse materialen…";
+    el("geb-titel").classList.remove("groot");
+    el("geboorte-gen").style.display = "none";
+    el("geb-sub").style.display = "none";
+  }
+  el("nieuwe-gen").addEventListener("click", function(){
+    state.generatie += 1;
+    state.ziek = false; state.ziekSinds = 0; state.leegSinds = 0; state.stadium = "baby";
+    bewaar();
+    el("overlay-einde").classList.remove("open");
+    resetGeboorte();
+    el("overlay-geboorte").classList.add("open");
   });
 
   // ================= LUSSEN =================
   setInterval(function(){
     if(!state.geboren) return;
     verval();
+    checkLeven();
+    if(!state.geboren){ render(); return; }   // net overleden
+    updateStadium();
     render();
     bewaar();
+    if(state.ziek && Math.random() < 0.3 && !modalOpen()){ zeg("Ik voel me niet lekker… 🤒", 2800); }
     if(!huidigeAnim && !modalOpen()){
       if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
       else if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
@@ -1100,16 +1252,19 @@
 
   // ---------- Start ----------
   verval();
+  if(state.geboren) checkLeven();   // tijd verstreken sinds laatste bezoek?
   render();
   updateMuteIcon();
   updateLucht();
   planVolgendUur();
   planVogels();
-  if(!state.geboren){
-    el("overlay-geboorte").classList.add("open");
-  }else{
+  if(state.geboren){
+    pasGroeiToe();
+    if(state.ziek){ el("ziek-balk").style.display=""; el("ziek-icoon").style.display=""; botty.classList.add("ziek-look"); }
     if(!state.tutorialKlaar){ setTimeout(startTut, 500); }
     setTimeout(function(){ zeg("Fijn dat je er weer bent! 👋", 3500); }, 600);
+  } else if(!el("overlay-einde").classList.contains("open")){
+    el("overlay-geboorte").classList.add("open");
   }
   bewaar();
 })();
