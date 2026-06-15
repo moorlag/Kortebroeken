@@ -127,7 +127,7 @@
   .vloer{position:absolute;left:0;right:0;bottom:0;height:42px;
     background:linear-gradient(180deg,#bfe8c7,#9ed6aa);border-top:2px solid #84c490;}
 
-  .botty-wrap{position:absolute;left:50%;bottom:30px;width:170px;}
+  .botty-wrap{position:absolute;left:50%;bottom:30px;width:170px;cursor:pointer;}
   .botty-wrap svg{width:100%;height:auto;display:block;overflow:visible;
     transform:scale(var(--groei,1));transform-origin:50% 100%;transition:transform 1s ease, filter .5s ease;}
 
@@ -201,6 +201,10 @@
   .geboorte-gen{font-size:14px;font-weight:900;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;}
   .geboorte-hint{font-size:14px;font-weight:700;color:#5a7d72;margin-top:.4rem;}
   .geboorte-sub{font-size:14px;font-weight:700;color:var(--groen);margin:.6rem 0 0;line-height:1.4;}
+  .naam-input{width:100%;font-family:inherit;font-weight:700;font-size:15px;color:var(--groen);
+    text-align:center;border:2px solid var(--teal);border-radius:14px;padding:.6rem;margin-top:.7rem;
+    outline:none;background:#fff;}
+  .naam-input::placeholder{color:#9bbab0;font-weight:400;}
   .bouw-wrap{width:170px;margin:1rem auto;}
   .bouw-wrap svg{width:100%;height:auto;overflow:visible;}
   .start-ai{background:var(--rood)!important;letter-spacing:.05em;}
@@ -287,6 +291,16 @@
   /* verdrietig / hongerig: laat hangen */
   .botty-wrap.sip{animation:none;transform:translateX(-50%) translateY(4px);}
   .botty-wrap.sip #kop{transform:rotate(0) translateY(4px);}
+
+  /* knipperen + emotie-ogen */
+  #ogen{transform-box:view-box;transform-origin:100px 84px;animation:knipper 6s ease-in-out infinite;}
+  @keyframes knipper{0%,92%,100%{transform:scaleY(1);}96%{transform:scaleY(.1);}}
+  .botty-wrap.verliefd #ogen,.botty-wrap.slaap #ogen,.botty-wrap.verrast #ogen{display:none;}
+  #ogen-hart{transform-box:view-box;transform-origin:100px 82px;}
+  .botty-wrap.verliefd #ogen-hart{display:block!important;animation:hartklop .5s ease-in-out 3;}
+  @keyframes hartklop{0%,100%{transform:scale(1);}50%{transform:scale(1.18);}}
+  .botty-wrap.slaap #ogen-slaap{display:block!important;}
+  .botty-wrap.verrast #ogen-verrast{display:block!important;}
 
   /* ---- Bediening (help/delen/geluid) ---- */
   .leef-rechts{display:flex;align-items:center;gap:.4rem;}
@@ -437,8 +451,22 @@
             <circle cx="148" cy="76" r="6" fill="#bfe3df"/>
             <path d="M72,46 Q52,48 52,76 Q52,108 72,122 Q100,134 128,122 Q148,108 148,76 Q148,48 128,46 Q100,40 72,46 Z" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
             <path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="#3a9d94" stroke="#2b8077" stroke-width="1.5"/>
-            <line x1="90" y1="78" x2="90" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
-            <line x1="110" y1="78" x2="110" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
+            <g id="ogen">
+              <line x1="90" y1="78" x2="90" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
+              <line x1="110" y1="78" x2="110" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
+            </g>
+            <g id="ogen-hart" style="display:none">
+              <path d="M90,88 C83,81 87,75 90,80 C93,75 97,81 90,88 Z" fill="#e0556b"/>
+              <path d="M110,88 C103,81 107,75 110,80 C113,75 117,81 110,88 Z" fill="#e0556b"/>
+            </g>
+            <g id="ogen-slaap" style="display:none">
+              <path d="M85,84 Q90,88 95,84" fill="none" stroke="#1f2a28" stroke-width="3.5" stroke-linecap="round"/>
+              <path d="M105,84 Q110,88 115,84" fill="none" stroke="#1f2a28" stroke-width="3.5" stroke-linecap="round"/>
+            </g>
+            <g id="ogen-verrast" style="display:none">
+              <circle cx="90" cy="83" r="4.6" fill="#1f2a28"/><circle cx="91.6" cy="81.4" r="1.3" fill="#fff"/>
+              <circle cx="110" cy="83" r="4.6" fill="#1f2a28"/><circle cx="111.6" cy="81.4" r="1.3" fill="#fff"/>
+            </g>
             <path id="mond" d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/>
           </g>
         </svg>
@@ -522,7 +550,8 @@
             <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>
         </svg>
       </div>
-      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een goede start!</p>
+      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een naam en een goede start!</p>
+      <input id="naam-input" class="naam-input" maxlength="14" placeholder="Geef je Botty een naam…" style="display:none" />
       <button class="sluit start-ai" id="start-ai">🔧 START AI</button>
       <button class="sluit" id="start-knop" style="display:none">Begin het avontuur!</button>
     </div>
@@ -547,7 +576,7 @@
     <div class="modal">
       <div class="deelkaart">
         <div class="mini" id="share-botty"></div>
-        <div class="d-titel">Mijn Botty</div>
+        <div class="d-titel" id="share-naam">Mijn Botty</div>
         <div class="d-regels" id="share-regels"></div>
       </div>
       <div class="deel-acties" style="margin-top:.9rem">
@@ -596,7 +625,7 @@
   function standaard(){
     return { geboren:false, geboortetijd:0, generatie:1,
              data:0, fit:0, geluk:0, wijs:0, energie:0, t:nu(), laatsteDilemma:nu(),
-             geluid:true, tutorialKlaar:false,
+             geluid:true, tutorialKlaar:false, naam:"Botty",
              ziek:false, ziekSinds:0, leegSinds:0, stadium:"baby" };
   }
   function laad(){
@@ -610,6 +639,7 @@
         if(typeof s.ziekSinds !== "number") s.ziekSinds = 0;
         if(typeof s.leegSinds !== "number") s.leegSinds = 0;
         if(typeof s.stadium !== "string") s.stadium = "baby";
+        if(typeof s.naam !== "string" || !s.naam) s.naam = "Botty";
         return s;
       }
     }catch(e){}
@@ -618,6 +648,7 @@
   var state = laad();
   function bewaar(){ state.t = state.geboren ? state.t : nu(); schrijfRuw(KEY, JSON.stringify(state)); }
   function klem(v){ return Math.max(0, Math.min(100, v)); }
+  function naam(){ return (state.naam && state.naam.length) ? state.naam : "Botty"; }
 
   // ---------- Verval over tijd (catch-up bij reload) ----------
   function verval(){
@@ -660,8 +691,8 @@
     el("t-fit").textContent  = Math.round(state.fit) + "%";
     el("t-geluk").textContent= Math.round(state.geluk) + "%";
     el("t-wijs").textContent = state.wijs;
-    el("leef-gen").textContent = state.geboren ? ("Gen " + state.generatie + " · " + stadium().label) : ("Generatie " + state.generatie);
-    el("leef-leeftijd").textContent = state.geboren ? ("🎂 " + leeftijdTekst()) : "—";
+    el("leef-gen").textContent = state.geboren ? (naam() + " · Gen " + state.generatie) : ("Generatie " + state.generatie);
+    el("leef-leeftijd").textContent = state.geboren ? (stadium().label + " · 🎂 " + leeftijdTekst()) : "—";
     stemming();
   }
 
@@ -670,12 +701,14 @@
     blij:    "M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z",
     neutraal:"M94,100 Q100,102 106,100 Q105,106 100,107 Q95,106 94,100 Z",
     sip:     "M94,108 Q100,102 106,108 Q104,110 100,109 Q96,110 94,108 Z",
-    open:    "M92,96 Q100,99 108,96 Q109,112 100,114 Q91,112 92,96 Z"
+    open:    "M92,96 Q100,99 108,96 Q109,112 100,114 Q91,112 92,96 Z",
+    verrast: "M96,99 Q100,98 104,99 Q105,107 100,108 Q95,107 96,99 Z"
   };
   function zetMond(naam){ mond.setAttribute("d", monden[naam] || monden.neutraal); }
 
   function stemming(){
     if(huidigeAnim) return;
+    if(botty.classList.contains("verliefd") || botty.classList.contains("slaap") || botty.classList.contains("verrast")) return;
     if(!state.geboren) return;
     var gem = (state.data + state.fit + state.geluk + state.energie)/4;
     botty.classList.remove("sip");
@@ -760,7 +793,8 @@
     beweeg:function(){ toon(300,0,0.16,"sine",0.14); toon(540,0.12,0.13,"sine",0.12); },
     denk:  function(){ toon(660,0,0.1,"triangle",0.1); },
     feest: function(){ [523,659,784,1047].forEach(function(f,i){ toon(f,i*0.11,0.2,"triangle",0.16); }); },
-    einde: function(){ [523,415,330,262].forEach(function(f,i){ toon(f,i*0.18,0.3,"sine",0.16); }); }
+    einde: function(){ [523,415,330,262].forEach(function(f,i){ toon(f,i*0.18,0.3,"sine",0.16); }); },
+    aai:   function(){ toon(720,0,0.07,"sine",0.09); toon(940,0.06,0.08,"sine",0.08); }
   };
   function updateMuteIcon(){ el("btn-mute").textContent = state.geluid ? "🔊" : "🔇"; }
   el("btn-mute").addEventListener("click", function(){
@@ -780,6 +814,44 @@
       (function(node){ setTimeout(function(){ node.remove(); },1100); })(f);
     }
   }
+  function hartjes(){
+    if(reduce) return;
+    var hs=["❤️","💛","💚","✨"];
+    for(var i=0;i<4;i++){
+      var f=document.createElement("div"); f.className="floater"; f.textContent=hs[Math.floor(Math.random()*hs.length)];
+      f.style.left=(38+Math.random()*30)+"%"; f.style.top=(70+Math.random()*40)+"px";
+      botty.parentNode.appendChild(f);
+      (function(node){ setTimeout(function(){ node.remove(); },1100); })(f);
+    }
+  }
+
+  // ---------- Gezichtsuitdrukkingen ----------
+  var gezichtTimer=null;
+  function gezicht(klasse, ms, mondNaam){
+    botty.classList.remove("verliefd","slaap","verrast");
+    if(klasse) botty.classList.add(klasse);
+    if(mondNaam) zetMond(mondNaam);
+    if(gezichtTimer){ clearTimeout(gezichtTimer); gezichtTimer=null; }
+    if(klasse && ms){ gezichtTimer=setTimeout(function(){ botty.classList.remove(klasse); gezichtTimer=null; stemming(); }, ms); }
+  }
+
+  // ---------- Aaien ----------
+  var aaiZinnen=["Hihi! 😄","Dat kriebelt!","Aaah, fijn ❤️","Nog een keer!","Jij bent lief 💚","*tevreden gezoem*"];
+  var laatsteAai=0;
+  function aai(){
+    if(!state.geboren || modalOpen()) return;
+    hartjes(); sfx.aai();
+    gezicht("verliefd", 1300, "blij");
+    if(!huidigeAnim) speel("wuif", 1600, "blij");
+    var t=nu();
+    if(t-laatsteAai > 2500){
+      laatsteAai=t;
+      state.geluk=klem(state.geluk+3);
+      if(Math.random()<0.5) zeg(aaiZinnen[Math.floor(Math.random()*aaiZinnen.length)], 1800);
+      bewaar(); render();
+    }
+  }
+  botty.addEventListener("click", aai);
 
   // ================= DAG/NACHT + ZON =================
   var zonEl=el("zon"), maanEl=el("maan"), sterrenEl=el("sterren"), sceneEl=el("scene");
@@ -849,6 +921,7 @@
       zwerm.appendChild(b);
     }
     laag.appendChild(zwerm);
+    if(state.geboren && !huidigeAnim && !modalOpen() && Math.random()<0.5){ speel("kijk", 2000, "neutraal"); }
     setTimeout(function(){ zwerm.remove(); }, dur*1000+300);
   }
   function planVogels(){ setTimeout(function(){ spawnVogels(); planVogels(); }, 15000+Math.random()*25000); }
@@ -880,7 +953,7 @@
   el("btn-help").addEventListener("click", function(){ sfx.klik(); startTut(); });
 
   // ================= DELEN =================
-  function deelTekst(){ return "Mijn Botty (NOLAI) is "+leeftijdTekst()+" oud — Generatie "+state.generatie+", 🧠 wijsheid "+state.wijs+". Speel ook mee!"; }
+  function deelTekst(){ return "Mijn Botty heet "+naam()+" — "+leeftijdTekst()+" oud, Generatie "+state.generatie+", 🧠 wijsheid "+state.wijs+". Speel ook mee bij NOLAI!"; }
   function toastMsg(t){ var e=el("toast"); e.textContent=t; e.classList.add("toon"); if(toastMsg._tm)clearTimeout(toastMsg._tm); toastMsg._tm=setTimeout(function(){ e.classList.remove("toon"); },2200); }
   function kopieer(txt){
     if(navigator.clipboard && navigator.clipboard.writeText){
@@ -891,8 +964,9 @@
     sfx.klik();
     var holder=el("share-botty"); holder.innerHTML="";
     var svg=document.querySelector("#botty svg");
-    if(svg){ var c=svg.cloneNode(true); var ids=c.querySelectorAll("[id]"); for(var i=0;i<ids.length;i++){ ids[i].removeAttribute("id"); } holder.appendChild(c); }
-    el("share-regels").innerHTML="🎂 "+leeftijdTekst()+" oud · Generatie "+state.generatie+"<br>🧠 Wijsheid "+state.wijs+" · ⚡ Energie "+Math.round(state.energie)+"%";
+    if(svg){ var c=svg.cloneNode(true); var ids=c.querySelectorAll("[id]"); for(var i=0;i<ids.length;i++){ ids[i].removeAttribute("id"); } c.style.setProperty("--groei",1); holder.appendChild(c); }
+    el("share-naam").textContent = naam();
+    el("share-regels").innerHTML="🎂 "+leeftijdTekst()+" oud · Generatie "+state.generatie+" · "+stadium().label+"<br>🧠 Wijsheid "+state.wijs+" · ⚡ Energie "+Math.round(state.energie)+"%";
     el("overlay-share").classList.add("open");
   });
   el("sluit-share").addEventListener("click", function(){ el("overlay-share").classList.remove("open"); });
@@ -1013,6 +1087,7 @@
     wrap.style.display = "flex";
     wrap.innerHTML = "";
     sfx.denk();
+    gezicht("verrast", 1100);
     speel("denk", 999999, "neutraal");
     actiefDilemma.keuzes.forEach(function(k){
       var b = document.createElement("button");
@@ -1046,6 +1121,8 @@
   var groetjes = ["👀","Hoi!","🎵","Lekker weer hè?","🤖"];
   function spontaneBeweging(){
     if(!state.geboren || huidigeAnim || modalOpen()) return;
+    var h=new Date().getHours();
+    if((h<8 || h>20) && Math.random()<0.5){ gezicht("slaap", 2200); zeg("*gaap* 😴", 2200); return; }
     if(Math.random() < 0.5){ speel("wuif", 1600, "blij"); if(Math.random()<0.6) zeg(groetjes[Math.floor(Math.random()*groetjes.length)], 2000); }
     else { speel("kijk", 2000, "neutraal"); }
   }
@@ -1101,12 +1178,15 @@
       el("geboorte-gen").textContent = "Generatie " + state.generatie;
       el("geboorte-gen").style.display = "";
       el("geb-sub").style.display = "";
+      el("naam-input").style.display = "";
       el("start-ai").style.display = "none";
       el("start-knop").style.display = "";
     }, 1500);
   });
 
   el("start-knop").addEventListener("click", function(){
+    var n = el("naam-input").value.trim();
+    state.naam = n || "Botty";
     state.geboren = true;
     state.geboortetijd = nu();
     state.t = nu();
@@ -1120,7 +1200,7 @@
     render();
     pasGroeiToe();
     if(!state.tutorialKlaar){ setTimeout(startTut, 400); }
-    setTimeout(function(){ zeg("Ik ben net geboren… geef me duurzame data! 🍃", 4500); }, 500);
+    setTimeout(function(){ zeg("Hoi, ik ben " + naam() + "! Geef me duurzame data 🍃", 4500); }, 500);
   });
 
   // ================= LEVENSCYCLUS =================
@@ -1141,7 +1221,7 @@
     if(st.key !== state.stadium){
       state.stadium = st.key; bewaar();
       zeg("Kijk, ik ben gegroeid! Nu ben ik " + st.label.replace(" 👶","") + "! 🎉", 3800);
-      sfx.feest(); sparkles();
+      sfx.feest(); sparkles(); gezicht("verliefd", 1600, "blij");
     }
     pasGroeiToe();
   }
@@ -1169,9 +1249,9 @@
   el("btn-herstel").addEventListener("click", herstel);
 
   function doodTekst(oorzaak){
-    if(oorzaak === "ouderdom") return "Na een lang en wijs leven is Botty vredig uitgeschakeld. 🌙";
-    if(oorzaak === "ziekte")   return "Botty's bug werd niet op tijd verholpen en ze is uitgevallen. 💔";
-    return "Botty kreeg te weinig aandacht en is uitgevallen. 💔";
+    if(oorzaak === "ouderdom") return "Na een lang en wijs leven is " + naam() + " vredig uitgeschakeld. 🌙";
+    if(oorzaak === "ziekte")   return "De bug van " + naam() + " werd niet op tijd verholpen. 💔";
+    return naam() + " kreeg te weinig aandacht en is uitgevallen. 💔";
   }
   function gaDood(oorzaak){
     var leeftijd = leeftijdTekst();
@@ -1180,6 +1260,7 @@
     el("ziek-icoon").style.display = "none";
     botty.classList.remove("ziek-look");
     bewaar();
+    el("einde-titel").textContent = naam() + " is uitgevallen";
     el("einde-tekst").textContent = doodTekst(oorzaak);
     el("einde-leeftijd").textContent = "Generatie " + state.generatie + " · " + leeftijd + " geworden";
     el("overlay-einde").classList.add("open");
@@ -1212,6 +1293,7 @@
     el("geb-titel").classList.remove("groot");
     el("geboorte-gen").style.display = "none";
     el("geb-sub").style.display = "none";
+    el("naam-input").style.display = "none"; el("naam-input").value = "";
   }
   el("nieuwe-gen").addEventListener("click", function(){
     state.generatie += 1;
@@ -1250,7 +1332,23 @@
     }
   }, 15000);
 
+  function humanizeDuur(ms){
+    var m=ms/60000, u=m/60, d=u/24;
+    if(d>=1) return Math.floor(d)+(Math.floor(d)===1?" dag":" dagen");
+    if(u>=1) return Math.floor(u)+" uur";
+    return Math.max(1,Math.floor(m))+" min";
+  }
+  function dagdeelGroet(){
+    var h=new Date().getHours();
+    if(h<6)  return "Goedenacht";
+    if(h<12) return "Goedemorgen ☀️";
+    if(h<18) return "Goedemiddag";
+    if(h<22) return "Goedenavond 🌆";
+    return "Het is laat 😴";
+  }
+
   // ---------- Start ----------
+  var afwezig = state.geboren ? (nu() - state.t) : 0;
   verval();
   if(state.geboren) checkLeven();   // tijd verstreken sinds laatste bezoek?
   render();
@@ -1262,7 +1360,10 @@
     pasGroeiToe();
     if(state.ziek){ el("ziek-balk").style.display=""; el("ziek-icoon").style.display=""; botty.classList.add("ziek-look"); }
     if(!state.tutorialKlaar){ setTimeout(startTut, 500); }
-    setTimeout(function(){ zeg("Fijn dat je er weer bent! 👋", 3500); }, 600);
+    var welkom = afwezig > 300000
+      ? (dagdeelGroet()+"! Je was "+humanizeDuur(afwezig)+" weg — ik miste je! 💚")
+      : (dagdeelGroet()+"! Fijn dat je er bent! 👋");
+    setTimeout(function(){ zeg(welkom, 4200); }, 700);
   } else if(!el("overlay-einde").classList.contains("open")){
     el("overlay-geboorte").classList.add("open");
   }
