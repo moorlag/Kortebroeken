@@ -57,6 +57,10 @@
   .b-fit  > span{background:linear-gradient(90deg,#7fd06f,#57b85f);}
   .b-geluk> span{background:linear-gradient(90deg,#ffce54,#f6a623);}
   .b-wijs > span{background:linear-gradient(90deg,#a98be0,#7b5bc4);}
+  .b-energie>span{background:linear-gradient(90deg,#5ec6ff,#2f9fe0);}
+  .stat-vol{font-size:12px;font-weight:700;margin-bottom:.6rem;}
+  .stat-vol .rij{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+  .stat-vol .balk{height:13px;}
 
   /* ---- Scène ---- */
   .scene{position:relative;height:300px;border-radius:22px;
@@ -138,16 +142,31 @@
   .geboorte-gen{font-size:14px;font-weight:900;color:var(--teal);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.6rem;}
   .geboorte-hint{font-size:14px;font-weight:700;color:#5a7d72;margin-top:.4rem;}
   .geboorte-sub{font-size:14px;font-weight:700;color:var(--groen);margin:.6rem 0 0;line-height:1.4;}
-  .ei{width:150px;margin:1.2rem auto;cursor:pointer;display:block;transform-origin:50% 92%;
-    animation:wiebel 1.8s ease-in-out infinite;}
-  @keyframes wiebel{0%,100%{transform:rotate(0);}25%{transform:rotate(-7deg);}75%{transform:rotate(7deg);}}
-  .ei.kraak{animation:kraak .55s ease-in-out;}
-  @keyframes kraak{0%,100%{transform:scale(1) rotate(0);}
-    20%{transform:scale(1.06) rotate(-12deg);}40%{transform:scale(1.06) rotate(12deg);}
-    60%{transform:scale(1.09) rotate(-9deg);}80%{transform:scale(1.09) rotate(9deg);}}
-  .baby-botty{width:150px;margin:.6rem auto 0;animation:opkomst .6s cubic-bezier(.34,1.56,.64,1) both;}
-  .baby-botty svg{width:100%;height:auto;overflow:visible;}
-  @keyframes opkomst{from{transform:scale(.2) translateY(40px);opacity:0;}to{transform:scale(1) translateY(0);opacity:1;}}
+  .bouw-wrap{width:170px;margin:1rem auto;}
+  .bouw-wrap svg{width:100%;height:auto;overflow:visible;}
+  .start-ai{background:var(--rood)!important;letter-spacing:.05em;}
+  /* losse onderdelen die samenklikken tot Botty */
+  #bouw-botty .bp{transform-box:fill-box;transform-origin:center;
+    transition:transform .8s cubic-bezier(.34,1.45,.5,1), opacity .5s ease;opacity:.92;}
+  #bouw-botty .bp-leg-l{transform:translate(-24px,56px) rotate(48deg);}
+  #bouw-botty .bp-leg-r{transform:translate(26px,54px) rotate(-52deg);}
+  #bouw-botty .bp-shorts{transform:translate(-40px,46px) rotate(-16deg);}
+  #bouw-botty .bp-torso{transform:translate(28px,38px) rotate(13deg);}
+  #bouw-botty .bp-arm-l{transform:translate(-58px,42px) rotate(72deg);}
+  #bouw-botty .bp-arm-r{transform:translate(58px,26px) rotate(-68deg);}
+  #bouw-botty .bp-neck{transform:translate(-28px,44px) rotate(38deg);opacity:.7;}
+  #bouw-botty .bp-kop{transform:translate(38px,-18px) rotate(-16deg);}
+  #bouw-botty .bp-ear-l{transform:translate(-58px,-22px) rotate(28deg);}
+  #bouw-botty .bp-ear-r{transform:translate(62px,8px) rotate(-32deg);}
+  #bouw-botty .bp-antenne{transform:translate(-48px,40px) rotate(-58deg);}
+  /* nadat START AI is gedrukt: alles klikt op z'n plek (van onder naar boven) */
+  #bouw-botty.gebouwd .bp{transform:none;opacity:1;}
+  #bouw-botty.gebouwd .bp-leg-l,#bouw-botty.gebouwd .bp-leg-r,#bouw-botty.gebouwd .bp-shorts{transition-delay:0s;}
+  #bouw-botty.gebouwd .bp-torso,#bouw-botty.gebouwd .bp-arm-l,#bouw-botty.gebouwd .bp-arm-r{transition-delay:.12s;}
+  #bouw-botty.gebouwd .bp-neck{transition-delay:.24s;}
+  #bouw-botty.gebouwd .bp-kop{transition-delay:.34s;}
+  #bouw-botty.gebouwd .bp-ear-l,#bouw-botty.gebouwd .bp-ear-r{transition-delay:.46s;}
+  #bouw-botty.gebouwd .bp-antenne{transition-delay:.58s;}
 
   /* =================== BOTTY ANIMATIES =================== */
   /* idle: rustig ademen */
@@ -220,6 +239,11 @@
     <div class="leefbalk">
       <span class="gen" id="leef-gen">Generatie 1</span>
       <span id="leef-leeftijd">—</span>
+    </div>
+
+    <div class="stat-vol">
+      <div class="rij"><span>⚡ Energie</span><span id="t-energie">0%</span></div>
+      <div class="balk b-energie"><span id="bar-energie" style="width:0%"></span></div>
     </div>
 
     <div class="stats">
@@ -315,62 +339,45 @@
   <!-- Geboorte-modal -->
   <div class="overlay" id="overlay-geboorte">
     <div class="geboorte-inhoud">
-      <div id="ei-fase">
-        <p class="geboorte-titel">Er beweegt iets…</p>
-        <svg class="ei" id="ei" viewBox="0 0 120 150" aria-label="Data-ei">
-          <line x1="60" y1="34" x2="60" y2="16" stroke="#2b2b2b" stroke-width="3"/>
-          <circle cx="60" cy="12" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-          <ellipse cx="60" cy="92" rx="46" ry="54" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3.5"/>
-          <ellipse cx="60" cy="92" rx="46" ry="54" fill="url(#glans)"/>
-          <circle cx="44" cy="78" r="5" fill="#57b85f"/>
-          <circle cx="74" cy="66" r="4" fill="#2f8f86"/>
-          <circle cx="78" cy="104" r="6" fill="#57b85f"/>
-          <circle cx="40" cy="112" r="4" fill="#2f8f86"/>
-          <path d="M30 92 l10 -8 l-6 12 l12 -6 l-8 12" fill="none" stroke="#2b2b2b" stroke-width="2" opacity="0"/>
-          <defs>
-            <radialGradient id="glans" cx="38%" cy="32%" r="65%">
-              <stop offset="0%" stop-color="#ffffff" stop-opacity="0.7"/>
-              <stop offset="100%" stop-color="#ffffff" stop-opacity="0"/>
-            </radialGradient>
-          </defs>
-        </svg>
-        <p class="geboorte-hint">Tik op het ei om Botty te wekken</p>
-      </div>
-      <div id="hatch-fase" style="display:none">
-        <p class="geboorte-titel groot">🎉 Botty is geboren! 🎉</p>
-        <p class="geboorte-gen" id="geboorte-gen">Generatie 1</p>
-        <div class="baby-botty">
-          <svg viewBox="0 0 200 250" aria-label="Pasgeboren Botty">
-            <g style="transform-box:view-box;transform-origin:100px 46px;animation:wieber 2.4s ease-in-out infinite">
-              <path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
-              <circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>
-            </g>
-            <line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/>
-            <ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/>
-            <line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/>
-            <ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/>
-            <line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/>
-            <circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-            <line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/>
-            <circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+      <p class="geboorte-titel" id="geb-titel">Een stapel losse materialen…</p>
+      <p class="geboorte-gen" id="geboorte-gen" style="display:none">Generatie 1</p>
+      <div class="bouw-wrap">
+        <svg id="bouw-botty" viewBox="0 0 200 250" aria-label="Botty wordt in elkaar gezet">
+          <g class="bp bp-antenne">
+            <path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
+            <circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>
+          </g>
+          <g class="bp bp-leg-l"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-leg-r"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-arm-l"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-arm-r"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-shorts">
             <rect x="68" y="184" width="64" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/>
+            <line x1="100" y1="200" x2="100" y2="214" stroke="#2e6b34" stroke-width="3"/></g>
+          <g class="bp bp-torso">
             <rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
-            <rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-            <path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>
-            <circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-            <circle cx="52" cy="76" r="6" fill="#bfe3df"/>
-            <circle cx="148" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-            <circle cx="148" cy="76" r="6" fill="#bfe3df"/>
+            <rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
+          <g class="bp bp-neck">
+            <path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/></g>
+          <g class="bp bp-ear-l"><circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+            <circle cx="52" cy="76" r="6" fill="#bfe3df"/></g>
+          <g class="bp bp-ear-r"><circle cx="148" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+            <circle cx="148" cy="76" r="6" fill="#bfe3df"/></g>
+          <g class="bp bp-kop">
             <path d="M72,46 Q52,48 52,76 Q52,108 72,122 Q100,134 128,122 Q148,108 148,76 Q148,48 128,46 Q100,40 72,46 Z" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
             <path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="#3a9d94" stroke="#2b8077" stroke-width="1.5"/>
             <line x1="90" y1="78" x2="90" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
             <line x1="110" y1="78" x2="110" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>
-            <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/>
-          </svg>
-        </div>
-        <p class="geboorte-sub">Alle meters staan op nul. Geef Botty een goede start!</p>
-        <button class="sluit" id="start-knop">Begin het avontuur!</button>
+            <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>
+        </svg>
       </div>
+      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een goede start!</p>
+      <button class="sluit start-ai" id="start-ai">🔧 START AI</button>
+      <button class="sluit" id="start-knop" style="display:none">Begin het avontuur!</button>
     </div>
   </div>
 
@@ -378,7 +385,7 @@
 (function(){
   "use strict";
 
-  var KEY = "botty-tamagotchi-v2";
+  var KEY = "botty-tamagotchi-v3";
   var DAG = 86400000;
   var nu = function(){ return Date.now(); };
 
@@ -398,12 +405,15 @@
 
   function standaard(){
     return { geboren:false, geboortetijd:0, generatie:1,
-             data:0, fit:0, geluk:0, wijs:0, t:nu(), laatsteDilemma:nu() };
+             data:0, fit:0, geluk:0, wijs:0, energie:0, t:nu(), laatsteDilemma:nu() };
   }
   function laad(){
     try{
       var s = JSON.parse(leesRuw(KEY));
-      if(s && typeof s.data === "number") return s;
+      if(s && typeof s.data === "number"){
+        if(typeof s.energie !== "number") s.energie = 0;
+        return s;
+      }
     }catch(e){}
     return standaard();
   }
@@ -418,7 +428,8 @@
     if(dt <= 0){ state.t = nu(); return; }
     state.data = klem(state.data - dt*0.06);
     state.fit  = klem(state.fit  - dt*0.045);
-    var doel = (state.data + state.fit)/2;
+    state.energie = klem(state.energie - dt*0.09);   // ~5,4 / min — loopt automatisch terug
+    var doel = (state.data + state.fit + state.energie)/3;
     state.geluk = klem(state.geluk + (doel - state.geluk) * Math.min(1, dt*0.01));
     state.t = nu();
   }
@@ -439,10 +450,12 @@
   }
 
   function render(){
+    el("bar-energie").style.width = state.energie + "%";
     el("bar-data").style.width = state.data + "%";
     el("bar-fit").style.width  = state.fit + "%";
     el("bar-geluk").style.width= state.geluk + "%";
     el("bar-wijs").style.width = Math.min(100, state.wijs*10) + "%";
+    el("t-energie").textContent = Math.round(state.energie) + "%";
     el("t-data").textContent = Math.round(state.data) + "%";
     el("t-fit").textContent  = Math.round(state.fit) + "%";
     el("t-geluk").textContent= Math.round(state.geluk) + "%";
@@ -464,7 +477,7 @@
   function stemming(){
     if(huidigeAnim) return;
     if(!state.geboren) return;
-    var gem = (state.data + state.fit + state.geluk)/3;
+    var gem = (state.data + state.fit + state.geluk + state.energie)/4;
     botty.classList.remove("sip");
     if(gem < 35){ botty.classList.add("sip"); zetMond("sip"); }
     else if(gem > 75){ zetMond("blij"); }
@@ -556,11 +569,13 @@
     speel("eet", 2800, "open");
     if(v.goed){
       state.data = klem(state.data + 14);
+      state.energie = klem(state.energie + 11);
       state.geluk = klem(state.geluk + 5);
       floater("+data", "#2f8f86");
       zeg("Mmm, duurzame data! 😋", 2600);
     }else{
       state.data = klem(state.data - 6);
+      state.energie = klem(state.energie - 6);
       state.geluk = klem(state.geluk - 12);
       floater("⚠ vervuild", "#c8472f");
       zeg("Bah! Deze data is vervuild… 🤢", 2800);
@@ -575,6 +590,7 @@
   el("btn-beweeg").addEventListener("click", function(){
     speel("beweeg", 3000, "blij");
     state.fit = klem(state.fit + 16);
+    state.energie = klem(state.energie + 12);
     state.geluk = klem(state.geluk + 6);
     state.data = klem(state.data - 3);
     floater("+fit", "#57b85f");
@@ -631,6 +647,7 @@
   function kiesDilemma(k){
     stopAnim();
     state.wijs += k.w;
+    state.energie = klem(state.energie + 9); // meedenken voedt Botty ook
     if(k.w >= 3){ state.geluk = klem(state.geluk + 8); speel("blij", 2000, "blij"); floater("+wijsheid","#7b5bc4"); }
     else if(k.w === 0){ state.geluk = klem(state.geluk - 4); speel("sip", 1600, "sip"); }
     el("dilemma-keuzes").style.display = "none";
@@ -688,26 +705,31 @@
     window.addEventListener("resize", size);
   }
 
-  var gehatcht = false;
-  function hatch(){
-    if(gehatcht) return;
-    gehatcht = true;
-    el("ei").classList.add("kraak");
-    confetti(2800);
+  var bezigBouwen = false;
+  el("start-ai").addEventListener("click", function(){
+    if(bezigBouwen) return;
+    bezigBouwen = true;
+    el("start-ai").disabled = true;
+    el("geb-titel").textContent = "AI wordt geïnitialiseerd…";
+    el("bouw-botty").classList.add("gebouwd");   // onderdelen klikken samen
     setTimeout(function(){
-      el("ei-fase").style.display = "none";
+      confetti(2800);
+      el("geb-titel").textContent = "🎉 Botty is in elkaar gezet! 🎉";
+      el("geb-titel").classList.add("groot");
       el("geboorte-gen").textContent = "Generatie " + state.generatie;
-      el("hatch-fase").style.display = "block";
-    }, 600);
-  }
-  el("ei").addEventListener("click", hatch);
+      el("geboorte-gen").style.display = "";
+      el("geb-sub").style.display = "";
+      el("start-ai").style.display = "none";
+      el("start-knop").style.display = "";
+    }, 1500);
+  });
 
   el("start-knop").addEventListener("click", function(){
     state.geboren = true;
     state.geboortetijd = nu();
     state.t = nu();
     state.laatsteDilemma = nu();
-    state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0;
+    state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0;
     bewaar();
     el("overlay-geboorte").classList.remove("open");
     render();
@@ -721,7 +743,8 @@
     render();
     bewaar();
     if(!huidigeAnim && !modalOpen()){
-      if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
+      if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
+      else if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
       else if(state.fit < 25 && Math.random() < 0.25){ zeg("Ik wil graag bewegen! 🤸", 2600); }
     }
   }, 3000);
