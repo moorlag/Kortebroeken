@@ -161,9 +161,15 @@
   .k-dilemma{background:var(--rood);}
 
   /* ---- AI-verzorger ---- */
-  .ai-knop{font-size:13px!important;font-weight:900!important;transition:background .2s,color .2s,border-color .2s;}
-  .ai-knop.aan{animation:ai-kleur 2s linear infinite;border-color:transparent!important;color:#fff!important;}
-  @keyframes ai-kleur{0%{background:#5ec6ff;}33%{background:#57b85f;}66%{background:#f6a623;}100%{background:#5ec6ff;}}
+  .ai-knop{font-size:14px!important;line-height:1;transition:transform .12s, box-shadow .2s, border-color .2s;}
+  .ai-knop.aan{
+    border-color:transparent!important;color:#fff!important;
+    background:linear-gradient(90deg,#5ec6ff,#57b85f,#f6a623,#e0556b,#7b5bc4,#5ec6ff);
+    background-size:300% 100%;
+    animation:ai-vloei 4s linear infinite, ai-puls 1.9s ease-in-out infinite;
+    box-shadow:0 0 0 2px rgba(94,198,255,.35);}
+  @keyframes ai-vloei{from{background-position:0% 50%;}to{background-position:300% 50%;}}
+  @keyframes ai-puls{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
   .botty-wrap.ai-zorg svg{animation:ai-gloed 1.9s ease-in-out infinite;}
   @keyframes ai-gloed{0%,100%{filter:drop-shadow(0 0 3px #5ec6ff);}50%{filter:drop-shadow(0 0 9px #5ec6ff);}}
   .ai-druk{animation:ai-druk .7s ease;}
@@ -374,7 +380,8 @@
 
   @media (prefers-reduced-motion: reduce){
     .botty-wrap{animation:none!important;transform:translateX(-50%)!important;}
-    #antenne,.wolk,.ster,.vogel,.botty-wrap.ai-zorg svg{animation:none!important;}
+    #antenne,.wolk,.ster,.vogel,.botty-wrap.ai-zorg svg,.ai-knop.aan{animation:none!important;}
+    .ai-knop.aan{background:#2f9fe0!important;transform:none!important;}
     .scene,.hemellichaam,.boom-schaduw{transition:none!important;}
   }
 </style>
