@@ -58,6 +58,7 @@
   .b-geluk> span{background:linear-gradient(90deg,#ffce54,#f6a623);}
   .b-wijs > span{background:linear-gradient(90deg,#a98be0,#7b5bc4);}
   .b-energie>span{background:linear-gradient(90deg,#5ec6ff,#2f9fe0);}
+  .b-band>span{background:linear-gradient(90deg,#ff9cb6,#e0556b);}
   .stat-vol{font-size:12px;font-weight:700;margin-bottom:.6rem;}
   .stat-vol .rij{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
   .stat-vol .balk{height:13px;}
@@ -158,6 +159,17 @@
   .k-voer{background:var(--teal);}
   .k-beweeg{background:var(--broek);}
   .k-dilemma{background:var(--rood);}
+
+  /* ---- AI-verzorger ---- */
+  .ai-toggle{width:100%;margin-top:.6rem;font-family:inherit;font-weight:900;font-size:14px;cursor:pointer;
+    border:2px solid #2f9fe0;background:#eaf6ff;color:#1f6f9e;border-radius:16px;padding:.6rem;
+    touch-action:manipulation;transition:background .2s,color .2s;}
+  .ai-toggle.aan{background:linear-gradient(90deg,#5ec6ff,#2f9fe0);color:#fff;}
+  .ai-status{font-size:12px;font-weight:700;color:#2f9fe0;text-align:center;margin-top:.45rem;display:none;}
+  .botty-wrap.ai-zorg svg{animation:ai-gloed 1.9s ease-in-out infinite;}
+  @keyframes ai-gloed{0%,100%{filter:drop-shadow(0 0 3px #5ec6ff);}50%{filter:drop-shadow(0 0 9px #5ec6ff);}}
+  .ai-druk{animation:ai-druk .7s ease;}
+  @keyframes ai-druk{0%,100%{box-shadow:0 4px 0 rgba(0,0,0,.15);}50%{box-shadow:0 0 0 4px rgba(94,198,255,.9), 0 4px 0 rgba(0,0,0,.15);}}
 
   /* ---- Modals ---- */
   .overlay{position:fixed;inset:0;background:rgba(26,92,74,.45);display:none;
@@ -364,7 +376,7 @@
 
   @media (prefers-reduced-motion: reduce){
     .botty-wrap{animation:none!important;transform:translateX(-50%)!important;}
-    #antenne,.wolk,.ster,.vogel{animation:none!important;}
+    #antenne,.wolk,.ster,.vogel,.botty-wrap.ai-zorg svg{animation:none!important;}
     .scene,.hemellichaam,.boom-schaduw{transition:none!important;}
   }
 </style>
@@ -407,6 +419,11 @@
         <div class="rij"><span>🧠 Wijsheid</span><span id="t-wijs">0</span></div>
         <div class="balk b-wijs"><span id="bar-wijs" style="width:0%"></span></div>
       </div>
+    </div>
+
+    <div class="stat-vol">
+      <div class="rij"><span>❤️ Band met jou</span><span id="t-band">0%</span></div>
+      <div class="balk b-band"><span id="bar-band" style="width:0%"></span></div>
     </div>
 
     <div class="scene" id="scene">
@@ -483,6 +500,9 @@
       <button class="actie k-beweeg" id="btn-beweeg"><span class="ico">🤸</span>Bewegen</button>
       <button class="actie k-dilemma" id="btn-dilemma"><span class="ico">⚖️</span>Dilemma</button>
     </div>
+
+    <button class="ai-toggle" id="ai-toggle">🤖 AI-verzorger: uit</button>
+    <div class="ai-status" id="ai-status">🤖 De AI houdt alles in de gaten…</div>
   </div>
 
   <a class="terug" href="index.html">← terug naar de kortebroekenmeter</a>
@@ -626,7 +646,8 @@
     return { geboren:false, geboortetijd:0, generatie:1,
              data:0, fit:0, geluk:0, wijs:0, energie:0, t:nu(), laatsteDilemma:nu(),
              geluid:true, tutorialKlaar:false, naam:"Botty",
-             ziek:false, ziekSinds:0, leegSinds:0, stadium:"baby" };
+             ziek:false, ziekSinds:0, leegSinds:0, stadium:"baby",
+             aiVerzorger:false, band:0 };
   }
   function laad(){
     try{
@@ -640,6 +661,8 @@
         if(typeof s.leegSinds !== "number") s.leegSinds = 0;
         if(typeof s.stadium !== "string") s.stadium = "baby";
         if(typeof s.naam !== "string" || !s.naam) s.naam = "Botty";
+        if(typeof s.aiVerzorger !== "boolean") s.aiVerzorger = false;
+        if(typeof s.band !== "number") s.band = 0;
         return s;
       }
     }catch(e){}
@@ -662,6 +685,7 @@
     var doel = (state.data + state.fit + state.energie)/3;
     state.geluk = klem(state.geluk + (doel - state.geluk) * Math.min(1, dt*0.01));
     if(state.ziek) state.geluk = klem(state.geluk - dt*0.05);
+    state.band = klem(state.band - dt*0.004);   // band vervaagt langzaam; groeit door jóuw aandacht
     state.t = nu();
   }
 
@@ -686,6 +710,8 @@
     el("bar-fit").style.width  = state.fit + "%";
     el("bar-geluk").style.width= state.geluk + "%";
     el("bar-wijs").style.width = Math.min(100, state.wijs*10) + "%";
+    el("bar-band").style.width = state.band + "%";
+    el("t-band").textContent = Math.round(state.band) + "%";
     el("t-energie").textContent = Math.round(state.energie) + "%";
     el("t-data").textContent = Math.round(state.data) + "%";
     el("t-fit").textContent  = Math.round(state.fit) + "%";
@@ -847,6 +873,8 @@
     if(t-laatsteAai > 2500){
       laatsteAai=t;
       state.geluk=klem(state.geluk+3);
+      state.band=klem(state.band+4);   // jóuw aandacht versterkt de band
+      flitsBalk(".b-band");
       if(Math.random()<0.5) zeg(aaiZinnen[Math.floor(Math.random()*aaiZinnen.length)], 1800);
       bewaar(); render();
     }
@@ -1012,15 +1040,16 @@
       wrap.appendChild(d);
     });
   }
-  function eet(v){
+  function eet(v, doorAI){
     speel("eet", 2800, "open");
     sfx.eet();
     if(v.goed){
       state.data = klem(state.data + 14);
       state.energie = klem(state.energie + 11);
       state.geluk = klem(state.geluk + 5);
+      state.band = klem(state.band + (doorAI?0:1));
       floater("+data", "#2f8f86");
-      zeg("Mmm, duurzame data! 😋", 2600);
+      if(!doorAI) zeg("Mmm, duurzame data! 😋", 2600);
       setTimeout(sfx.goed, 200); sparkles(); flitsBalk(".b-data"); flitsBalk(".b-energie");
     }else{
       state.data = klem(state.data - 6);
@@ -1038,17 +1067,19 @@
 
   // ================= BEWEGEN =================
   var bewegingen = ["Jumping jacks! 🤸","Even surfen op de datagolf! 🏄","Dansje erbij! 💃","Stretchen en strekken! 🙆","Rondje rennen! 🏃"];
-  el("btn-beweeg").addEventListener("click", function(){
+  function beweegActie(doorAI){
     speel("beweeg", 3000, "blij");
     sfx.beweeg();
     state.fit = klem(state.fit + 16);
     state.energie = klem(state.energie + 12);
     state.geluk = klem(state.geluk + 6);
     state.data = klem(state.data - 3);
+    state.band = klem(state.band + (doorAI?0:1));
     floater("+fit", "#57b85f"); flitsBalk(".b-fit"); flitsBalk(".b-energie");
-    zeg(bewegingen[Math.floor(Math.random()*bewegingen.length)], 2800);
+    if(!doorAI) zeg(bewegingen[Math.floor(Math.random()*bewegingen.length)], 2800);
     bewaar(); render();
-  });
+  }
+  el("btn-beweeg").addEventListener("click", function(){ beweegActie(false); });
 
   // ================= DILEMMA'S =================
   var dilemmas = [
@@ -1101,6 +1132,7 @@
   function kiesDilemma(k){
     stopAnim();
     state.wijs += k.w;
+    state.band = klem(state.band + 1);          // samen nadenken versterkt de band
     state.energie = klem(state.energie + 9); // meedenken voedt Botty ook
     if(k.w >= 3){ state.geluk = klem(state.geluk + 8); speel("blij", 2000, "blij"); floater("+wijsheid","#7b5bc4"); flitsBalk(".b-wijs"); setTimeout(sfx.goed,150); }
     else if(k.w === 0){ state.geluk = klem(state.geluk - 4); speel("sip", 1600, "sip"); setTimeout(sfx.fout,150); }
@@ -1191,7 +1223,7 @@
     state.geboortetijd = nu();
     state.t = nu();
     state.laatsteDilemma = nu();
-    state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0;
+    state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0; state.band = 0;
     state.ziek = false; state.ziekSinds = 0; state.leegSinds = 0; state.stadium = "baby";
     el("ziek-balk").style.display = "none"; el("ziek-icoon").style.display = "none";
     botty.classList.remove("ziek-look");
@@ -1304,6 +1336,68 @@
     el("overlay-geboorte").classList.add("open");
   });
 
+  // ================= AI-VERZORGER (auto-piloot) =================
+  var aiTipGetoond = false;
+  function updateAiUI(){
+    el("ai-toggle").textContent = state.aiVerzorger ? "🤖 AI-verzorger: aan" : "🤖 AI-verzorger: uit";
+    el("ai-toggle").classList.toggle("aan", state.aiVerzorger);
+    el("ai-status").style.display = state.aiVerzorger ? "" : "none";
+    botty.classList.toggle("ai-zorg", state.aiVerzorger);
+  }
+  function aiZeg(t){ zeg(t, 2600); el("ai-status").textContent = t; }
+  function markeerKnop(id){ var b=el(id); if(!b) return; b.classList.add("ai-druk"); setTimeout(function(){ b.classList.remove("ai-druk"); }, 700); }
+
+  function aiVoer(){
+    markeerKnop("btn-voer");
+    var goeden = voedsel.filter(function(v){ return v.goed; });
+    eet(goeden[Math.floor(Math.random()*goeden.length)], true);
+    aiZeg("🤖 AI voert duurzame data");
+  }
+  function aiBeweeg(){ markeerKnop("btn-beweeg"); beweegActie(true); aiZeg("🤖 AI laat " + naam() + " bewegen"); }
+  function aiHerstel(){ markeerKnop("btn-herstel"); herstel(); aiZeg("🤖 AI verhelpt de bug"); }
+  function aiTroost(){
+    gezicht("verliefd", 1300, "blij");
+    if(!huidigeAnim) speel("wuif", 1600, "blij");
+    hartjes(); sfx.aai();
+    state.geluk = klem(state.geluk + 6);          // wel blij, maar géén band (dat is jóuw taak)
+    aiZeg("🤖 AI houdt " + naam() + " blij");
+    bewaar(); render();
+  }
+  function aiDilemma(){
+    var d = dilemmas[Math.floor(Math.random()*dilemmas.length)];
+    var beste = d.keuzes[0];
+    d.keuzes.forEach(function(k){ if(k.w > beste.w) beste = k; });
+    state.wijs += beste.w; state.geluk = klem(state.geluk + 8);
+    markeerKnop("btn-dilemma");
+    speel("blij", 1800, "blij"); flitsBalk(".b-wijs"); sfx.goed();
+    aiZeg("🤖 AI koos wijs bij een dilemma");
+    state.laatsteDilemma = nu(); bewaar(); render();
+  }
+  function aiStap(){
+    if(!state.aiVerzorger || !state.geboren || modalOpen() || huidigeAnim) return;
+    if(state.ziek){ aiHerstel(); return; }
+    var items=[["data",state.data],["energie",state.energie],["fit",state.fit],["geluk",state.geluk]];
+    items.sort(function(a,b){ return a[1]-b[1]; });
+    if(items[0][1] >= 80) return;                 // alles op orde → AI rust
+    var k = items[0][0];
+    if(k==="fit") aiBeweeg();
+    else if(k==="geluk") aiTroost();
+    else aiVoer();                                 // data of energie laagst → voeren
+  }
+  el("ai-toggle").addEventListener("click", function(){
+    sfx.klik();
+    state.aiVerzorger = !state.aiVerzorger; bewaar(); updateAiUI();
+    if(state.aiVerzorger){
+      zeg("De AI zorgt nu voor " + naam() + ". Jij houdt toezicht. 🤖", 3600);
+      el("ai-status").textContent = "🤖 De AI houdt alles in de gaten…";
+      if(!aiTipGetoond){ aiTipGetoond = true; setTimeout(function(){ toastMsg("Let op: jullie band groeit alleen door jóuw aandacht 💚"); }, 1200); }
+      setTimeout(aiStap, 900);
+    } else {
+      zeg("Je zorgt weer zelf voor " + naam() + "! 💚", 3000);
+    }
+  });
+  setInterval(aiStap, 4500);
+
   // ================= LUSSEN =================
   setInterval(function(){
     if(!state.geboren) return;
@@ -1327,6 +1421,7 @@
     if(!state.geboren || modalOpen()) return;
     if(nu() - state.laatsteDilemma > 75000){
       state.laatsteDilemma = nu(); bewaar();
+      if(state.aiVerzorger){ aiDilemma(); return; }      // AI beslist zelf (wijs)
       zeg("Ik heb een dilemma voor je… ⚖️", 2500);
       setTimeout(function(){ if(!modalOpen()) toonDilemma(); }, 2600);
     }
@@ -1353,6 +1448,7 @@
   if(state.geboren) checkLeven();   // tijd verstreken sinds laatste bezoek?
   render();
   updateMuteIcon();
+  updateAiUI();
   updateLucht();
   planVolgendUur();
   planVogels();
