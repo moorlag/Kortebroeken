@@ -152,11 +152,20 @@
   button{-webkit-tap-highlight-color:transparent;}
   :focus-visible{outline:3px solid #1a5c4a;outline-offset:2px;border-radius:4px;}   /* zichtbare focus voor toetsenbord */
   button.actie{font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;
+    position:relative;
     border:none;border-radius:16px;padding:.7rem .3rem;color:#fff;
     display:flex;flex-direction:column;align-items:center;gap:.2rem;
     touch-action:manipulation;user-select:none;
     box-shadow:0 4px 0 rgba(0,0,0,.15);transition:transform .08s, box-shadow .08s, filter .2s;}
   button.actie .ico{font-size:22px;line-height:1;}
+  /* Sneltoets-hint rechtsboven op de actieknoppen (1/2/3) */
+  .toets-hint{position:absolute;top:4px;right:6px;font-size:10px;font-weight:900;line-height:14px;
+    min-width:14px;text-align:center;padding:0 3px;border-radius:5px;background:rgba(255,255,255,.28);}
+  /* Klein toetsnummer rechtsonderin op voer-kaarten en dilemma-keuzes */
+  .toets-nr{position:absolute;bottom:5px;right:7px;font-size:10px;font-weight:900;color:#2f8f86;opacity:.8;}
+  /* Toets-aanduiding op de herstelknop */
+  .toets-kbd{font-family:inherit;font-size:10px;font-weight:900;background:rgba(255,255,255,.3);
+    border-radius:5px;padding:0 4px;margin-left:2px;}
   button.actie:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15);}
   button.actie:disabled{filter:grayscale(.5) opacity(.6);cursor:default;}
   .k-voer{background:var(--teal);}
@@ -211,7 +220,8 @@
   .modal .vraag{font-size:15px;color:var(--groen);margin-bottom:.9rem;line-height:1.35;font-weight:700;}
   .keuzes{display:flex;flex-direction:column;gap:.5rem;}
   .keuze{font-family:inherit;text-align:left;font-size:14px;font-weight:700;color:var(--groen);
-    background:#f1f7f4;border:2px solid #d7e8e0;border-radius:14px;padding:.6rem .8rem;cursor:pointer;
+    position:relative;
+    background:#f1f7f4;border:2px solid #d7e8e0;border-radius:14px;padding:.6rem 1.8rem .6rem .8rem;cursor:pointer;
     transition:background .15s,border-color .15s,transform .08s;}
   .keuze:hover{background:#e3f1ea;border-color:var(--teal);}
   .keuze:active{transform:scale(.98);}
@@ -220,7 +230,7 @@
     letter-spacing:.05em;padding:.15rem .5rem;border-radius:8px;color:#fff;margin-bottom:.4rem;}
 
   .kaarten{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.4rem;}
-  .voerkaart{font-family:inherit;width:100%;display:block;border:2px solid #d7e8e0;border-radius:14px;padding:.6rem;cursor:pointer;
+  .voerkaart{font-family:inherit;width:100%;display:block;position:relative;border:2px solid #d7e8e0;border-radius:14px;padding:.6rem;cursor:pointer;
     background:#f8fcfa;text-align:center;transition:transform .1s,border-color .15s,opacity .3s;}
   .voerkaart:focus-visible{outline:3px solid var(--teal);outline-offset:2px;}
   .voerkaart:hover{transform:translateY(-3px);border-color:var(--teal);}
@@ -553,13 +563,13 @@
 
     <div class="ziek-balk" id="ziek-balk" style="display:none">
       <span id="ziek-tekst">🤒 Botty heeft een bug!</span>
-      <button id="btn-herstel">💊 Herstel</button>
+      <button id="btn-herstel">💊 Herstel <kbd class="toets-kbd">4</kbd></button>
     </div>
 
     <div class="knoppen">
-      <button class="actie k-voer" id="btn-voer"><span class="ico">🍃</span>Voeren</button>
-      <button class="actie k-beweeg" id="btn-beweeg"><span class="ico">🤸</span>Bewegen</button>
-      <button class="actie k-dilemma" id="btn-dilemma"><span class="ico">⚖️</span>Dilemma</button>
+      <button class="actie k-voer" id="btn-voer"><span class="toets-hint" aria-hidden="true">1</span><span class="ico">🍃</span>Voeren</button>
+      <button class="actie k-beweeg" id="btn-beweeg"><span class="toets-hint" aria-hidden="true">2</span><span class="ico">🤸</span>Bewegen</button>
+      <button class="actie k-dilemma" id="btn-dilemma"><span class="toets-hint" aria-hidden="true">3</span><span class="ico">⚖️</span>Dilemma</button>
     </div>
 
   </main>
@@ -1137,12 +1147,14 @@
     var set = shuffle(goed.concat(slecht));
     var wrap = el("kaarten");
     wrap.innerHTML = "";
-    set.forEach(function(v){
+    set.forEach(function(v, i){
+      var nr = i + 1;                                  // toetsnummer 1..4
       var d = document.createElement("button");        // echte knop → toetsenbord-/schermlezer-toegankelijk
       d.type = "button";
       d.className = "voerkaart";
-      d.setAttribute("aria-label", v.nm);
-      d.innerHTML = '<span class="em">'+v.em+'</span><span class="nm">'+v.nm+'</span>';
+      d.setAttribute("aria-label", v.nm + " (toets " + nr + ")");
+      d.setAttribute("data-toets", nr);
+      d.innerHTML = '<span class="em">'+v.em+'</span><span class="nm">'+v.nm+'</span><span class="toets-nr" aria-hidden="true">'+nr+'</span>';
       d.addEventListener("click", function(){
         if(d.classList.contains("weg")) return;
         d.classList.add("weg");
@@ -1236,10 +1248,15 @@
     sfx.denk();
     gezicht("verrast", 1100);
     speel("denk", 999999, "neutraal");
-    actiefDilemma.keuzes.forEach(function(k){
+    actiefDilemma.keuzes.forEach(function(k, i){
+      var nr = i + 1;                                  // toetsnummer 1..3
       var b = document.createElement("button");
       b.className = "keuze";
+      b.setAttribute("aria-label", k.t + " (toets " + nr + ")");
       b.textContent = k.t;
+      var badge = document.createElement("span");      // klein nummer rechtsonderin (na textContent toevoegen)
+      badge.className = "toets-nr"; badge.setAttribute("aria-hidden", "true"); badge.textContent = nr;
+      b.appendChild(badge);
       b.addEventListener("click", function(){ kiesDilemma(k); });
       wrap.appendChild(b);
     });
@@ -1719,6 +1736,36 @@
       if(e.shiftKey && document.activeElement === eerste){ e.preventDefault(); laatste.focus(); }
       else if(!e.shiftKey && document.activeElement === laatste){ e.preventDefault(); eerste.focus(); }
     }
+  });
+
+  // ================= SNELTOETSEN 1–4 =================
+  // Context-afhankelijk: staat de voer- of dilemma-modal open, dan kiezen 1–4 de genummerde optie.
+  // Anders (geen modal open): 1=voeren, 2=bewegen, 3=dilemma, 4=bug verhelpen.
+  document.addEventListener("keydown", function(e){
+    if(e.ctrlKey || e.metaKey || e.altKey) return;
+    var tag = (e.target && e.target.tagName) || "";
+    if(tag === "INPUT" || tag === "TEXTAREA") return;           // niet tijdens typen (bv. de naam)
+    var n = e.key;
+    if(n !== "1" && n !== "2" && n !== "3" && n !== "4") return;
+    var voer = el("overlay-voer"), dil = el("overlay-dilemma");
+    if(voer.classList.contains("open")){                        // voer-modal: kies de kaart met dat nummer
+      var kaart = voer.querySelector('.voerkaart[data-toets="' + n + '"]');
+      if(kaart && !kaart.classList.contains("weg")){ e.preventDefault(); kaart.click(); }
+      return;
+    }
+    if(dil.classList.contains("open")){                         // dilemma-modal: kies het antwoord (alleen tijdens de vraag)
+      if(el("dilemma-keuzes").style.display !== "none"){
+        var keuze = dil.querySelectorAll(".keuze")[(+n) - 1];
+        if(keuze){ e.preventDefault(); keuze.click(); }
+      }
+      return;
+    }
+    if(modalOpen() || !state.geboren) return;                   // andere modals open of nog niet geboren → niets
+    e.preventDefault();
+    if(n === "1") el("btn-voer").click();
+    else if(n === "2") el("btn-beweeg").click();
+    else if(n === "3") el("btn-dilemma").click();
+    else if(n === "4" && state.ziek) el("btn-herstel").click(); // alleen zinvol als er een bug is
   });
 
   // ---------- Start ----------
