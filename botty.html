@@ -58,6 +58,7 @@
   .b-geluk> span{background:linear-gradient(90deg,#ffce54,#f6a623);}
   .b-wijs > span{background:linear-gradient(90deg,#a98be0,#7b5bc4);}
   .b-energie>span{background:linear-gradient(90deg,#5ec6ff,#2f9fe0);}
+  .b-band>span{background:linear-gradient(90deg,#ff9cb6,#e0556b);}
   .stat-vol{font-size:12px;font-weight:700;margin-bottom:.6rem;}
   .stat-vol .rij{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
   .stat-vol .balk{height:13px;}
@@ -158,6 +159,42 @@
   .k-voer{background:var(--teal);}
   .k-beweeg{background:var(--broek);}
   .k-dilemma{background:var(--rood);}
+
+  /* ---- AI-assistent ---- */
+  .ai-knop{position:relative;font-size:14px!important;line-height:1;transition:transform .12s, box-shadow .2s, border-color .2s;}
+  .ai-badge{position:absolute;top:-5px;right:-4px;min-width:14px;height:14px;line-height:13px;padding:0 2px;
+    font-size:9px;font-weight:900;color:#fff;background:#1f6f9e;border:1.5px solid #fff;border-radius:8px;display:none;}
+  .ai-knop.aan .ai-badge{display:block;}
+  .ai-knop.aan{
+    border-color:transparent!important;color:#fff!important;
+    background:linear-gradient(90deg,#5ec6ff,#57b85f,#f6a623,#e0556b,#7b5bc4,#5ec6ff);
+    background-size:300% 100%;
+    animation:ai-vloei 4s linear infinite, ai-puls 1.9s ease-in-out infinite;
+    box-shadow:0 0 0 2px rgba(94,198,255,.35);}
+  @keyframes ai-vloei{from{background-position:0% 50%;}to{background-position:300% 50%;}}
+  @keyframes ai-puls{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+  .botty-wrap.ai-zorg svg{animation:ai-gloed 1.9s ease-in-out infinite;}
+  @keyframes ai-gloed{0%,100%{filter:drop-shadow(0 0 3px #5ec6ff);}50%{filter:drop-shadow(0 0 9px #5ec6ff);}}
+  .ai-druk{animation:ai-druk .7s ease;}
+  @keyframes ai-druk{0%,100%{box-shadow:0 4px 0 rgba(0,0,0,.15);}50%{box-shadow:0 0 0 4px rgba(94,198,255,.9), 0 4px 0 rgba(0,0,0,.15);}}
+
+  /* ---- AI-niveau-paneel (schuif) ---- */
+  .ai-slider-wrap{margin:.4rem 0 .2rem;}
+  #ai-slider{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;outline:none;
+    background:linear-gradient(90deg,#57b85f,#5ec6ff,#7b5bc4);}
+  #ai-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;
+    background:#fff;border:3px solid #2f9fe0;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);}
+  #ai-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #2f9fe0;cursor:pointer;}
+  .ai-slider-ticks{display:flex;justify-content:space-between;margin-top:.4rem;}
+  .ai-slider-ticks span{font-size:10px;font-weight:900;color:#9bbab0;flex:1;text-align:center;transition:color .15s;}
+  .ai-slider-ticks span:first-child{text-align:left;}
+  .ai-slider-ticks span:last-child{text-align:right;}
+  .ai-slider-ticks span.actief{color:#2f9fe0;}
+  .ai-niv-info{background:#eaf6ff;border:2px solid #cde6f5;border-radius:14px;padding:.7rem .8rem;margin-top:.7rem;}
+  .ai-niv-tag2{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#2f9fe0;}
+  .ai-niv-titel{font-size:15px;font-weight:900;color:var(--groen);margin-bottom:.2rem;}
+  .ai-niv-uitleg2{font-size:13px;font-weight:700;color:#41685c;line-height:1.35;}
+  .ai-niv-band{font-size:12px;font-weight:900;color:#7b5bc4;margin-top:.45rem;}
 
   /* ---- Modals ---- */
   .overlay{position:fixed;inset:0;background:rgba(26,92,74,.45);display:none;
@@ -302,6 +339,21 @@
   .botty-wrap.slaap #ogen-slaap{display:block!important;}
   .botty-wrap.verrast #ogen-verrast{display:block!important;}
 
+  /* ---- Gezondheids- & leeftijdslook (volgt de verzorging) ---- */
+  /* Baby: korte, dikke antenne; kind: iets minder kort. Alle starts zien er als baby uit. */
+  .botty-wrap.baby-look #antenne{animation:wieber-baby 3.4s ease-in-out infinite;}
+  @keyframes wieber-baby{0%,100%{transform:scale(.6) rotate(-5deg);}50%{transform:scale(.6) rotate(5deg);}}
+  .botty-wrap.kind-look #antenne{animation:wieber-kind 3.4s ease-in-out infinite;}
+  @keyframes wieber-kind{0%,100%{transform:scale(.8) rotate(-5deg);}50%{transform:scale(.8) rotate(5deg);}}
+  /* Vitaal (gem. welzijn > 65): felle kleuren, zichtbare spierballetjes en een sprankel-antenne. */
+  .botty-wrap.vitaal svg{filter:saturate(1.3) brightness(1.06);}
+  .botty-wrap.vitaal #spier-l,.botty-wrap.vitaal #spier-r,.botty-wrap.vitaal #antenne-ster{display:block!important;}
+  /* Verwaarloosd (gem. welzijn < 35): roestfilter, roestvlekken, bocheltje en slappe antenne.
+     Staat ná baby/kind zodat de droop-antenne wint als beide klassen actief zijn. */
+  .botty-wrap.verwaarloosd svg{filter:saturate(.4) sepia(.4) brightness(.92);transform:scale(var(--groei,1)) rotate(2deg);}
+  .botty-wrap.verwaarloosd #roest,.botty-wrap.verwaarloosd #bochel{display:block!important;}
+  .botty-wrap.verwaarloosd #antenne{animation:none;transform:rotate(24deg);}
+
   /* ---- Bediening (help/delen/geluid) ---- */
   .leef-rechts{display:flex;align-items:center;gap:.4rem;}
   .icoon-knop{font-family:inherit;font-size:14px;line-height:1;cursor:pointer;border:1.5px solid #d2e7dd;
@@ -316,6 +368,7 @@
 
   /* ---- Tutorial ---- */
   .tut-emoji{font-size:42px;display:block;text-align:center;margin:.2rem 0 .5rem;}
+  #tut-tekst{white-space:pre-line;}   /* laat regelafbrekingen (\n) zien, bv. de niveau-ladder */
   .tut-stippen{text-align:center;margin-top:.3rem;}
   .tut-stip{display:inline-block;width:8px;height:8px;border-radius:50%;background:#cfe2da;margin:0 3px;}
   .tut-stip.actief{background:var(--teal);}
@@ -364,7 +417,8 @@
 
   @media (prefers-reduced-motion: reduce){
     .botty-wrap{animation:none!important;transform:translateX(-50%)!important;}
-    #antenne,.wolk,.ster,.vogel{animation:none!important;}
+    #antenne,.wolk,.ster,.vogel,.botty-wrap.ai-zorg svg,.ai-knop.aan{animation:none!important;}
+    .ai-knop.aan{background:#2f9fe0!important;transform:none!important;}
     .scene,.hemellichaam,.boom-schaduw{transition:none!important;}
   }
 </style>
@@ -382,6 +436,7 @@
         <button class="icoon-knop" id="btn-help" aria-label="Uitleg" title="Uitleg">❔</button>
         <button class="icoon-knop" id="btn-share" aria-label="Deel Botty" title="Deel Botty">📤</button>
         <button class="icoon-knop" id="btn-mute" aria-label="Geluid aan of uit" title="Geluid aan/uit">🔊</button>
+        <button class="icoon-knop ai-knop" id="ai-toggle" aria-label="AI-assistent instellen" title="AI-assistent: uit">⚡<span class="ai-badge" id="ai-badge"></span></button>
       </span>
     </div>
 
@@ -409,6 +464,11 @@
       </div>
     </div>
 
+    <div class="stat-vol">
+      <div class="rij"><span>❤️ Band met jou</span><span id="t-band">0%</span></div>
+      <div class="balk b-band"><span id="bar-band" style="width:0%"></span></div>
+    </div>
+
     <div class="scene" id="scene">
       <div class="sterren" id="sterren"></div>
       <div class="hemellichaam zon" id="zon"></div>
@@ -430,19 +490,30 @@
           <g id="antenne">
             <path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
             <circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>
+            <path id="antenne-ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6" style="display:none"/>
           </g>
           <g id="been-l"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/>
             <ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="been-r"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/>
             <ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="arm-l"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse id="spier-l" cx="55" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(-43 55 166)" style="display:none"/>
             <circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="arm-r"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse id="spier-r" cx="145" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(43 145 166)" style="display:none"/>
             <circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <rect x="68" y="184" width="64" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/>
           <line x1="100" y1="200" x2="100" y2="214" stroke="#2e6b34" stroke-width="3"/>
+          <ellipse id="bochel" cx="72" cy="142" rx="17" ry="13" fill="#e2e4da" stroke="#2b2b2b" stroke-width="3" style="display:none"/>
           <rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
           <rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+          <g id="roest" style="display:none">
+            <ellipse cx="76" cy="162" rx="5" ry="4" fill="#9c6a2f" opacity=".85"/>
+            <ellipse cx="123" cy="156" rx="4" ry="5" fill="#7a4f22" opacity=".8"/>
+            <ellipse cx="79" cy="181" rx="4.5" ry="3.5" fill="#a9682f" opacity=".8"/>
+            <ellipse cx="119" cy="183" rx="4" ry="4" fill="#8a5320" opacity=".82"/>
+            <circle cx="100" cy="188" r="3" fill="#9c6a2f" opacity=".75"/>
+          </g>
           <path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>
           <g id="kop">
             <circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
@@ -483,6 +554,7 @@
       <button class="actie k-beweeg" id="btn-beweeg"><span class="ico">🤸</span>Bewegen</button>
       <button class="actie k-dilemma" id="btn-dilemma"><span class="ico">⚖️</span>Dilemma</button>
     </div>
+
   </div>
 
   <a class="terug" href="index.html">← terug naar de kortebroekenmeter</a>
@@ -550,7 +622,7 @@
             <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>
         </svg>
       </div>
-      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een naam en een goede start!</p>
+      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een naam en een goede start! Zorg je goed voor haar, dan groeit ze sterk en vrolijk op — verwaarloos je haar, dan krijgt ze roest en voelt ze zich niet lekker.</p>
       <input id="naam-input" class="naam-input" maxlength="14" placeholder="Geef je Botty een naam…" style="display:none" />
       <button class="sluit start-ai" id="start-ai">🔧 START AI</button>
       <button class="sluit" id="start-knop" style="display:none">Begin het avontuur!</button>
@@ -587,6 +659,28 @@
     </div>
   </div>
 
+  <!-- AI-assistent-modal (niveaus van automatisering) -->
+  <div class="overlay" id="overlay-ai">
+    <div class="modal">
+      <h2>🤖 AI-assistent</h2>
+      <p class="vraag">Hoeveel zorg geef je uit handen? Schuif van links (jij doet alles) naar rechts (AI doet alles).</p>
+      <div class="ai-slider-wrap">
+        <input type="range" id="ai-slider" min="0" max="4" step="1" value="0" aria-label="Automatiseringsniveau" />
+        <div class="ai-slider-ticks" id="ai-slider-ticks">
+          <span>Uit</span><span>Advies</span><span>Deels</span><span>Vangnet</span><span>Volledig</span>
+        </div>
+      </div>
+      <div class="ai-niv-info">
+        <div class="ai-niv-tag2" id="ai-niv-tag2"></div>
+        <div class="ai-niv-titel" id="ai-niv-titel"></div>
+        <div class="ai-niv-uitleg2" id="ai-niv-uitleg2"></div>
+        <div class="ai-niv-band" id="ai-niv-band"></div>
+      </div>
+      <p class="hint">Naar de niveaus van automatisering (Inge Molenaar). Lees meer via ❔ bovenin.</p>
+      <button class="sluit" id="sluit-ai">Klaar</button>
+    </div>
+  </div>
+
   <!-- Levenseinde-modal -->
   <div class="overlay" id="overlay-einde">
     <div class="einde-inhoud">
@@ -609,12 +703,14 @@
   var nu = function(){ return Date.now(); };
 
   // ---------- Opslag: localStorage met cookie-fallback ----------
+  // Schrijft naar zowel localStorage als een cookie (1 jaar geldig). Lukt het één niet
+  // (privémodus, geblokkeerde storage), dan vangt de ander het op. Lezen probeert ze in die volgorde.
   function schrijfRuw(k,v){
     try{ localStorage.setItem(k,v); }catch(e){}
     try{ document.cookie = k+"="+encodeURIComponent(v)+";max-age=31536000;path=/;SameSite=Lax"; }catch(e){}
   }
   function leesRuw(k){
-    try{ var v=localStorage.getItem(k); if(v!==null && v!==undefined) return v; }catch(e){}
+    try{ var v=localStorage.getItem(k); if(v!==null && v!==undefined) return v; }catch(e){}  // eerst localStorage
     try{
       var m=document.cookie.match(new RegExp("(?:^|; )"+k+"=([^;]*)"));
       if(m) return decodeURIComponent(m[1]);
@@ -626,12 +722,15 @@
     return { geboren:false, geboortetijd:0, generatie:1,
              data:0, fit:0, geluk:0, wijs:0, energie:0, t:nu(), laatsteDilemma:nu(),
              geluid:true, tutorialKlaar:false, naam:"Botty",
-             ziek:false, ziekSinds:0, leegSinds:0, stadium:"baby" };
+             ziek:false, ziekSinds:0, leegSinds:0, stadium:"baby",
+             aiNiveau:0, band:0 };
   }
+  // Laadt opgeslagen state. Oudere opslag mist mogelijk nieuwere velden, daarom vult
+  // elke regel hieronder een ontbrekend veld aan met een veilige standaardwaarde (migratie).
   function laad(){
     try{
       var s = JSON.parse(leesRuw(KEY));
-      if(s && typeof s.data === "number"){
+      if(s && typeof s.data === "number"){          // herken geldige state aan het verplichte 'data'-getal
         if(typeof s.energie !== "number") s.energie = 0;
         if(typeof s.geluid !== "boolean") s.geluid = true;
         if(typeof s.tutorialKlaar !== "boolean") s.tutorialKlaar = false;
@@ -640,29 +739,41 @@
         if(typeof s.leegSinds !== "number") s.leegSinds = 0;
         if(typeof s.stadium !== "string") s.stadium = "baby";
         if(typeof s.naam !== "string" || !s.naam) s.naam = "Botty";
+        // AI-niveau (0–3). Oude opslag kende alleen aiVerzorger (aan/uit) → uit=0, aan=3 (volledig).
+        if(typeof s.aiNiveau !== "number"){ s.aiNiveau = s.aiVerzorger ? 3 : 0; }
+        if(s.aiNiveau < 0 || s.aiNiveau > 3) s.aiNiveau = 0;
+        if(typeof s.band !== "number") s.band = 0;
         return s;
       }
     }catch(e){}
     return standaard();
   }
   var state = laad();
+  // state.t = tijdstempel van de laatste verval-berekening. Zolang Botty niet geboren is
+  // schuift 't mee met nu(), zodat er geen verval wordt "opgespaard" vóór de geboorte.
   function bewaar(){ state.t = state.geboren ? state.t : nu(); schrijfRuw(KEY, JSON.stringify(state)); }
-  function klem(v){ return Math.max(0, Math.min(100, v)); }
+  function klem(v){ return Math.max(0, Math.min(100, v)); }   // begrens elke meter op 0–100
   function naam(){ return (state.naam && state.naam.length) ? state.naam : "Botty"; }
 
   // ---------- Verval over tijd (catch-up bij reload) ----------
+  // Rekent het verval uit over de échte tijd die verstreken is sinds state.t.
+  // Zo "loopt" Botty ook door terwijl de pagina dicht was (catch-up bij reload).
   function verval(){
     if(!state.geboren){ return; }
-    var dt = (nu() - state.t)/1000;
-    if(dt <= 0){ state.t = nu(); return; }
-    var zf = state.ziek ? 1.8 : 1;                    // ziek → sneller verval
+    var dt = (nu() - state.t)/1000;                   // verstreken seconden sinds laatste meting
+    if(dt <= 0){ state.t = nu(); return; }            // klok terug-/stilgezet → niets doen
+    var zf = state.ziek ? 1.8 : 1;                    // ziek → 1,8× sneller verval
+    // Lineair verval per seconde (waarden gekozen op speeltempo van enkele minuten):
     state.data = klem(state.data - dt*0.06*zf);
     state.fit  = klem(state.fit  - dt*0.045*zf);
-    state.energie = klem(state.energie - dt*0.09*zf); // ~5,4 / min — loopt automatisch terug
+    state.energie = klem(state.energie - dt*0.09*zf); // ~5,4 / min — daalt het snelst
+    // Geluk volgt traag het gemiddelde van de drie verzorgmeters (voortschrijdend gemiddelde):
+    // is de verzorging goed dan stijgt geluk vanzelf, verwaarloos je Botty dan zakt het.
     var doel = (state.data + state.fit + state.energie)/3;
     state.geluk = klem(state.geluk + (doel - state.geluk) * Math.min(1, dt*0.01));
-    if(state.ziek) state.geluk = klem(state.geluk - dt*0.05);
-    state.t = nu();
+    if(state.ziek) state.geluk = klem(state.geluk - dt*0.05);  // ziek-zijn drukt het geluk extra
+    state.band = klem(state.band - dt*0.004);   // band vervaagt langzaam; groeit alleen door jóuw aandacht
+    state.t = nu();                             // tijdstempel bijwerken voor de volgende ronde
   }
 
   // ---------- DOM ----------
@@ -686,6 +797,8 @@
     el("bar-fit").style.width  = state.fit + "%";
     el("bar-geluk").style.width= state.geluk + "%";
     el("bar-wijs").style.width = Math.min(100, state.wijs*10) + "%";
+    el("bar-band").style.width = state.band + "%";
+    el("t-band").textContent = Math.round(state.band) + "%";
     el("t-energie").textContent = Math.round(state.energie) + "%";
     el("t-data").textContent = Math.round(state.data) + "%";
     el("t-fit").textContent  = Math.round(state.fit) + "%";
@@ -706,28 +819,35 @@
   };
   function zetMond(naam){ mond.setAttribute("d", monden[naam] || monden.neutraal); }
 
+  // Bepaalt de rust-uitdrukking aan de hand van het gemiddelde welzijn.
+  // Wordt overgeslagen tijdens een lopende animatie of speciale ogen (verliefd/slaap/verrast),
+  // zodat die niet worden overschreven.
   function stemming(){
     if(huidigeAnim) return;
     if(botty.classList.contains("verliefd") || botty.classList.contains("slaap") || botty.classList.contains("verrast")) return;
     if(!state.geboren) return;
-    var gem = (state.data + state.fit + state.geluk + state.energie)/4;
+    var gem = (state.data + state.fit + state.geluk + state.energie)/4;   // gemiddeld welzijn 0–100
     botty.classList.remove("sip");
-    if(state.ziek){ botty.classList.add("sip"); zetMond("sip"); return; }
-    if(gem < 35){ botty.classList.add("sip"); zetMond("sip"); }
-    else if(gem > 75){ zetMond("blij"); }
-    else { zetMond("neutraal"); }
+    if(state.ziek){ botty.classList.add("sip"); zetMond("sip"); return; }  // ziek gaat vóór alles → altijd sip
+    if(gem < 35){ botty.classList.add("sip"); zetMond("sip"); }            // < 35 = ongelukkig: hangende houding
+    else if(gem > 75){ zetMond("blij"); }                                 // > 75 = blij
+    else { zetMond("neutraal"); }                                         // 35–75 = neutraal
   }
 
   // ---------- Animaties ----------
+  // Er speelt steeds maar één animatie tegelijk: 'huidigeAnim' onthoudt welke,
+  // 'animTimer' ruimt 'm na 'ms' weer op. Een nieuwe animatie vervangt de oude.
   var huidigeAnim = null;
   var animTimer = null;
   function speel(klasse, ms, mondNaam){
-    if(animTimer){ clearTimeout(animTimer); }
-    if(huidigeAnim){ botty.classList.remove(huidigeAnim); }
+    if(animTimer){ clearTimeout(animTimer); }       // lopende opruim-timer annuleren
+    if(huidigeAnim){ botty.classList.remove(huidigeAnim); }  // vorige animatie direct stoppen
     huidigeAnim = klasse;
     botty.classList.remove("sip");
     botty.classList.add(klasse);
     if(mondNaam) zetMond(mondNaam);
+    // ms >= 100000 betekent "blijf staan tot stopAnim()" (bv. 'denk' wacht op een keuze);
+    // alleen kortere animaties worden automatisch teruggezet naar de rust-stemming.
     if(ms < 100000){
       animTimer = setTimeout(function(){
         botty.classList.remove(klasse);
@@ -847,6 +967,8 @@
     if(t-laatsteAai > 2500){
       laatsteAai=t;
       state.geluk=klem(state.geluk+3);
+      state.band=klem(state.band+4);   // jóuw aandacht versterkt de band
+      flitsBalk(".b-band");
       if(Math.random()<0.5) zeg(aaiZinnen[Math.floor(Math.random()*aaiZinnen.length)], 1800);
       bewaar(); render();
     }
@@ -928,10 +1050,12 @@
 
   // ================= TUTORIAL =================
   var tutStappen=[
+    {e:"🤖", t:"Zorg goed voor Botty", x:"Botty begint als klein robotje. Zorg je goed voor haar, dan wordt ze sterk en kleurrijk met kleine spierballetjes. Verwaarloos je haar, dan krijgt ze roest en een bocheltje, voelt ze zich niet lekker en heeft ze vaker last van bugs."},
     {e:"⚡", t:"Energie loopt terug", x:"Botty's energie daalt vanzelf. Blijf met haar bezig om haar fit en blij te houden!"},
     {e:"🍃", t:"Voeren", x:"Geef Botty duurzame, eerlijke data. Weiger vervuilde data zoals nepnieuws en bias."},
     {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook."},
     {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid."},
+    {e:"🤖", t:"AI-assistent (⚡)", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt, in 5 stappen naar de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Advies — AI tipt, jij handelt\n2 · Gedeeltelijk — AI voert & beweegt\n3 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n4 · Volledig — AI doet alles\n\nDe controle verschuift zo stap voor stap van mens naar AI. Hoe meer je uit handen geeft, hoe minder jullie band groeit."},
     {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan."}
   ];
   var tutI=0;
@@ -1012,24 +1136,27 @@
       wrap.appendChild(d);
     });
   }
-  function eet(v){
+  // Verwerkt één hapje data. 'doorAI' onderscheidt jouw zorg van de auto-piloot:
+  // alleen jíj bouwt band op (de AI niet), en de AI praat niet via de ballon.
+  function eet(v, doorAI){
     speel("eet", 2800, "open");
     sfx.eet();
-    if(v.goed){
+    if(v.goed){                                   // duurzame data → meters omhoog
       state.data = klem(state.data + 14);
       state.energie = klem(state.energie + 11);
       state.geluk = klem(state.geluk + 5);
+      state.band = klem(state.band + (doorAI?0:1));  // band alleen bij jóuw voeren
       floater("+data", "#2f8f86");
-      zeg("Mmm, duurzame data! 😋", 2600);
+      if(!doorAI) zeg("Mmm, duurzame data! 😋", 2600);
       setTimeout(sfx.goed, 200); sparkles(); flitsBalk(".b-data"); flitsBalk(".b-energie");
-    }else{
+    }else{                                        // vervuilde data → straf + kans op ziekte
       state.data = klem(state.data - 6);
       state.energie = klem(state.energie - 6);
-      state.geluk = klem(state.geluk - 12);
+      state.geluk = klem(state.geluk - 12);          // geluk krijgt de grootste klap
       floater("⚠ vervuild", "#c8472f");
       zeg("Bah! Deze data is vervuild… 🤢", 2800);
       setTimeout(sfx.fout, 200); schud();
-      if(Math.random() < 0.3) setTimeout(wordZiek, 900);  // vervuilde data kan ziek maken
+      if(Math.random() < 0.3) setTimeout(wordZiek, 900);  // 30% kans dat vervuilde data ziek maakt
     }
     bewaar(); render();
   }
@@ -1038,17 +1165,20 @@
 
   // ================= BEWEGEN =================
   var bewegingen = ["Jumping jacks! 🤸","Even surfen op de datagolf! 🏄","Dansje erbij! 💃","Stretchen en strekken! 🙆","Rondje rennen! 🏃"];
-  el("btn-beweeg").addEventListener("click", function(){
+  // Bewegen verhoogt fitheid/energie/geluk, maar kost een beetje data (denkkracht).
+  function beweegActie(doorAI){
     speel("beweeg", 3000, "blij");
     sfx.beweeg();
     state.fit = klem(state.fit + 16);
     state.energie = klem(state.energie + 12);
     state.geluk = klem(state.geluk + 6);
-    state.data = klem(state.data - 3);
+    state.data = klem(state.data - 3);              // lichte data-kost als tegenwicht
+    state.band = klem(state.band + (doorAI?0:1));   // band alleen bij jóuw zorg
     floater("+fit", "#57b85f"); flitsBalk(".b-fit"); flitsBalk(".b-energie");
-    zeg(bewegingen[Math.floor(Math.random()*bewegingen.length)], 2800);
+    if(!doorAI) zeg(bewegingen[Math.floor(Math.random()*bewegingen.length)], 2800);
     bewaar(); render();
-  });
+  }
+  el("btn-beweeg").addEventListener("click", function(){ beweegActie(false); });
 
   // ================= DILEMMA'S =================
   var dilemmas = [
@@ -1098,13 +1228,16 @@
     });
     el("overlay-dilemma").classList.add("open");
   }
+  // Verwerkt een dilemma-keuze. Elke keuze heeft een gewicht k.w (0=fout, 1=bijna, 3=wijs)
+  // dat de wijsheid bepaalt; de reactie/kleur hieronder volgt datzelfde gewicht.
   function kiesDilemma(k){
     stopAnim();
-    state.wijs += k.w;
-    state.energie = klem(state.energie + 9); // meedenken voedt Botty ook
-    if(k.w >= 3){ state.geluk = klem(state.geluk + 8); speel("blij", 2000, "blij"); floater("+wijsheid","#7b5bc4"); flitsBalk(".b-wijs"); setTimeout(sfx.goed,150); }
-    else if(k.w === 0){ state.geluk = klem(state.geluk - 4); speel("sip", 1600, "sip"); setTimeout(sfx.fout,150); }
-    else { sfx.klik(); }
+    state.wijs += k.w;                          // wijsheid stijgt met het gewicht van de keuze
+    state.band = klem(state.band + 1);          // samen nadenken versterkt de band
+    state.energie = klem(state.energie + 9);    // meedenken voedt Botty ook
+    if(k.w >= 3){ state.geluk = klem(state.geluk + 8); speel("blij", 2000, "blij"); floater("+wijsheid","#7b5bc4"); flitsBalk(".b-wijs"); setTimeout(sfx.goed,150); }       // wijze keuze → blij
+    else if(k.w === 0){ state.geluk = klem(state.geluk - 4); speel("sip", 1600, "sip"); setTimeout(sfx.fout,150); }  // foute keuze → teleurgesteld
+    else { sfx.klik(); }                        // tussenkeuze → neutraal
     el("dilemma-keuzes").style.display = "none";
     var na = el("dilemma-na");
     var kleur = k.w >= 3 ? "#2f9e58" : (k.w === 0 ? "#c8472f" : "#f6a623");
@@ -1191,29 +1324,57 @@
     state.geboortetijd = nu();
     state.t = nu();
     state.laatsteDilemma = nu();
-    state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0;
+    state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0; state.band = 0;
     state.ziek = false; state.ziekSinds = 0; state.leegSinds = 0; state.stadium = "baby";
     el("ziek-balk").style.display = "none"; el("ziek-icoon").style.display = "none";
-    botty.classList.remove("ziek-look");
+    botty.classList.remove("ziek-look","vitaal","verwaarloosd");
+    vorigeGezondheid = null;
     bewaar();
     el("overlay-geboorte").classList.remove("open");
     render();
     pasGroeiToe();
+    bepaalGezondheid();
     if(!state.tutorialKlaar){ setTimeout(startTut, 400); }
     setTimeout(function(){ zeg("Hoi, ik ben " + naam() + "! Geef me duurzame data 🍃", 4500); }, 500);
   });
 
   // ================= LEVENSCYCLUS =================
+  // Leeftijd in minuten bepaalt het groeistadium en de schaal (groei) van de tekening.
+  // Grenzen: < 30 min baby, < 4 uur kind, < 24 uur tiener, daarna volwassen.
   function stadium(){
-    var min = (nu() - state.geboortetijd)/60000;
+    var min = (nu() - state.geboortetijd)/60000;   // leeftijd in minuten
     if(min < 30)   return {key:"baby",      label:"baby 👶",  groei:0.66};
     if(min < 240)  return {key:"kind",      label:"kind",     groei:0.80};
     if(min < 1440) return {key:"tiener",    label:"tiener",   groei:0.92};
     return                {key:"volwassen", label:"volwassen",groei:1.0};
   }
   function pasGroeiToe(){
+    var st = stadium();
     var svg = document.querySelector("#botty svg");
-    if(svg) svg.style.setProperty("--groei", stadium().groei);
+    if(svg) svg.style.setProperty("--groei", st.groei);
+    botty.classList.toggle("baby-look", st.key === "baby");   // baby: korte antenne
+    botty.classList.toggle("kind-look", st.key === "kind");   // kind: iets minder kort
+  }
+
+  // ---------- Uiterlijk volgt de verzorging ----------
+  // Het gemiddelde welzijn bepaalt de look: > 65 = vitaal (spierballetjes, felle kleuren),
+  // < 35 = verwaarloosd (roest, bocheltje, slappe antenne). De eerste 45s na de geboorte
+  // blijft Botty neutraal, zodat een pasgeboren baby niet meteen roestig oogt. Springt ze
+  // omhoog naar 'vitaal', dan viert ze dat eenmalig met een blije animatie.
+  var vorigeGezondheid = null;
+  function bepaalGezondheid(){
+    if(!state.geboren){ botty.classList.remove("vitaal","verwaarloosd"); vorigeGezondheid = null; return; }
+    var gem = (state.data + state.fit + state.geluk + state.energie)/4;
+    var tier = gem > 65 ? "vitaal" : (gem < 35 ? "verwaarloosd" : "normaal");
+    if(tier === "verwaarloosd" && (nu() - state.geboortetijd) < 45000) tier = "normaal";  // geboorte-respijt
+    botty.classList.toggle("vitaal", tier === "vitaal");
+    botty.classList.toggle("verwaarloosd", tier === "verwaarloosd");
+    if(tier === "vitaal" && vorigeGezondheid && vorigeGezondheid !== "vitaal"){
+      if(!huidigeAnim && !modalOpen()){ speel("blij", 1600, "blij"); }
+      sparkles();
+      if(!modalOpen()) zeg("Kijk, ik word lekker sterk! 💪✨", 2600);
+    }
+    vorigeGezondheid = tier;
   }
   function updateStadium(){
     if(!state.geboren) return;
@@ -1266,17 +1427,23 @@
     el("overlay-einde").classList.add("open");
     sfx.einde();
   }
+  // Controleert de drie manieren waarop een generatie kan eindigen, plus het ziek worden.
+  // Draait in de hoofdlus elke 3s; een 'return' na gaDood() stopt de rest van de checks.
   function checkLeven(){
     if(!state.geboren) return;
-    // ouderdom (lange generatie)
+    // 1) Ouderdom: na 7 dagen overlijdt Botty vredig, ongeacht de meters.
     if(nu() - state.geboortetijd > 7*DAG){ gaDood("ouderdom"); return; }
-    // ziek door ernstige verwaarlozing
+    // 2) Ziek worden door ernstige verwaarlozing (energie+geluk óf data+fit nagenoeg leeg): 15% kans per check.
     if(!state.ziek && ((state.energie<=0 && state.geluk<=8) || (state.data<=0 && state.fit<=0))){
       if(Math.random() < 0.15) wordZiek();
     }
-    // ziek te lang onbehandeld → dood
+    // 2b) Verwaarloosd (laag gemiddeld welzijn) maakt Botty extra vatbaar voor bugs.
+    var gemL = (state.data + state.fit + state.geluk + state.energie)/4;
+    if(!state.ziek && gemL < 30 && Math.random() < 0.05) wordZiek();
+    // 3) Ziekte langer dan 90 min onbehandeld → overlijden.
     if(state.ziek && (nu() - state.ziekSinds > 90*60000)){ gaDood("ziekte"); return; }
-    // totale verwaarlozing te lang → dood
+    // 4) Álle meters op 0: start een timer (leegSinds); na 120 min onafgebroken leeg → overlijden.
+    //    Zodra ook maar één meter weer boven 0 komt, wordt de timer gereset.
     var leeg = (state.energie<=0 && state.data<=0 && state.fit<=0 && state.geluk<=0);
     if(leeg){
       if(!state.leegSinds) state.leegSinds = nu();
@@ -1304,31 +1471,170 @@
     el("overlay-geboorte").classList.add("open");
   });
 
+  // ================= AI-ASSISTENT (niveaus van automatisering, naar Molenaar) =================
+  // state.aiNiveau: 0=uit, 1=advies, 2=gedeeltelijk (routinezorg), 3=volledig (ook dilemma's).
+  // De controle verschuift per niveau van jou naar de AI; de band groeit alleen door jóuw aandacht,
+  // dus hoe hoger het niveau, hoe minder ruimte er is om de band te laten groeien.
+  var aiTipGetoond = false;
+  // De vijf niveaus van automatisering (naar Molenaar), van mens-stuurt naar AI-stuurt.
+  var aiNiveaus = [
+    {naam:"Uit",            tag:"jij doet alles",   uitleg:"Jij verzorgt " + "Botty" + " volledig zelf en let zelf op de meters.",                                  band:"groeit volledig 💚"},
+    {naam:"Advies",         tag:"AI helpt mee",     uitleg:"De AI kijkt mee, geeft tips en laat de juiste knop oplichten. Jij beslist en handelt zelf.",            band:"groeit volledig 💚"},
+    {naam:"Gedeeltelijk",   tag:"samen",            uitleg:"De AI doet het voeren en bewegen. Welzijn, bugs én dilemma's blijven aan jou.",                          band:"groeit nog goed 💚"},
+    {naam:"Voorwaardelijk", tag:"AI met vangnet",   uitleg:"De AI verzorgt en bewaakt Botty zelf, maar bij een dilemma vraagt ze jóu om te beslissen.",             band:"groeit beperkt 🧡"},
+    {naam:"Volledig",       tag:"AI doet alles",    uitleg:"De AI neemt alles over, ook de dilemma's. Jij kijkt toe. Alleen Botty aaien laat de band nog groeien.", band:"groeit niet meer 🤍"}
+  ];
+  function niveauNaam(n){ return aiNiveaus[n] ? aiNiveaus[n].naam.toLowerCase() : "uit"; }
+  // Vult het info-blok in het paneel voor het getoonde niveau (los van wat actief is, voor live preview bij slepen).
+  function toonNiveauInfo(n){
+    var info = aiNiveaus[n]; if(!info) return;
+    el("ai-niv-tag2").textContent = info.tag;
+    el("ai-niv-titel").textContent = n + " · " + info.naam;
+    el("ai-niv-uitleg2").textContent = info.uitleg.replace(/Botty/g, naam());
+    el("ai-niv-band").textContent = "Band: " + info.band;
+    var t = el("ai-slider-ticks").children;                    // de tick onder de actieve stand oplichten
+    for(var i=0;i<t.length;i++){ t[i].classList.toggle("actief", i === n); }
+  }
+  function updateAiUI(){
+    var btn = el("ai-toggle");
+    var actief = state.aiNiveau > 0;
+    btn.classList.toggle("aan", actief);
+    el("ai-badge").textContent = actief ? state.aiNiveau : "";
+    btn.title = "AI-assistent: " + niveauNaam(state.aiNiveau);
+    botty.classList.toggle("ai-zorg", state.aiNiveau >= 2);   // gloed alleen als de AI écht handelt
+    el("ai-slider").value = state.aiNiveau;                    // schuif gelijkzetten
+    toonNiveauInfo(state.aiNiveau);
+  }
+  function aiZeg(t){ zeg(t, 2600); }
+  function markeerKnop(id){ var b=el(id); if(!b) return; b.classList.add("ai-druk"); setTimeout(function(){ b.classList.remove("ai-druk"); }, 700); }
+
+  function aiVoer(){
+    markeerKnop("btn-voer");
+    var goeden = voedsel.filter(function(v){ return v.goed; });
+    eet(goeden[Math.floor(Math.random()*goeden.length)], true);
+    aiZeg("🤖 AI voert duurzame data");
+  }
+  function aiBeweeg(){ markeerKnop("btn-beweeg"); beweegActie(true); aiZeg("🤖 AI laat " + naam() + " bewegen"); }
+  function aiHerstel(){ markeerKnop("btn-herstel"); herstel(); aiZeg("🤖 AI verhelpt de bug"); }
+  function aiTroost(){
+    gezicht("verliefd", 1300, "blij");
+    if(!huidigeAnim) speel("wuif", 1600, "blij");
+    hartjes(); sfx.aai();
+    state.geluk = klem(state.geluk + 6);          // wel blij, maar géén band (dat is jóuw taak)
+    aiZeg("🤖 AI houdt " + naam() + " blij");
+    bewaar(); render();
+  }
+  function aiDilemma(){
+    var d = dilemmas[Math.floor(Math.random()*dilemmas.length)];
+    var beste = d.keuzes[0];
+    d.keuzes.forEach(function(k){ if(k.w > beste.w) beste = k; });
+    state.wijs += beste.w; state.geluk = klem(state.geluk + 8);
+    markeerKnop("btn-dilemma");
+    speel("blij", 1800, "blij"); flitsBalk(".b-wijs"); sfx.goed();
+    aiZeg("🤖 AI koos wijs bij een dilemma");
+    state.laatsteDilemma = nu(); bewaar(); render();
+  }
+  // Niveau 1 (advies): de AI handelt NIET zelf, maar wijst de beste actie aan met een tip
+  // en laat de bijbehorende knop oplichten. Hooguit één advies per ~11s, zodat het niet zeurt.
+  var laatsteAdvies = 0;
+  function aiAdvies(){
+    if(nu() - laatsteAdvies < 11000) return;
+    if(state.ziek){ laatsteAdvies = nu(); markeerKnop("btn-herstel"); zeg("💡 Tip: herstel de bug van " + naam() + ".", 3200); return; }
+    var items=[["data",state.data],["energie",state.energie],["fit",state.fit],["geluk",state.geluk]];
+    items.sort(function(a,b){ return a[1]-b[1]; });
+    if(items[0][1] >= 60) return;                  // niets dringends → geen advies
+    laatsteAdvies = nu();
+    var k = items[0][0];
+    if(k==="fit"){ markeerKnop("btn-beweeg"); zeg("💡 Tip: laat " + naam() + " bewegen voor haar fitheid.", 3200); }
+    else if(k==="geluk"){ zeg("💡 Tip: geef " + naam() + " aandacht — aai haar of doe iets leuks.", 3200); }
+    else { markeerKnop("btn-voer"); zeg("💡 Tip: voer " + naam() + " duurzame data.", 3200); }
+  }
+
+  // Eén stap van de assistent (loopt elke 4,5s). Het niveau bepaalt hoeveel de AI zélf doet:
+  //  1 = alleen adviseren · 2 = voeren+bewegen (fysieke upkeep) · 3+ = volledige routinezorg.
+  function aiStap(){
+    if(state.aiNiveau < 1 || !state.geboren || modalOpen() || huidigeAnim) return;  // niet ingrijpen tijdens modal/animatie
+    if(state.aiNiveau === 1){ aiAdvies(); return; }   // niveau 1: alleen adviseren, jij handelt
+    // Bugs verhelpen hoort bij de volledige routinezorg (niveau 3+); op niveau 2 blijft dat jouw taak.
+    if(state.ziek && state.aiNiveau >= 3){ aiHerstel(); return; }
+    if(state.aiNiveau === 2){
+      // Gedeeltelijk: alleen de fysieke meters (data/energie/fit) via voeren en bewegen; geluk laat de AI aan jou.
+      var fys=[["data",state.data],["energie",state.energie],["fit",state.fit]];
+      fys.sort(function(a,b){ return a[1]-b[1]; });
+      if(fys[0][1] >= 80) return;
+      if(fys[0][0]==="fit") aiBeweeg(); else aiVoer();
+      return;
+    }
+    // Niveau 3 of 4: volledige routinezorg incl. welzijn. Láágste meter eerst aanvullen.
+    var items=[["data",state.data],["energie",state.energie],["fit",state.fit],["geluk",state.geluk]];
+    items.sort(function(a,b){ return a[1]-b[1]; });
+    if(items[0][1] >= 80) return;                 // zelfs de laagste ≥ 80 → alles op orde, AI rust
+    var k = items[0][0];                          // naam van de laagste meter
+    if(k==="fit") aiBeweeg();                      // fit laagst → bewegen
+    else if(k==="geluk") aiTroost();               // geluk laagst → troosten
+    else aiVoer();                                 // data of energie laagst → voeren
+  }
+
+  // Zet het automatiseringsniveau en legt de gevolgen uit. Vanaf niveau 2 neemt de AI taken over
+  // (en bouwt zelf geen band op) → eenmalige waarschuwing dat de band aan jóu hangt.
+  function setNiveau(n){
+    if(n === state.aiNiveau) return;
+    state.aiNiveau = n; bewaar(); updateAiUI();
+    var berichten = [
+      "Je zorgt weer helemaal zelf voor " + naam() + "! 💚",
+      "De AI geeft je nu tips. Jij blijft beslissen en handelen. 💡",
+      "De AI doet het voeren en bewegen. Welzijn, bugs en dilemma's blijven aan jou. 🤖",
+      "De AI verzorgt " + naam() + " zelf, maar vraagt jóu bij dilemma's. 🤖",
+      "De AI verzorgt " + naam() + " volledig, ook de dilemma's. Jij houdt toezicht. 🤖"
+    ];
+    zeg(berichten[n], 3600);
+    if(n >= 2 && !aiTipGetoond){ aiTipGetoond = true; setTimeout(function(){ toastMsg("Let op: jullie band groeit alleen door jóuw aandacht 💚"); }, 1200); }
+    if(n >= 2) setTimeout(aiStap, 900);   // meteen een eerste verzorgstap, niet wachten op het interval
+  }
+  el("ai-toggle").addEventListener("click", function(){ sfx.klik(); updateAiUI(); el("overlay-ai").classList.add("open"); });
+  // Slepen toont live de uitleg (preview); loslaten/wijzigen zet het niveau echt.
+  el("ai-slider").addEventListener("input", function(){ toonNiveauInfo(+this.value); });
+  el("ai-slider").addEventListener("change", function(){ sfx.klik(); setNiveau(+this.value); });
+  el("sluit-ai").addEventListener("click", function(){ el("overlay-ai").classList.remove("open"); });
+  setInterval(aiStap, 4500);   // assistent doet elke 4,5s hooguit één stap (advies of actie)
+
   // ================= LUSSEN =================
+  // Hartslag (elke 3s): verval toepassen, leven controleren, groei + scherm bijwerken,
+  // opslaan, en af en toe een spontaan klaagzinnetje als een meter laag staat.
   setInterval(function(){
     if(!state.geboren) return;
     verval();
     checkLeven();
-    if(!state.geboren){ render(); return; }   // net overleden
+    if(!state.geboren){ render(); return; }   // net overleden in checkLeven() → alleen nog renderen
     updateStadium();
     render();
+    bepaalGezondheid();                        // look bijwerken op basis van het welzijn
     bewaar();
     if(state.ziek && Math.random() < 0.3 && !modalOpen()){ zeg("Ik voel me niet lekker… 🤒", 2800); }
+    // Hooguit één hint per ronde (else-if), alleen als er geen animatie/modal actief is.
+    // Een verwaarloosde Botty klaagt het eerst dat ze zich niet lekker voelt.
     if(!huidigeAnim && !modalOpen()){
-      if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
+      var gemH = (state.data + state.fit + state.geluk + state.energie)/4;
+      if(gemH < 35 && Math.random() < 0.3){ zeg(["Ik voel me niet zo lekker… 🥺","Ik piep en kraak een beetje… 🛠️","Volgens mij heb ik wat roest… 😟"][Math.floor(Math.random()*3)], 2800); }
+      else if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
       else if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
       else if(state.fit < 25 && Math.random() < 0.25){ zeg("Ik wil graag bewegen! 🤸", 2600); }
     }
   }, 3000);
 
-  setInterval(spontaneBeweging, 12000);
+  setInterval(spontaneBeweging, 12000);   // elke 12s een kans op een spontaan gebaartje
 
+  // Dilemma-lus: ten minste 75s na het vorige dilemma komt er een nieuw aanbod.
+  // Niveau 4 (volledig) → de AI beslist zelf. Niveau 3 (voorwaardelijk) → de AI vraagt jóu (vangnet).
+  // Niveau 0–2 → het dilemma is sowieso aan jou.
   setInterval(function(){
     if(!state.geboren || modalOpen()) return;
     if(nu() - state.laatsteDilemma > 75000){
       state.laatsteDilemma = nu(); bewaar();
-      zeg("Ik heb een dilemma voor je… ⚖️", 2500);
-      setTimeout(function(){ if(!modalOpen()) toonDilemma(); }, 2600);
+      if(state.aiNiveau >= 4){ aiDilemma(); return; }    // volledige automatisering → AI beslist (wijs)
+      var vangnet = (state.aiNiveau === 3);              // AI verzorgt zelf maar geeft het dilemma aan jou terug
+      zeg(vangnet ? "🤖 De AI twijfelt — jij beslist dit dilemma. ⚖️" : "Ik heb een dilemma voor je… ⚖️", 2800);
+      setTimeout(function(){ if(!modalOpen()) toonDilemma(); }, 2600);  // korte aankondiging, dan de modal
     }
   }, 15000);
 
@@ -1353,11 +1659,13 @@
   if(state.geboren) checkLeven();   // tijd verstreken sinds laatste bezoek?
   render();
   updateMuteIcon();
+  updateAiUI();
   updateLucht();
   planVolgendUur();
   planVogels();
   if(state.geboren){
     pasGroeiToe();
+    bepaalGezondheid();   // begin met de juiste look op basis van het opgeslagen welzijn
     if(state.ziek){ el("ziek-balk").style.display=""; el("ziek-icoon").style.display=""; botty.classList.add("ziek-look"); }
     if(!state.tutorialKlaar){ setTimeout(startTut, 500); }
     var welkom = afwezig > 300000
