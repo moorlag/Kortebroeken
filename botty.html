@@ -178,19 +178,23 @@
   .ai-druk{animation:ai-druk .7s ease;}
   @keyframes ai-druk{0%,100%{box-shadow:0 4px 0 rgba(0,0,0,.15);}50%{box-shadow:0 0 0 4px rgba(94,198,255,.9), 0 4px 0 rgba(0,0,0,.15);}}
 
-  /* ---- AI-niveau-paneel ---- */
-  .ai-niveaus{display:flex;flex-direction:column;gap:.5rem;margin-bottom:.4rem;}
-  .ai-niveau{font-family:inherit;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:.15rem;
-    background:#f1f7f4;border:2px solid #d7e8e0;border-radius:14px;padding:.55rem .75rem;
-    transition:background .15s,border-color .15s,transform .08s;}
-  .ai-niveau:hover{background:#e3f1ea;border-color:var(--teal);}
-  .ai-niveau:active{transform:scale(.99);}
-  .ai-niveau.actief{border-color:#2f9fe0;background:#eaf6ff;box-shadow:0 0 0 2px rgba(47,159,224,.25);}
-  .ai-niv-kop{display:flex;align-items:center;gap:.5rem;}
-  .ai-niv-kop b{font-size:14px;color:var(--groen);}
-  .ai-niv-tag{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#2f9fe0;}
-  .ai-niveau.actief .ai-niv-tag::after{content:" ✓";}
-  .ai-niv-uitleg{font-size:12.5px;font-weight:700;color:#5a7d72;line-height:1.3;}
+  /* ---- AI-niveau-paneel (schuif) ---- */
+  .ai-slider-wrap{margin:.4rem 0 .2rem;}
+  #ai-slider{width:100%;-webkit-appearance:none;appearance:none;height:8px;border-radius:6px;outline:none;
+    background:linear-gradient(90deg,#57b85f,#5ec6ff,#7b5bc4);}
+  #ai-slider::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:22px;height:22px;border-radius:50%;
+    background:#fff;border:3px solid #2f9fe0;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.25);}
+  #ai-slider::-moz-range-thumb{width:22px;height:22px;border-radius:50%;background:#fff;border:3px solid #2f9fe0;cursor:pointer;}
+  .ai-slider-ticks{display:flex;justify-content:space-between;margin-top:.4rem;}
+  .ai-slider-ticks span{font-size:10px;font-weight:900;color:#9bbab0;flex:1;text-align:center;transition:color .15s;}
+  .ai-slider-ticks span:first-child{text-align:left;}
+  .ai-slider-ticks span:last-child{text-align:right;}
+  .ai-slider-ticks span.actief{color:#2f9fe0;}
+  .ai-niv-info{background:#eaf6ff;border:2px solid #cde6f5;border-radius:14px;padding:.7rem .8rem;margin-top:.7rem;}
+  .ai-niv-tag2{font-size:11px;font-weight:900;text-transform:uppercase;letter-spacing:.03em;color:#2f9fe0;}
+  .ai-niv-titel{font-size:15px;font-weight:900;color:var(--groen);margin-bottom:.2rem;}
+  .ai-niv-uitleg2{font-size:13px;font-weight:700;color:#41685c;line-height:1.35;}
+  .ai-niv-band{font-size:12px;font-weight:900;color:#7b5bc4;margin-top:.45rem;}
 
   /* ---- Modals ---- */
   .overlay{position:fixed;inset:0;background:rgba(26,92,74,.45);display:none;
@@ -364,6 +368,7 @@
 
   /* ---- Tutorial ---- */
   .tut-emoji{font-size:42px;display:block;text-align:center;margin:.2rem 0 .5rem;}
+  #tut-tekst{white-space:pre-line;}   /* laat regelafbrekingen (\n) zien, bv. de niveau-ladder */
   .tut-stippen{text-align:center;margin-top:.3rem;}
   .tut-stip{display:inline-block;width:8px;height:8px;border-radius:50%;background:#cfe2da;margin:0 3px;}
   .tut-stip.actief{background:var(--teal);}
@@ -658,26 +663,20 @@
   <div class="overlay" id="overlay-ai">
     <div class="modal">
       <h2>🤖 AI-assistent</h2>
-      <p class="vraag">Hoeveel zorg geef je uit handen? Hoe meer de AI overneemt, hoe minder jullie band groeit.</p>
-      <div class="ai-niveaus" id="ai-niveaus">
-        <button class="ai-niveau" data-niveau="0">
-          <span class="ai-niv-kop"><b>Uit</b><span class="ai-niv-tag">jij doet alles</span></span>
-          <span class="ai-niv-uitleg">Jij verzorgt Botty volledig zelf. Jullie band groeit het sterkst.</span>
-        </button>
-        <button class="ai-niveau" data-niveau="1">
-          <span class="ai-niv-kop"><b>1 · Advies</b><span class="ai-niv-tag">AI helpt mee</span></span>
-          <span class="ai-niv-uitleg">De AI kijkt mee en geeft tips, maar jij beslist en handelt zelf. De band groeit gewoon door.</span>
-        </button>
-        <button class="ai-niveau" data-niveau="2">
-          <span class="ai-niv-kop"><b>2 · Gedeeltelijk</b><span class="ai-niv-tag">AI doet de routine</span></span>
-          <span class="ai-niv-uitleg">De AI voert, laat bewegen en verhelpt bugs. Dilemma's en aandacht blijven aan jou. De band groeit minder.</span>
-        </button>
-        <button class="ai-niveau" data-niveau="3">
-          <span class="ai-niv-kop"><b>3 · Volledig</b><span class="ai-niv-tag">AI doet alles</span></span>
-          <span class="ai-niv-uitleg">De AI neemt alles over, ook de dilemma's. Jij kijkt toe. De band groeit niet meer — alleen aaien telt nog.</span>
-        </button>
+      <p class="vraag">Hoeveel zorg geef je uit handen? Schuif van links (jij doet alles) naar rechts (AI doet alles).</p>
+      <div class="ai-slider-wrap">
+        <input type="range" id="ai-slider" min="0" max="4" step="1" value="0" aria-label="Automatiseringsniveau" />
+        <div class="ai-slider-ticks" id="ai-slider-ticks">
+          <span>Uit</span><span>Advies</span><span>Deels</span><span>Vangnet</span><span>Volledig</span>
+        </div>
       </div>
-      <p class="hint">Naar de niveaus van automatisering (Inge Molenaar): de controle verschuift stap voor stap van mens naar AI.</p>
+      <div class="ai-niv-info">
+        <div class="ai-niv-tag2" id="ai-niv-tag2"></div>
+        <div class="ai-niv-titel" id="ai-niv-titel"></div>
+        <div class="ai-niv-uitleg2" id="ai-niv-uitleg2"></div>
+        <div class="ai-niv-band" id="ai-niv-band"></div>
+      </div>
+      <p class="hint">Naar de niveaus van automatisering (Inge Molenaar). Lees meer via ❔ bovenin.</p>
       <button class="sluit" id="sluit-ai">Klaar</button>
     </div>
   </div>
@@ -1056,7 +1055,7 @@
     {e:"🍃", t:"Voeren", x:"Geef Botty duurzame, eerlijke data. Weiger vervuilde data zoals nepnieuws en bias."},
     {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook."},
     {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid."},
-    {e:"🤖", t:"AI-assistent (⚡)", x:"Met de ⚡-knop kies je hoeveel de AI overneemt: alleen advies, de routinezorg, of álles. Hoe meer je uit handen geeft, hoe minder jullie band groeit — een echte afweging, net als in het echt."},
+    {e:"🤖", t:"AI-assistent (⚡)", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt, in 5 stappen naar de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Advies — AI tipt, jij handelt\n2 · Gedeeltelijk — AI voert & beweegt\n3 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n4 · Volledig — AI doet alles\n\nDe controle verschuift zo stap voor stap van mens naar AI. Hoe meer je uit handen geeft, hoe minder jullie band groeit."},
     {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan."}
   ];
   var tutI=0;
@@ -1477,16 +1476,34 @@
   // De controle verschuift per niveau van jou naar de AI; de band groeit alleen door jóuw aandacht,
   // dus hoe hoger het niveau, hoe minder ruimte er is om de band te laten groeien.
   var aiTipGetoond = false;
-  var niveauNamen = ["uit","advies","gedeeltelijk","volledig"];
+  // De vijf niveaus van automatisering (naar Molenaar), van mens-stuurt naar AI-stuurt.
+  var aiNiveaus = [
+    {naam:"Uit",            tag:"jij doet alles",   uitleg:"Jij verzorgt " + "Botty" + " volledig zelf en let zelf op de meters.",                                  band:"groeit volledig 💚"},
+    {naam:"Advies",         tag:"AI helpt mee",     uitleg:"De AI kijkt mee, geeft tips en laat de juiste knop oplichten. Jij beslist en handelt zelf.",            band:"groeit volledig 💚"},
+    {naam:"Gedeeltelijk",   tag:"samen",            uitleg:"De AI doet het voeren en bewegen. Welzijn, bugs én dilemma's blijven aan jou.",                          band:"groeit nog goed 💚"},
+    {naam:"Voorwaardelijk", tag:"AI met vangnet",   uitleg:"De AI verzorgt en bewaakt Botty zelf, maar bij een dilemma vraagt ze jóu om te beslissen.",             band:"groeit beperkt 🧡"},
+    {naam:"Volledig",       tag:"AI doet alles",    uitleg:"De AI neemt alles over, ook de dilemma's. Jij kijkt toe. Alleen Botty aaien laat de band nog groeien.", band:"groeit niet meer 🤍"}
+  ];
+  function niveauNaam(n){ return aiNiveaus[n] ? aiNiveaus[n].naam.toLowerCase() : "uit"; }
+  // Vult het info-blok in het paneel voor het getoonde niveau (los van wat actief is, voor live preview bij slepen).
+  function toonNiveauInfo(n){
+    var info = aiNiveaus[n]; if(!info) return;
+    el("ai-niv-tag2").textContent = info.tag;
+    el("ai-niv-titel").textContent = n + " · " + info.naam;
+    el("ai-niv-uitleg2").textContent = info.uitleg.replace(/Botty/g, naam());
+    el("ai-niv-band").textContent = "Band: " + info.band;
+    var t = el("ai-slider-ticks").children;                    // de tick onder de actieve stand oplichten
+    for(var i=0;i<t.length;i++){ t[i].classList.toggle("actief", i === n); }
+  }
   function updateAiUI(){
     var btn = el("ai-toggle");
     var actief = state.aiNiveau > 0;
     btn.classList.toggle("aan", actief);
     el("ai-badge").textContent = actief ? state.aiNiveau : "";
-    btn.title = "AI-assistent: " + niveauNamen[state.aiNiveau];
+    btn.title = "AI-assistent: " + niveauNaam(state.aiNiveau);
     botty.classList.toggle("ai-zorg", state.aiNiveau >= 2);   // gloed alleen als de AI écht handelt
-    var opts = document.querySelectorAll(".ai-niveau");        // actieve optie in het paneel markeren
-    for(var i=0;i<opts.length;i++){ opts[i].classList.toggle("actief", (+opts[i].getAttribute("data-niveau")) === state.aiNiveau); }
+    el("ai-slider").value = state.aiNiveau;                    // schuif gelijkzetten
+    toonNiveauInfo(state.aiNiveau);
   }
   function aiZeg(t){ zeg(t, 2600); }
   function markeerKnop(id){ var b=el(id); if(!b) return; b.classList.add("ai-druk"); setTimeout(function(){ b.classList.remove("ai-druk"); }, 700); }
@@ -1533,13 +1550,22 @@
     else { markeerKnop("btn-voer"); zeg("💡 Tip: voer " + naam() + " duurzame data.", 3200); }
   }
 
-  // Eén stap van de assistent (loopt elke 4,5s). Niveau 1 adviseert alleen; niveau 2 en 3 handelen.
-  // Strategie bij handelen: ziekte eerst genezen, anders de láágste meter aanvullen.
+  // Eén stap van de assistent (loopt elke 4,5s). Het niveau bepaalt hoeveel de AI zélf doet:
+  //  1 = alleen adviseren · 2 = voeren+bewegen (fysieke upkeep) · 3+ = volledige routinezorg.
   function aiStap(){
     if(state.aiNiveau < 1 || !state.geboren || modalOpen() || huidigeAnim) return;  // niet ingrijpen tijdens modal/animatie
-    if(state.aiNiveau === 1){ aiAdvies(); return; }   // niveau 1: alleen adviseren
-    if(state.ziek){ aiHerstel(); return; }            // niveau 2/3: ziekte heeft voorrang
-    // Sorteer de vier verzorgmeters oplopend zodat items[0] de laagste is:
+    if(state.aiNiveau === 1){ aiAdvies(); return; }   // niveau 1: alleen adviseren, jij handelt
+    // Bugs verhelpen hoort bij de volledige routinezorg (niveau 3+); op niveau 2 blijft dat jouw taak.
+    if(state.ziek && state.aiNiveau >= 3){ aiHerstel(); return; }
+    if(state.aiNiveau === 2){
+      // Gedeeltelijk: alleen de fysieke meters (data/energie/fit) via voeren en bewegen; geluk laat de AI aan jou.
+      var fys=[["data",state.data],["energie",state.energie],["fit",state.fit]];
+      fys.sort(function(a,b){ return a[1]-b[1]; });
+      if(fys[0][1] >= 80) return;
+      if(fys[0][0]==="fit") aiBeweeg(); else aiVoer();
+      return;
+    }
+    // Niveau 3 of 4: volledige routinezorg incl. welzijn. Láágste meter eerst aanvullen.
     var items=[["data",state.data],["energie",state.energie],["fit",state.fit],["geluk",state.geluk]];
     items.sort(function(a,b){ return a[1]-b[1]; });
     if(items[0][1] >= 80) return;                 // zelfs de laagste ≥ 80 → alles op orde, AI rust
@@ -1549,25 +1575,26 @@
     else aiVoer();                                 // data of energie laagst → voeren
   }
 
-  // Zet het automatiseringsniveau en legt de gevolgen uit. Vanaf niveau 2 stopt de bandgroei
-  // (de AI bouwt geen band op) → eenmalige waarschuwing.
+  // Zet het automatiseringsniveau en legt de gevolgen uit. Vanaf niveau 2 neemt de AI taken over
+  // (en bouwt zelf geen band op) → eenmalige waarschuwing dat de band aan jóu hangt.
   function setNiveau(n){
+    if(n === state.aiNiveau) return;
     state.aiNiveau = n; bewaar(); updateAiUI();
     var berichten = [
       "Je zorgt weer helemaal zelf voor " + naam() + "! 💚",
       "De AI geeft je nu tips. Jij blijft beslissen en handelen. 💡",
-      "De AI doet de routinezorg. Dilemma's en aandacht blijven aan jou. 🤖",
-      "De AI verzorgt " + naam() + " nu volledig. Jij houdt toezicht. 🤖"
+      "De AI doet het voeren en bewegen. Welzijn, bugs en dilemma's blijven aan jou. 🤖",
+      "De AI verzorgt " + naam() + " zelf, maar vraagt jóu bij dilemma's. 🤖",
+      "De AI verzorgt " + naam() + " volledig, ook de dilemma's. Jij houdt toezicht. 🤖"
     ];
     zeg(berichten[n], 3600);
     if(n >= 2 && !aiTipGetoond){ aiTipGetoond = true; setTimeout(function(){ toastMsg("Let op: jullie band groeit alleen door jóuw aandacht 💚"); }, 1200); }
     if(n >= 2) setTimeout(aiStap, 900);   // meteen een eerste verzorgstap, niet wachten op het interval
   }
   el("ai-toggle").addEventListener("click", function(){ sfx.klik(); updateAiUI(); el("overlay-ai").classList.add("open"); });
-  el("ai-niveaus").addEventListener("click", function(e){
-    var b = e.target.closest(".ai-niveau"); if(!b) return;
-    sfx.klik(); setNiveau(+b.getAttribute("data-niveau"));
-  });
+  // Slepen toont live de uitleg (preview); loslaten/wijzigen zet het niveau echt.
+  el("ai-slider").addEventListener("input", function(){ toonNiveauInfo(+this.value); });
+  el("ai-slider").addEventListener("change", function(){ sfx.klik(); setNiveau(+this.value); });
   el("sluit-ai").addEventListener("click", function(){ el("overlay-ai").classList.remove("open"); });
   setInterval(aiStap, 4500);   // assistent doet elke 4,5s hooguit één stap (advies of actie)
 
@@ -1598,13 +1625,15 @@
   setInterval(spontaneBeweging, 12000);   // elke 12s een kans op een spontaan gebaartje
 
   // Dilemma-lus: ten minste 75s na het vorige dilemma komt er een nieuw aanbod.
-  // Alleen bij volledig (niveau 3) beslist de AI zelf; bij niveau 0–2 krijg jij het dilemma.
+  // Niveau 4 (volledig) → de AI beslist zelf. Niveau 3 (voorwaardelijk) → de AI vraagt jóu (vangnet).
+  // Niveau 0–2 → het dilemma is sowieso aan jou.
   setInterval(function(){
     if(!state.geboren || modalOpen()) return;
     if(nu() - state.laatsteDilemma > 75000){
       state.laatsteDilemma = nu(); bewaar();
-      if(state.aiNiveau >= 3){ aiDilemma(); return; }    // volledige automatisering → AI beslist (wijs)
-      zeg("Ik heb een dilemma voor je… ⚖️", 2500);
+      if(state.aiNiveau >= 4){ aiDilemma(); return; }    // volledige automatisering → AI beslist (wijs)
+      var vangnet = (state.aiNiveau === 3);              // AI verzorgt zelf maar geeft het dilemma aan jou terug
+      zeg(vangnet ? "🤖 De AI twijfelt — jij beslist dit dilemma. ⚖️" : "Ik heb een dilemma voor je… ⚖️", 2800);
       setTimeout(function(){ if(!modalOpen()) toonDilemma(); }, 2600);  // korte aankondiging, dan de modal
     }
   }, 15000);
