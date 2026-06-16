@@ -361,11 +361,11 @@
   @keyframes wieber-kind{0%,100%{transform:scale(.8) rotate(-5deg);}50%{transform:scale(.8) rotate(5deg);}}
   /* Vitaal (gem. welzijn > 65): felle kleuren, zichtbare spierballetjes en een sprankel-antenne. */
   .botty-wrap.vitaal svg{filter:saturate(1.3) brightness(1.06);}
-  .botty-wrap.vitaal #spier-l,.botty-wrap.vitaal #spier-r,.botty-wrap.vitaal #antenne-ster{display:block!important;}
+  .botty-wrap.vitaal .lk-spier,.botty-wrap.vitaal .lk-ster{display:block!important;}
   /* Verwaarloosd (gem. welzijn < 35): roestfilter, roestvlekken, bocheltje en slappe antenne.
      Staat ná baby/kind zodat de droop-antenne wint als beide klassen actief zijn. */
   .botty-wrap.verwaarloosd svg{filter:saturate(.4) sepia(.4) brightness(.92);transform:scale(var(--groei,1)) rotate(2deg);}
-  .botty-wrap.verwaarloosd #roest,.botty-wrap.verwaarloosd #bochel{display:block!important;}
+  .botty-wrap.verwaarloosd .lk-roest,.botty-wrap.verwaarloosd .lk-bochel{display:block!important;}
   .botty-wrap.verwaarloosd #antenne{animation:none;transform:rotate(24deg);}
 
   /* ---- Bediening (help/delen/geluid) ---- */
@@ -394,11 +394,17 @@
   .deelkaart{background:linear-gradient(160deg,#ffffff,#e8f4ee);border:2px solid var(--groen);
     border-radius:20px;padding:.9rem;text-align:center;}
   .deelkaart .mini{width:110px;margin:0 auto .3rem;}
+  /* In de kaart staat Botty in een eigen .botty-wrap (voor de look-klassen); haal de
+     absolute positionering uit de live-layout weg zodat hij netjes in de kaart past. */
+  .deelkaart .mini .botty-wrap{position:static;left:auto;bottom:auto;width:100%;cursor:default;}
   .deelkaart .mini svg{width:100%;height:auto;overflow:visible;}
   .deelkaart .d-titel{font-weight:900;color:var(--rood);font-size:18px;}
   .deelkaart .d-regels{font-size:13px;font-weight:700;color:var(--groen);margin-top:.3rem;line-height:1.5;}
   .deel-acties{display:flex;gap:.5rem;}
   .deel-acties .sluit{flex:1;}
+  /* Badge boven een gedeelde Botty (recipient opent een #b=-link) */
+  .deel-badge{font-weight:900;color:var(--groen);font-size:14px;margin-bottom:.7rem;}
+  .deel-badge small{display:block;font-weight:700;color:#6b7d76;font-size:11px;margin-top:.15rem;}
   .toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%) translateY(10px);
     background:var(--groen);color:#fff;font-weight:700;font-size:13px;padding:.5rem .9rem;
     border-radius:12px;opacity:0;transition:opacity .3s,transform .3s;z-index:10000;pointer-events:none;}
@@ -507,24 +513,24 @@
           <g id="antenne">
             <path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
             <circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>
-            <path id="antenne-ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6" style="display:none"/>
+            <path id="antenne-ster" class="lk-ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6" style="display:none"/>
           </g>
           <g id="been-l"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/>
             <ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="been-r"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/>
             <ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="arm-l"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/>
-            <ellipse id="spier-l" cx="55" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(-43 55 166)" style="display:none"/>
+            <ellipse id="spier-l" class="lk-spier" cx="55" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(-43 55 166)" style="display:none"/>
             <circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="arm-r"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/>
-            <ellipse id="spier-r" cx="145" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(43 145 166)" style="display:none"/>
+            <ellipse id="spier-r" class="lk-spier" cx="145" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(43 145 166)" style="display:none"/>
             <circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <rect x="68" y="184" width="64" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/>
           <line x1="100" y1="200" x2="100" y2="214" stroke="#2e6b34" stroke-width="3"/>
-          <ellipse id="bochel" cx="72" cy="142" rx="17" ry="13" fill="#e2e4da" stroke="#2b2b2b" stroke-width="3" style="display:none"/>
+          <ellipse id="bochel" class="lk-bochel" cx="72" cy="142" rx="17" ry="13" fill="#e2e4da" stroke="#2b2b2b" stroke-width="3" style="display:none"/>
           <rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
           <rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
-          <g id="roest" style="display:none">
+          <g id="roest" class="lk-roest" style="display:none">
             <ellipse cx="76" cy="162" rx="5" ry="4" fill="#9c6a2f" opacity=".85"/>
             <ellipse cx="123" cy="156" rx="4" ry="5" fill="#7a4f22" opacity=".8"/>
             <ellipse cx="79" cy="181" rx="4.5" ry="3.5" fill="#a9682f" opacity=".8"/>
@@ -673,6 +679,20 @@
         <button class="sluit knop-licht" id="kopieer-knop">Kopieer</button>
       </div>
       <button class="sluit knop-licht" id="sluit-share">Sluiten</button>
+    </div>
+  </div>
+
+  <!-- Gedeelde Botty-modal: getoond als de pagina geopend wordt via een #b=-deellink.
+       Laat de meegedeelde momentopname (leeftijd, meters, look) read-only zien. -->
+  <div class="overlay" id="overlay-gedeeld">
+    <div class="modal">
+      <div class="deel-badge">🤖 Iemand deelt zijn Botty met je!<small>Dit is een momentopname — speel zelf om je eigen Botty groot te maken.</small></div>
+      <div class="deelkaart">
+        <div class="mini" id="gedeeld-botty"></div>
+        <div class="d-titel" id="gedeeld-naam"></div>
+        <div class="d-regels" id="gedeeld-regels"></div>
+      </div>
+      <button class="sluit" id="gedeeld-speel" style="margin-top:.9rem">Speel zelf met Botty 🤖</button>
     </div>
   </div>
 
@@ -1079,6 +1099,7 @@
     {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook."},
     {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid."},
     {e:"🤖", t:"AI-assistent (⚡)", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt, in 5 stappen naar de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Advies — AI tipt, jij handelt\n2 · Gedeeltelijk — AI voert & beweegt\n3 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n4 · Volledig — AI doet alles\n\nDe controle verschuift zo stap voor stap van mens naar AI. Hoe meer je uit handen geeft, hoe minder jullie band groeit."},
+    {e:"⌨️", t:"Sneltoetsen", x:"Bedien Botty snel met je toetsenbord:\n\n1 · Voeren\n2 · Bewegen\n3 · Dilemma\n4 · Bug verhelpen (alleen als Botty ziek is)\n\nBij het voer-scherm: kies kaart 1–4 met het getal.\nBij een dilemma: kies antwoord 1–3 met het getal."},
     {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan."}
   ];
   var tutI=0;
@@ -1100,29 +1121,88 @@
   el("btn-help").addEventListener("click", function(){ sfx.klik(); startTut(); });
 
   // ================= DELEN =================
-  function deelTekst(){ return "Mijn Botty heet "+naam()+" — "+leeftijdTekst()+" oud, Generatie "+state.generatie+", 🧠 wijsheid "+state.wijs+". Speel ook mee bij NOLAI!"; }
+  // Bij delen leggen we de huidige staat van Botty vast in een compacte momentopname (snapshot)
+  // en coderen die in de deellink (#b=…). Wie de link opent, ziet exact deze Botty terug —
+  // leeftijd, meters en look — zonder dat zijn eigen spel wordt overschreven.
+
+  // UTF-8-veilige, URL-veilige base64 (emoji's in de naam blijven zo heel).
+  function b64enc(str){ return btoa(unescape(encodeURIComponent(str))).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,""); }
+  function b64dec(b){ b=b.replace(/-/g,"+").replace(/_/g,"/"); return decodeURIComponent(escape(atob(b))); }
+
+  // Legt vast wat de deelkaart toont. Korte sleutels houden de link kort.
+  // De look (vitaal/verwaarloosd) lezen we van de live tekening, zodat de snapshot
+  // precies overeenkomt met wat de speler op dat moment ziet.
+  function bouwSnapshot(){
+    var st = stadium();
+    var lk = botty.classList.contains("vitaal") ? "vitaal"
+           : botty.classList.contains("verwaarloosd") ? "verwaarloosd" : "normaal";
+    return { n:naam(), g:state.generatie, lt:leeftijdTekst(), sl:st.label, sk:st.key,
+             gr:st.groei, lk:lk, z:state.ziek?1:0, w:state.wijs,
+             e:Math.round(state.energie), d:Math.round(state.data),
+             f:Math.round(state.fit), gl:Math.round(state.geluk), b:Math.round(state.band) };
+  }
+  function deelURL(){ return location.origin + location.pathname + "#b=" + b64enc(JSON.stringify(bouwSnapshot())); }
+  function deelTekst(){ return "Mijn Botty heet "+naam()+" — "+leeftijdTekst()+" oud, Generatie "+state.generatie+", 🧠 wijsheid "+state.wijs+", ⚡ energie "+Math.round(state.energie)+"%. Speel ook mee bij NOLAI!"; }
+
   function toastMsg(t){ var e=el("toast"); e.textContent=t; e.classList.add("toon"); if(toastMsg._tm)clearTimeout(toastMsg._tm); toastMsg._tm=setTimeout(function(){ e.classList.remove("toon"); },2200); }
   function kopieer(txt){
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(txt).then(function(){ toastMsg("Gekopieerd! 📋"); }, function(){ toastMsg("Kon niet kopiëren"); });
     } else { toastMsg("Kopiëren niet ondersteund"); }
   }
+
+  // Vult een deelkaart (eigen preview én de gedeelde kaart) op basis van een snapshot.
+  // De gekloonde SVG krijgt een eigen .botty-wrap met de juiste look-klassen, zodat
+  // de class-based look-CSS (vitaal/verwaarloosd) ook op de kloon werkt.
+  function vulKaart(holder, naamEl, regelsEl, s){
+    holder.innerHTML="";
+    var svg=document.querySelector("#botty svg");
+    if(svg){
+      var wrap=document.createElement("div");
+      wrap.className="botty-wrap"+(s.lk==="vitaal"?" vitaal":"")+(s.lk==="verwaarloosd"?" verwaarloosd":"");
+      var c=svg.cloneNode(true); var ids=c.querySelectorAll("[id]"); for(var i=0;i<ids.length;i++){ ids[i].removeAttribute("id"); }
+      c.style.setProperty("--groei", s.gr); wrap.appendChild(c); holder.appendChild(wrap);
+    }
+    naamEl.textContent = s.n + (s.z ? " 🤒" : "");
+    regelsEl.innerHTML = "🎂 "+s.lt+" oud · Generatie "+s.g+" · "+s.sl
+      + "<br>🧠 Wijsheid "+s.w+" · ⚡ Energie "+s.e+"%"
+      + "<br>🍃 Data "+s.d+"% · 🤸 Fit "+s.f+"% · 😊 Geluk "+s.gl+"% · 💞 Band "+s.b+"%";
+  }
+
   el("btn-share").addEventListener("click", function(){
     sfx.klik();
-    var holder=el("share-botty"); holder.innerHTML="";
-    var svg=document.querySelector("#botty svg");
-    if(svg){ var c=svg.cloneNode(true); var ids=c.querySelectorAll("[id]"); for(var i=0;i<ids.length;i++){ ids[i].removeAttribute("id"); } c.style.setProperty("--groei",1); holder.appendChild(c); }
-    el("share-naam").textContent = naam();
-    el("share-regels").innerHTML="🎂 "+leeftijdTekst()+" oud · Generatie "+state.generatie+" · "+stadium().label+"<br>🧠 Wijsheid "+state.wijs+" · ⚡ Energie "+Math.round(state.energie)+"%";
+    vulKaart(el("share-botty"), el("share-naam"), el("share-regels"), bouwSnapshot());
     el("overlay-share").classList.add("open");
   });
   el("sluit-share").addEventListener("click", function(){ el("overlay-share").classList.remove("open"); });
   el("deel-knop").addEventListener("click", function(){
     var txt=deelTekst();
-    if(navigator.share){ navigator.share({title:"Botty — NOLAI", text:txt, url:location.href}).catch(function(){}); }
-    else { kopieer(txt+" "+location.href); }
+    if(navigator.share){ navigator.share({title:"Botty — NOLAI", text:txt, url:deelURL()}).catch(function(){}); }
+    else { kopieer(txt+" "+deelURL()); }
   });
-  el("kopieer-knop").addEventListener("click", function(){ kopieer(deelTekst()+" "+location.href); });
+  el("kopieer-knop").addEventListener("click", function(){ kopieer(deelTekst()+" "+deelURL()); });
+
+  // ---------- Een gedeelde Botty openen (#b=-link) ----------
+  // Decodeert de snapshot uit de hash en toont 'm read-only. Mislukt het decoderen,
+  // dan negeren we de hash en start het normale spel.
+  function leesGedeeld(){
+    var m = (location.hash || "").match(/[#&]b=([^&]+)/);
+    if(!m) return null;
+    try{ var s = JSON.parse(b64dec(m[1])); return (s && typeof s.g === "number") ? s : null; }
+    catch(e){ return null; }
+  }
+  function toonGedeeld(s){
+    vulKaart(el("gedeeld-botty"), el("gedeeld-naam"), el("gedeeld-regels"), s);
+    el("overlay-gedeeld").classList.add("open");
+  }
+  // "Speel zelf": sluit de gedeelde kaart, wis de hash uit de URL en ga verder met het eigen spel.
+  el("gedeeld-speel").addEventListener("click", function(){
+    sfx.klik();
+    el("overlay-gedeeld").classList.remove("open");
+    if(history.replaceState){ history.replaceState(null, "", location.pathname + location.search); }
+    else { location.hash = ""; }
+    if(!state.geboren && !el("overlay-einde").classList.contains("open")){ el("overlay-geboorte").classList.add("open"); }
+  });
 
   // ================= VOEREN =================
   var voedsel = [
@@ -1790,6 +1870,9 @@
   } else if(!el("overlay-einde").classList.contains("open")){
     el("overlay-geboorte").classList.add("open");
   }
+  // Geopend via een deellink (#b=…)? Toon de meegedeelde Botty bovenop het eigen spel.
+  var gedeeld = leesGedeeld();
+  if(gedeeld){ toonGedeeld(gedeeld); }
   bewaar();
 })();
 </script>
