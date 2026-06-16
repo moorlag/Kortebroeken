@@ -318,6 +318,21 @@
   .botty-wrap.slaap #ogen-slaap{display:block!important;}
   .botty-wrap.verrast #ogen-verrast{display:block!important;}
 
+  /* ---- Gezondheids- & leeftijdslook (volgt de verzorging) ---- */
+  /* Baby: korte, dikke antenne; kind: iets minder kort. Alle starts zien er als baby uit. */
+  .botty-wrap.baby-look #antenne{animation:wieber-baby 3.4s ease-in-out infinite;}
+  @keyframes wieber-baby{0%,100%{transform:scale(.6) rotate(-5deg);}50%{transform:scale(.6) rotate(5deg);}}
+  .botty-wrap.kind-look #antenne{animation:wieber-kind 3.4s ease-in-out infinite;}
+  @keyframes wieber-kind{0%,100%{transform:scale(.8) rotate(-5deg);}50%{transform:scale(.8) rotate(5deg);}}
+  /* Vitaal (gem. welzijn > 65): felle kleuren, zichtbare spierballetjes en een sprankel-antenne. */
+  .botty-wrap.vitaal svg{filter:saturate(1.3) brightness(1.06);}
+  .botty-wrap.vitaal #spier-l,.botty-wrap.vitaal #spier-r,.botty-wrap.vitaal #antenne-ster{display:block!important;}
+  /* Verwaarloosd (gem. welzijn < 35): roestfilter, roestvlekken, bocheltje en slappe antenne.
+     Staat ná baby/kind zodat de droop-antenne wint als beide klassen actief zijn. */
+  .botty-wrap.verwaarloosd svg{filter:saturate(.4) sepia(.4) brightness(.92);transform:scale(var(--groei,1)) rotate(2deg);}
+  .botty-wrap.verwaarloosd #roest,.botty-wrap.verwaarloosd #bochel{display:block!important;}
+  .botty-wrap.verwaarloosd #antenne{animation:none;transform:rotate(24deg);}
+
   /* ---- Bediening (help/delen/geluid) ---- */
   .leef-rechts{display:flex;align-items:center;gap:.4rem;}
   .icoon-knop{font-family:inherit;font-size:14px;line-height:1;cursor:pointer;border:1.5px solid #d2e7dd;
@@ -453,19 +468,30 @@
           <g id="antenne">
             <path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>
             <circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>
+            <path id="antenne-ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6" style="display:none"/>
           </g>
           <g id="been-l"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/>
             <ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="been-r"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/>
             <ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="arm-l"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse id="spier-l" cx="55" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(-43 55 166)" style="display:none"/>
             <circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <g id="arm-r"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/>
+            <ellipse id="spier-r" cx="145" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(43 145 166)" style="display:none"/>
             <circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>
           <rect x="68" y="184" width="64" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/>
           <line x1="100" y1="200" x2="100" y2="214" stroke="#2e6b34" stroke-width="3"/>
+          <ellipse id="bochel" cx="72" cy="142" rx="17" ry="13" fill="#e2e4da" stroke="#2b2b2b" stroke-width="3" style="display:none"/>
           <rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>
           <rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
+          <g id="roest" style="display:none">
+            <ellipse cx="76" cy="162" rx="5" ry="4" fill="#9c6a2f" opacity=".85"/>
+            <ellipse cx="123" cy="156" rx="4" ry="5" fill="#7a4f22" opacity=".8"/>
+            <ellipse cx="79" cy="181" rx="4.5" ry="3.5" fill="#a9682f" opacity=".8"/>
+            <ellipse cx="119" cy="183" rx="4" ry="4" fill="#8a5320" opacity=".82"/>
+            <circle cx="100" cy="188" r="3" fill="#9c6a2f" opacity=".75"/>
+          </g>
           <path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>
           <g id="kop">
             <circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>
@@ -574,7 +600,7 @@
             <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>
         </svg>
       </div>
-      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een naam en een goede start!</p>
+      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een naam en een goede start! Zorg je goed voor haar, dan groeit ze sterk en vrolijk op — verwaarloos je haar, dan krijgt ze roest en voelt ze zich niet lekker.</p>
       <input id="naam-input" class="naam-input" maxlength="14" placeholder="Geef je Botty een naam…" style="display:none" />
       <button class="sluit start-ai" id="start-ai">🔧 START AI</button>
       <button class="sluit" id="start-knop" style="display:none">Begin het avontuur!</button>
@@ -978,6 +1004,7 @@
 
   // ================= TUTORIAL =================
   var tutStappen=[
+    {e:"🤖", t:"Zorg goed voor Botty", x:"Botty begint als klein robotje. Zorg je goed voor haar, dan wordt ze sterk en kleurrijk met kleine spierballetjes. Verwaarloos je haar, dan krijgt ze roest en een bocheltje, voelt ze zich niet lekker en heeft ze vaker last van bugs."},
     {e:"⚡", t:"Energie loopt terug", x:"Botty's energie daalt vanzelf. Blijf met haar bezig om haar fit en blij te houden!"},
     {e:"🍃", t:"Voeren", x:"Geef Botty duurzame, eerlijke data. Weiger vervuilde data zoals nepnieuws en bias."},
     {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook."},
@@ -1253,11 +1280,13 @@
     state.data = 0; state.fit = 0; state.geluk = 0; state.wijs = 0; state.energie = 0; state.band = 0;
     state.ziek = false; state.ziekSinds = 0; state.leegSinds = 0; state.stadium = "baby";
     el("ziek-balk").style.display = "none"; el("ziek-icoon").style.display = "none";
-    botty.classList.remove("ziek-look");
+    botty.classList.remove("ziek-look","vitaal","verwaarloosd");
+    vorigeGezondheid = null;
     bewaar();
     el("overlay-geboorte").classList.remove("open");
     render();
     pasGroeiToe();
+    bepaalGezondheid();
     if(!state.tutorialKlaar){ setTimeout(startTut, 400); }
     setTimeout(function(){ zeg("Hoi, ik ben " + naam() + "! Geef me duurzame data 🍃", 4500); }, 500);
   });
@@ -1273,8 +1302,32 @@
     return                {key:"volwassen", label:"volwassen",groei:1.0};
   }
   function pasGroeiToe(){
+    var st = stadium();
     var svg = document.querySelector("#botty svg");
-    if(svg) svg.style.setProperty("--groei", stadium().groei);
+    if(svg) svg.style.setProperty("--groei", st.groei);
+    botty.classList.toggle("baby-look", st.key === "baby");   // baby: korte antenne
+    botty.classList.toggle("kind-look", st.key === "kind");   // kind: iets minder kort
+  }
+
+  // ---------- Uiterlijk volgt de verzorging ----------
+  // Het gemiddelde welzijn bepaalt de look: > 65 = vitaal (spierballetjes, felle kleuren),
+  // < 35 = verwaarloosd (roest, bocheltje, slappe antenne). De eerste 45s na de geboorte
+  // blijft Botty neutraal, zodat een pasgeboren baby niet meteen roestig oogt. Springt ze
+  // omhoog naar 'vitaal', dan viert ze dat eenmalig met een blije animatie.
+  var vorigeGezondheid = null;
+  function bepaalGezondheid(){
+    if(!state.geboren){ botty.classList.remove("vitaal","verwaarloosd"); vorigeGezondheid = null; return; }
+    var gem = (state.data + state.fit + state.geluk + state.energie)/4;
+    var tier = gem > 65 ? "vitaal" : (gem < 35 ? "verwaarloosd" : "normaal");
+    if(tier === "verwaarloosd" && (nu() - state.geboortetijd) < 45000) tier = "normaal";  // geboorte-respijt
+    botty.classList.toggle("vitaal", tier === "vitaal");
+    botty.classList.toggle("verwaarloosd", tier === "verwaarloosd");
+    if(tier === "vitaal" && vorigeGezondheid && vorigeGezondheid !== "vitaal"){
+      if(!huidigeAnim && !modalOpen()){ speel("blij", 1600, "blij"); }
+      sparkles();
+      if(!modalOpen()) zeg("Kijk, ik word lekker sterk! 💪✨", 2600);
+    }
+    vorigeGezondheid = tier;
   }
   function updateStadium(){
     if(!state.geboren) return;
@@ -1337,6 +1390,9 @@
     if(!state.ziek && ((state.energie<=0 && state.geluk<=8) || (state.data<=0 && state.fit<=0))){
       if(Math.random() < 0.15) wordZiek();
     }
+    // 2b) Verwaarloosd (laag gemiddeld welzijn) maakt Botty extra vatbaar voor bugs.
+    var gemL = (state.data + state.fit + state.geluk + state.energie)/4;
+    if(!state.ziek && gemL < 30 && Math.random() < 0.05) wordZiek();
     // 3) Ziekte langer dan 90 min onbehandeld → overlijden.
     if(state.ziek && (nu() - state.ziekSinds > 90*60000)){ gaDood("ziekte"); return; }
     // 4) Álle meters op 0: start een timer (leegSinds); na 120 min onafgebroken leeg → overlijden.
@@ -1443,11 +1499,15 @@
     if(!state.geboren){ render(); return; }   // net overleden in checkLeven() → alleen nog renderen
     updateStadium();
     render();
+    bepaalGezondheid();                        // look bijwerken op basis van het welzijn
     bewaar();
     if(state.ziek && Math.random() < 0.3 && !modalOpen()){ zeg("Ik voel me niet lekker… 🤒", 2800); }
-    // Hooguit één hint per ronde (else-if), alleen als er geen animatie/modal actief is:
+    // Hooguit één hint per ronde (else-if), alleen als er geen animatie/modal actief is.
+    // Een verwaarloosde Botty klaagt het eerst dat ze zich niet lekker voelt.
     if(!huidigeAnim && !modalOpen()){
-      if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
+      var gemH = (state.data + state.fit + state.geluk + state.energie)/4;
+      if(gemH < 35 && Math.random() < 0.3){ zeg(["Ik voel me niet zo lekker… 🥺","Ik piep en kraak een beetje… 🛠️","Volgens mij heb ik wat roest… 😟"][Math.floor(Math.random()*3)], 2800); }
+      else if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
       else if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
       else if(state.fit < 25 && Math.random() < 0.25){ zeg("Ik wil graag bewegen! 🤸", 2600); }
     }
@@ -1494,6 +1554,7 @@
   planVogels();
   if(state.geboren){
     pasGroeiToe();
+    bepaalGezondheid();   // begin met de juiste look op basis van het opgeslagen welzijn
     if(state.ziek){ el("ziek-balk").style.display=""; el("ziek-icoon").style.display=""; botty.classList.add("ziek-look"); }
     if(!state.tutorialKlaar){ setTimeout(startTut, 500); }
     var welkom = afwezig > 300000
