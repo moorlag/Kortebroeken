@@ -297,13 +297,14 @@
     items.sort(function(x,y){ return x[1]-y[1]; });
     return items[0][0];
   }
-  function kiesDoel(lijst){
-    var doel=null, ziekste=null;
-    lijst.forEach(function(b){
-      if(b.ziek && !ziekste) ziekste=b;
-      if(!doel || gem(b) < gem(doel)) doel=b;
+  // Geeft de n meest behoeftige Botty's terug: zieke eerst, daarna oplopend gemiddelde.
+  // De AI bedient er meerdere per tick, anders kan de zorg het verval van 7 Botty's niet bijbenen.
+  function kiesDoelen(lijst, n){
+    var gesorteerd = lijst.slice().sort(function(a,b){
+      if(a.ziek !== b.ziek) return a.ziek ? -1 : 1;   // zieke Botty's krijgen voorrang
+      return gem(a) - gem(b);                          // daarna de laagste meters eerst
     });
-    return ziekste || doel;
+    return gesorteerd.slice(0, n);
   }
   // Voert één zorgactie uit op b en geeft terug wat er gebeurde (voor floater/ticker/animatie).
   function zorg(b){
@@ -344,12 +345,12 @@
   function inhalen(s){
     var away = Date.now() - (typeof s.t==="number" ? s.t : Date.now());
     if(away < 0) away = 0;                         // klok teruggezet → niets inhalen
-    var gemist = Math.floor(away / INTERVAL);      // hoeveel AI-acties er "hadden plaatsgevonden"
-    acties += gemist;
+    var gemist = Math.floor(away / INTERVAL);      // hoeveel AI-ticks er "hadden plaatsgevonden"
+    acties += gemist * 3;                           // elke tick bedient de AI 3 Botty's (zie ZORG_PER_TICK)
     var stappen = Math.min(gemist, 2000);          // begrens de simulatie qua rekentijd
     for(var i=0;i<stappen;i++){
       if(i % 2 === 0) bottys.forEach(vervalEen);   // verval ~half zo vaak als zorg (2,2s vs 1,1s)
-      zorg(kiesDoel(bottys));                       // AI grijpt in op de meest behoeftige
+      kiesDoelen(bottys, 3).forEach(zorg);         // AI grijpt in op de 3 meest behoeftige
     }
   }
 
@@ -445,14 +446,18 @@
   // ---------- Live AI-verzorger ----------
   function setTicker(tekst){ document.getElementById("ticker").innerHTML = '<span class="knip">▌</span> ' + tekst; }
   function updateActies(){ document.getElementById("kpi-acties").textContent = acties.toLocaleString("nl-NL"); }
+  var ZORG_PER_TICK = 3;               // de AI bedient de 3 meest behoeftige Botty's per tick
   function aiStap(){
-    var b = kiesDoel(bottys);
-    acties++; updateActies();
-    var d = zorg(b);
-    floater(b, d.label, d.kleur);
-    if(d.animeer) hop(b);
-    setTicker("🤖 " + d.tekst);
-    renderBotty(b);
+    var doelen = kiesDoelen(bottys, ZORG_PER_TICK);
+    doelen.forEach(function(b, i){
+      acties++;
+      var d = zorg(b);
+      floater(b, d.label, d.kleur);
+      if(d.animeer) hop(b);
+      if(i === 0) setTicker("🤖 " + d.tekst);   // de meest behoeftige is de kop in de ticker
+      renderBotty(b);
+    });
+    updateActies();
   }
   function vervalStap(){ bottys.forEach(function(b){ vervalEen(b); renderBotty(b); }); }
 
