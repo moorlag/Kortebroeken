@@ -68,7 +68,9 @@
   .kaart::after{content:"";position:absolute;inset:0;border-radius:18px;pointer-events:none;
                 box-shadow:inset 0 0 24px rgba(57,255,133,.06);}
   .knaam{font-size:13px;font-weight:900;color:var(--licht);text-align:center;}
-  .kstage{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#7fd9ab;text-align:center;margin-bottom:.2rem;}
+  .kstage{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#7fd9ab;text-align:center;margin-bottom:.2rem;
+          display:flex;align-items:center;justify-content:center;gap:4px;}
+  .kdot{width:8px;height:8px;border-radius:50%;display:inline-block;border:1px solid rgba(255,255,255,.4);}
 
   .scene{position:relative;height:128px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:.4rem;}
   .bw{width:96px;position:relative;animation:adem 3.4s ease-in-out infinite;}
@@ -109,10 +111,15 @@
   .uitleg h2{font-size:15px;color:var(--matrix);margin-bottom:.4rem;}
   .uitleg p{margin-bottom:.55rem;}
   .uitleg a{color:#7fd9ff;font-weight:900;}
-  .pil{display:inline-flex;align-items:center;gap:.4rem;margin-top:.3rem;text-decoration:none;
+  .acties-rij{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin-top:.3rem;}
+  .pil{display:inline-flex;align-items:center;gap:.4rem;text-decoration:none;
        background:linear-gradient(90deg,#b52718,#e0556b);color:#fff;font-weight:900;font-size:14px;
        border-radius:14px;padding:.6rem 1rem;box-shadow:0 6px 18px rgba(224,85,107,.35);transition:transform .1s;}
   .pil:active{transform:scale(.97);}
+  .knop-mini{font-family:inherit;cursor:pointer;background:rgba(57,255,133,.1);border:1.5px solid var(--paneel-rand);
+       color:#bdf6d6;font-weight:900;font-size:13px;border-radius:14px;padding:.6rem 1rem;transition:transform .1s,border-color .15s;}
+  .knop-mini:hover{border-color:var(--matrix);}
+  .knop-mini:active{transform:scale(.97);}
   .navlinks{display:flex;flex-wrap:wrap;gap:1rem;justify-content:center;margin-top:1.4rem;}
   .navlinks a{font-size:13px;font-weight:700;color:#7fd9ab;text-decoration:none;}
   .navlinks a:hover{text-decoration:underline;}
@@ -133,7 +140,8 @@
     <p class="logo">NOLAI — Nationaal OnderwijsLab AI</p>
     <h1>Botty-verse</h1>
     <p class="ondertitel">De <strong>Singularity</strong>: zeven Botty's leven in een simulatie en worden
-      volledig automatisch door de AI verzorgd. Niemand hoeft nog iets te doen — kijk maar.</p>
+      volledig automatisch door de AI verzorgd. De hive draait door, ook als je weg bent — de status wordt
+      in je browser bewaard, dus de klok loopt verder vanaf je allereerste bezoek.</p>
 
     <div class="dash">
       <div class="kpi"><div class="label">Botty's</div><div class="waarde" id="kpi-aantal">7</div><div class="sub">in de hive</div></div>
@@ -150,13 +158,17 @@
       <h2>🌐 Wat zie je hier?</h2>
       <p>Dit is automatiseringsniveau <strong>4 (Volledig)</strong> uit Botty, doorgetrokken naar het uiterste:
         de AI voert, beweegt, troost en repareert alle Botty's helemaal zelf. Ze blijven perfect gezond en blij —
-        de meters schieten vanzelf weer omhoog zodra ze dalen.</p>
+        de meters schieten vanzelf weer omhoog zodra ze dalen. Elke Botty is een willekeurige variant: eigen naam,
+        levensfase en kleurmodel.</p>
       <p>Toch blijft één meter leeg: de <strong>menselijke band</strong>. Die groeit namelijk alleen door <em>jouw</em>
         aandacht, en in de Singularity is er geen mens die zorgt. Perfect onderhouden is dus niet hetzelfde als een band hebben.</p>
       <p>Geïnspireerd op de <a href="https://spritesmods.com/?art=tamasingularity" target="_blank" rel="noopener">Tamagotchi
         Singularity</a> van Jeroen Domburg (Sprite_tm): een hive van Tamagotchi's die maandenlang prima door een
         AI verzorgd werd — volledig zonder mens.</p>
-      <a class="pil" href="botty.html">💊 Neem de rode pil — verzorg er zelf één</a>
+      <div class="acties-rij">
+        <a class="pil" href="botty.html">💊 Neem de rode pil — verzorg er zelf één</a>
+        <button class="knop-mini" id="btn-nieuw" type="button">🔀 Genereer een nieuwe hive</button>
+      </div>
     </div>
 
     <div class="navlinks">
@@ -169,59 +181,86 @@
 (function(){
   "use strict";
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+  var KEY = "bottyverse-v1";
 
-  // ---------- Botty-sprites (klassen i.p.v. id's: veilig 7× te dupliceren) ----------
-  function spriteVolwassen(){ return ''
+  // ---------- Opslag: localStorage met cookie-fallback (zelfde aanpak als botty.html) ----------
+  function schrijfRuw(k,v){
+    try{ localStorage.setItem(k,v); }catch(e){}
+    try{ document.cookie = k+"="+encodeURIComponent(v)+";max-age=31536000;path=/;SameSite=Lax"; }catch(e){}
+  }
+  function leesRuw(k){
+    try{ var v=localStorage.getItem(k); if(v!==null && v!==undefined) return v; }catch(e){}
+    try{ var m=document.cookie.match(new RegExp("(?:^|; )"+k+"=([^;]*)")); if(m) return decodeURIComponent(m[1]); }catch(e){}
+    return null;
+  }
+  function wisOpslag(){
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    try{ document.cookie = KEY+"=;max-age=0;path=/"; }catch(e){}
+  }
+
+  // ---------- Kleurmodellen (varianten) ----------
+  var paletten = [
+    {naam:"Klassiek", broek:"#57b85f", broekRand:"#2e6b34", scherm:"#3a9d94", schermRand:"#2b8077", accent:"#2f8f86", oogje:"#bfe3df"},
+    {naam:"Aqua",     broek:"#3fb6c9", broekRand:"#1f6f7e", scherm:"#2f8fa8", schermRand:"#236f84", accent:"#2f9fb0", oogje:"#cdeef5"},
+    {naam:"Amethist", broek:"#9b78e0", broekRand:"#5e44a0", scherm:"#7b5bc4", schermRand:"#5a3f9a", accent:"#8a6fd0", oogje:"#e3d8fb"},
+    {naam:"Zonnig",   broek:"#f6a623", broekRand:"#b97608", scherm:"#e08a1a", schermRand:"#a8650f", accent:"#f0a83a", oogje:"#ffe9c2"},
+    {naam:"Koraal",   broek:"#e0556b", broekRand:"#a03048", scherm:"#d14761", schermRand:"#9a3149", accent:"#e06b80", oogje:"#fbd8df"},
+    {naam:"Azuur",    broek:"#5ec6ff", broekRand:"#2f7fae", scherm:"#3a9de0", schermRand:"#236f9e", accent:"#4fb0ec", oogje:"#d3ecff"},
+    {naam:"Mint",     broek:"#5fd0a8", broekRand:"#2e8a6a", scherm:"#3aa886", schermRand:"#247a5f", accent:"#3fb894", oogje:"#cdf5e6"}
+  ];
+
+  // ---------- Botty-sprites (klassen i.p.v. id's: veilig te dupliceren; kleur via palet p) ----------
+  function spriteVolwassen(p){ return ''
     + '<g class="antenne"><path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
     +   '<circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>'
     +   '<path class="ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6"/></g>'
     + '<g class="been"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<g class="been"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="55" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(-43 55 166)"/><circle cx="34" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="145" cy="166" rx="8" ry="6" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(43 145 166)"/><circle cx="166" cy="187" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<rect x="68" y="184" width="64" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/><line x1="100" y1="200" x2="100" y2="214" stroke="#2e6b34" stroke-width="3"/>'
-    + '<rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="84" y="150" width="32" height="20" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>'
+    + '<g class="arm"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="55" cy="166" rx="8" ry="6" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(-43 55 166)"/><circle cx="34" cy="187" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="145" cy="166" rx="8" ry="6" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(43 145 166)"/><circle cx="166" cy="187" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<rect x="68" y="184" width="64" height="30" rx="10" fill="'+p.broek+'" stroke="'+p.broekRand+'" stroke-width="3"/><line x1="100" y1="200" x2="100" y2="214" stroke="'+p.broekRand+'" stroke-width="3"/>'
+    + '<rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="84" y="150" width="32" height="20" rx="7" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/>'
     + '<path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>'
-    + '<g class="kop"><circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="52" cy="76" r="6" fill="#bfe3df"/>'
-    +   '<circle cx="148" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="148" cy="76" r="6" fill="#bfe3df"/>'
+    + '<g class="kop"><circle cx="52" cy="76" r="13" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="52" cy="76" r="6" fill="'+p.oogje+'"/>'
+    +   '<circle cx="148" cy="76" r="13" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="148" cy="76" r="6" fill="'+p.oogje+'"/>'
     +   '<path d="M72,46 Q52,48 52,76 Q52,108 72,122 Q100,134 128,122 Q148,108 148,76 Q148,48 128,46 Q100,40 72,46 Z" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>'
-    +   '<path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="#3a9d94" stroke="#2b8077" stroke-width="1.5"/>'
+    +   '<path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="'+p.scherm+'" stroke="'+p.schermRand+'" stroke-width="1.5"/>'
     +   '<line x1="90" y1="78" x2="90" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/><line x1="110" y1="78" x2="110" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>'
     +   '<path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>'; }
 
-  function spriteBaby(){ return ''
+  function spriteBaby(p){ return ''
     + '<g class="antenne"><path d="M100,8 Q96,-9 109,-16" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
     +   '<circle cx="111" cy="-20" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>'
     +   '<path class="ster" d="M111,-29 L112.4,-24.4 117,-23 112.4,-21.6 111,-17 109.6,-21.6 105,-23 109.6,-24.4 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6"/></g>'
     + '<g class="been"><line x1="88" y1="204" x2="82" y2="228" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="80" cy="231" rx="10" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<g class="been"><line x1="112" y1="204" x2="118" y2="228" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="120" cy="231" rx="10" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="66" y1="156" x2="44" y2="176" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="57" cy="163" rx="7" ry="5" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(-40 57 163)"/><circle cx="42" cy="179" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="134" y1="156" x2="156" y2="176" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="143" cy="163" rx="7" ry="5" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(40 143 163)"/><circle cx="158" cy="179" r="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<rect x="71" y="197" width="58" height="24" rx="9" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/><line x1="100" y1="210" x2="100" y2="221" stroke="#2e6b34" stroke-width="3"/>'
-    + '<rect x="67" y="148" width="66" height="42" rx="16" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="83" y="157" width="34" height="18" rx="6" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>'
+    + '<g class="arm"><line x1="66" y1="156" x2="44" y2="176" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="57" cy="163" rx="7" ry="5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(-40 57 163)"/><circle cx="42" cy="179" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="134" y1="156" x2="156" y2="176" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="143" cy="163" rx="7" ry="5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(40 143 163)"/><circle cx="158" cy="179" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<rect x="71" y="197" width="58" height="24" rx="9" fill="'+p.broek+'" stroke="'+p.broekRand+'" stroke-width="3"/><line x1="100" y1="210" x2="100" y2="221" stroke="'+p.broekRand+'" stroke-width="3"/>'
+    + '<rect x="67" y="148" width="66" height="42" rx="16" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="83" y="157" width="34" height="18" rx="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/>'
     + '<path d="M93,130 q14,3 0,6 q-14,3 0,6" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>'
-    + '<g class="kop"><circle cx="36" cy="70" r="18" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="36" cy="70" r="8" fill="#bfe3df"/>'
-    +   '<circle cx="164" cy="70" r="18" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="164" cy="70" r="8" fill="#bfe3df"/>'
+    + '<g class="kop"><circle cx="36" cy="70" r="18" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="36" cy="70" r="8" fill="'+p.oogje+'"/>'
+    +   '<circle cx="164" cy="70" r="18" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="164" cy="70" r="8" fill="'+p.oogje+'"/>'
     +   '<path d="M72,10 Q36,12 36,70 Q36,116 72,132 Q100,142 128,132 Q164,116 164,70 Q164,12 128,10 Q100,4 72,10 Z" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>'
-    +   '<path d="M76,58 Q100,52 124,58 Q136,62 130,78 L112,107 Q100,118 88,107 L70,78 Q64,62 76,58 Z" fill="#3a9d94" stroke="#2b8077" stroke-width="1.5"/>'
+    +   '<path d="M76,58 Q100,52 124,58 Q136,62 130,78 L112,107 Q100,118 88,107 L70,78 Q64,62 76,58 Z" fill="'+p.scherm+'" stroke="'+p.schermRand+'" stroke-width="1.5"/>'
     +   '<line x1="90" y1="76" x2="90" y2="92" stroke="#1f2a28" stroke-width="5.5" stroke-linecap="round"/><line x1="110" y1="76" x2="110" y2="92" stroke="#1f2a28" stroke-width="5.5" stroke-linecap="round"/>'
     +   '<path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>'; }
 
-  function spriteTiener(){ return ''
+  function spriteTiener(p){ return ''
     + '<g class="antenne"><path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
     +   '<circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>'
     +   '<path class="ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6"/></g>'
     + '<g class="been"><line x1="86" y1="218" x2="76" y2="248" stroke="#2b2b2b" stroke-width="3.5"/><ellipse cx="74" cy="251" rx="11" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<g class="been"><line x1="114" y1="218" x2="124" y2="248" stroke="#2b2b2b" stroke-width="3.5"/><ellipse cx="126" cy="251" rx="11" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="66" y1="155" x2="26" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><ellipse class="spier" cx="50" cy="173" rx="8" ry="5.5" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(-44 50 173)"/><circle cx="24" cy="205" r="5.5" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="134" y1="155" x2="174" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><ellipse class="spier" cx="150" cy="173" rx="8" ry="5.5" fill="#57b85f" stroke="#2b2b2b" stroke-width="2" transform="rotate(44 150 173)"/><circle cx="176" cy="205" r="5.5" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<rect x="67" y="193" width="66" height="30" rx="10" fill="#57b85f" stroke="#2e6b34" stroke-width="3"/><line x1="100" y1="209" x2="100" y2="223" stroke="#2e6b34" stroke-width="3"/>'
-    + '<rect x="65" y="136" width="70" height="62" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="82" y="148" width="36" height="22" rx="7" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/>'
+    + '<g class="arm"><line x1="66" y1="155" x2="26" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><ellipse class="spier" cx="50" cy="173" rx="8" ry="5.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(-44 50 173)"/><circle cx="24" cy="205" r="5.5" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="134" y1="155" x2="174" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><ellipse class="spier" cx="150" cy="173" rx="8" ry="5.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(44 150 173)"/><circle cx="176" cy="205" r="5.5" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<rect x="67" y="193" width="66" height="30" rx="10" fill="'+p.broek+'" stroke="'+p.broekRand+'" stroke-width="3"/><line x1="100" y1="209" x2="100" y2="223" stroke="'+p.broekRand+'" stroke-width="3"/>'
+    + '<rect x="65" y="136" width="70" height="62" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="82" y="148" width="36" height="22" rx="7" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/>'
     + '<path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>'
-    + '<g class="kop"><circle cx="52" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="52" cy="76" r="6" fill="#bfe3df"/>'
-    +   '<circle cx="148" cy="76" r="13" fill="#2f8f86" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="148" cy="76" r="6" fill="#bfe3df"/>'
+    + '<g class="kop"><circle cx="52" cy="76" r="13" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="52" cy="76" r="6" fill="'+p.oogje+'"/>'
+    +   '<circle cx="148" cy="76" r="13" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/><circle cx="148" cy="76" r="6" fill="'+p.oogje+'"/>'
     +   '<path d="M72,46 Q52,48 52,76 Q52,108 72,122 Q100,134 128,122 Q148,108 148,76 Q148,48 128,46 Q100,40 72,46 Z" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/>'
-    +   '<path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="#3a9d94" stroke="#2b8077" stroke-width="1.5"/>'
+    +   '<path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z" fill="'+p.scherm+'" stroke="'+p.schermRand+'" stroke-width="1.5"/>'
     +   '<line x1="90" y1="78" x2="90" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/><line x1="110" y1="78" x2="110" y2="90" stroke="#1f2a28" stroke-width="4.5" stroke-linecap="round"/>'
     +   '<path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>'; }
 
@@ -229,27 +268,136 @@
   var groei   = { baby:0.66, tiener:0.92, volwassen:1.0 };
   var stageLabel = { baby:"baby", tiener:"tiener", volwassen:"volwassen" };
 
-  // ---------- De zeven Botty's ----------
+  // ---------- Hulpfuncties ----------
   function rnd(a,b){ return a + Math.random()*(b-a); }
-  var namen = ["Pixel","Bit","Nova","Echo","Lumi","Wiro","Tess"];
-  var stages = ["volwassen","baby","tiener","volwassen","tiener","volwassen","baby"];
-  var bottys = namen.map(function(naam,i){
-    return { naam:naam, stage:stages[i],
-             energie:rnd(60,85), data:rnd(60,85), fit:rnd(60,85), geluk:rnd(60,85),
-             ziek:false, el:null };
-  });
+  function klem(v){ return Math.max(0, Math.min(100, v)); }
+  function gem(b){ return (b.energie+b.data+b.fit+b.geluk)/4; }
+  function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+
+  var AANTAL = 7;
+  var INTERVAL = 1100;                 // ms tussen AI-zorgacties
+  var naamPool = ["Pixel","Bit","Nova","Echo","Lumi","Wiro","Tess","Volt","Glitch","Mochi","Kilo","Joule","Bleep","Ada","Turing","Zappy","Cosmo","Fuse","Mira","Quark"];
+  var stagePool = ["baby","tiener","volwassen"];
+
+  // Maakt een verse hive met willekeurige varianten (unieke naam, fase, kleurmodel).
+  function nieuweHive(){
+    var namen = shuffle(naamPool).slice(0, AANTAL);
+    return namen.map(function(naam){
+      return { naam:naam,
+               stage: stagePool[Math.floor(Math.random()*stagePool.length)],
+               palet: Math.floor(Math.random()*paletten.length),
+               energie: rnd(60,90), data: rnd(60,90), fit: rnd(60,90), geluk: rnd(60,90),
+               ziek:false };
+    });
+  }
+
+  // ---------- Zorg-logica (puur: muteert stats, geen DOM) ----------
+  function laagste(b){
+    var items=[["energie",b.energie],["data",b.data],["fit",b.fit],["geluk",b.geluk]];
+    items.sort(function(x,y){ return x[1]-y[1]; });
+    return items[0][0];
+  }
+  function kiesDoel(lijst){
+    var doel=null, ziekste=null;
+    lijst.forEach(function(b){
+      if(b.ziek && !ziekste) ziekste=b;
+      if(!doel || gem(b) < gem(doel)) doel=b;
+    });
+    return ziekste || doel;
+  }
+  // Voert één zorgactie uit op b en geeft terug wat er gebeurde (voor floater/ticker/animatie).
+  function zorg(b){
+    if(b.ziek){
+      b.ziek=false; b.geluk=klem(b.geluk+14); b.energie=klem(b.energie+8);
+      return { label:"💊 +herstel", kleur:"#5ec6ff", animeer:true, tekst:"AI verhelpt de bug bij <b>"+b.naam+"</b>" };
+    }
+    var k=laagste(b);
+    if(k==="fit"){ b.fit=klem(b.fit+18); b.energie=klem(b.energie+6);
+      return { label:"+fit", kleur:"#7fd06f", animeer:true, tekst:"AI laat <b>"+b.naam+"</b> bewegen" }; }
+    if(k==="geluk"){ b.geluk=klem(b.geluk+18);
+      return { label:"+geluk 🤖", kleur:"#f6a623", animeer:false, tekst:"AI houdt <b>"+b.naam+"</b> blij (maar geen band)" }; }
+    if(k==="data"){ b.data=klem(b.data+18); b.energie=klem(b.energie+5);
+      return { label:"+data", kleur:"#39ff85", animeer:true, tekst:"AI voert <b>"+b.naam+"</b> duurzame data" }; }
+    b.energie=klem(b.energie+18); b.data=klem(b.data+4);
+    return { label:"+energie", kleur:"#5ec6ff", animeer:true, tekst:"AI laadt <b>"+b.naam+"</b> bij" };
+  }
+  // Eén vervalstap (zoals de live-lus elke ~2,2s doet).
+  function vervalEen(b){
+    b.energie=klem(b.energie - rnd(2,5));
+    b.data   =klem(b.data    - rnd(1,4));
+    b.fit    =klem(b.fit     - rnd(1,4));
+    b.geluk  =klem(b.geluk   - rnd(1,3));
+    if(!b.ziek && Math.random() < 0.03) b.ziek=true;   // af en toe een bug — de AI lost 'm zo op
+  }
+
+  // ---------- State laden / inhalen / bewaren ----------
+  // De hive draait door terwijl de pagina dicht is: we simuleren de verstreken tijd in
+  // versnelde stappen (zelfde verval + AI-zorg als live), zodat de Botty's keurig verzorgd
+  // blijven en de tellers doorlopen. 'firstOpened' verankert de uptime aan je eerste bezoek.
+  function laad(){
+    try{
+      var s=JSON.parse(leesRuw(KEY));
+      if(s && s.bottys instanceof Array && s.bottys.length===AANTAL && typeof s.firstOpened==="number"){ return s; }
+    }catch(e){}
+    return null;
+  }
+  function inhalen(s){
+    var away = Date.now() - (typeof s.t==="number" ? s.t : Date.now());
+    if(away < 0) away = 0;                         // klok teruggezet → niets inhalen
+    var gemist = Math.floor(away / INTERVAL);      // hoeveel AI-acties er "hadden plaatsgevonden"
+    acties += gemist;
+    var stappen = Math.min(gemist, 2000);          // begrens de simulatie qua rekentijd
+    for(var i=0;i<stappen;i++){
+      if(i % 2 === 0) bottys.forEach(vervalEen);   // verval ~half zo vaak als zorg (2,2s vs 1,1s)
+      zorg(kiesDoel(bottys));                       // AI grijpt in op de meest behoeftige
+    }
+  }
+
+  var bottys, firstOpened, acties;
+  var opslag = laad();
+  if(opslag){
+    bottys = opslag.bottys;
+    firstOpened = opslag.firstOpened;
+    acties = (typeof opslag.acties==="number") ? opslag.acties : 0;
+    bottys.forEach(function(b){                     // veilige standaarden voor oudere/rare opslag
+      if(typeof b.palet!=="number" || !paletten[b.palet]) b.palet=0;
+      if(!stageLabel[b.stage]) b.stage="volwassen";
+      ["energie","data","fit","geluk"].forEach(function(m){ if(typeof b[m]!=="number") b[m]=70; });
+      b.ziek = !!b.ziek;
+    });
+    inhalen(opslag);
+  } else {
+    bottys = nieuweHive();
+    firstOpened = Date.now();
+    acties = 0;
+  }
+
+  function bewaar(){
+    var data = { firstOpened:firstOpened, t:Date.now(), acties:acties,
+      bottys: bottys.map(function(b){
+        return { naam:b.naam, stage:b.stage, palet:b.palet,
+                 energie:b.energie, data:b.data, fit:b.fit, geluk:b.geluk, ziek:b.ziek };
+      }) };
+    schrijfRuw(KEY, JSON.stringify(data));
+  }
 
   // ---------- Kaarten bouwen ----------
   var verse = document.getElementById("verse");
+  document.getElementById("kpi-aantal").textContent = AANTAL;
+  function barRij(ico,kl,meter){
+    return '<div class="bar-rij"><span class="ico">'+ico+'</span>'
+         + '<span class="bar '+kl+'" data-m="'+meter+'"><span style="width:0%"></span></span></div>';
+  }
   bottys.forEach(function(b){
+    var p = paletten[b.palet];
     var kaart = document.createElement("div");
     kaart.className = "kaart";
     kaart.innerHTML =
         '<div class="knaam">'+b.naam+'</div>'
-      + '<div class="kstage">'+stageLabel[b.stage]+'</div>'
+      + '<div class="kstage"><span class="kdot" style="background:'+p.broek+'"></span>'+stageLabel[b.stage]+' · '+p.naam+'</div>'
       + '<div class="scene"><div class="bw bw-'+b.stage+' vitaal" style="--groei:'+groei[b.stage]+'">'
       +   '<div class="ziek-bubbel">🤒</div>'
-      +   '<svg viewBox="0 0 200 250" aria-label="Botty '+b.naam+'">'+sprites[b.stage]()+'</svg>'
+      +   '<svg viewBox="0 0 200 250" aria-label="Botty '+b.naam+'">'+sprites[b.stage](p)+'</svg>'
       +   '<div class="floaters"></div></div></div>'
       + '<div class="bars">'
       +   barRij("⚡","b-energie","energie")
@@ -270,15 +418,9 @@
     };
     renderBotty(b);
   });
-  function barRij(ico,kl,meter){
-    return '<div class="bar-rij"><span class="ico">'+ico+'</span>'
-         + '<span class="bar '+kl+'" data-m="'+meter+'"><span style="width:0%"></span></span></div>';
-  }
-
-  function klem(v){ return Math.max(0, Math.min(100, v)); }
-  function gem(b){ return (b.energie+b.data+b.fit+b.geluk)/4; }
 
   function renderBotty(b){
+    if(!b.el) return;
     b.el.bars.energie.style.width = b.energie + "%";
     b.el.bars.data.style.width    = b.data + "%";
     b.el.bars.fit.style.width     = b.fit + "%";
@@ -286,8 +428,8 @@
     b.el.wrap.classList.toggle("vitaal", gem(b) > 65 && !b.ziek);
     b.el.wrap.classList.toggle("ziek", b.ziek);
   }
-
   function floater(b, tekst, kleur){
+    if(!b.el) return;
     var f = document.createElement("div");
     f.className = "floater"; f.textContent = tekst; f.style.color = kleur || "#39ff85";
     f.style.left = (40 + Math.random()*20) + "%";
@@ -295,71 +437,34 @@
     setTimeout(function(){ f.remove(); }, 1100);
   }
   function hop(b){
-    if(reduce) return;
+    if(reduce || !b.el) return;
     b.el.wrap.classList.remove("act"); void b.el.wrap.offsetWidth; b.el.wrap.classList.add("act");
-    setTimeout(function(){ b.el.wrap.classList.remove("act"); }, 520);
+    setTimeout(function(){ if(b.el) b.el.wrap.classList.remove("act"); }, 520);
   }
 
-  // ---------- AI-verzorger ----------
-  var acties = 0;
-  function setTicker(tekst){
-    document.getElementById("ticker").innerHTML = '<span class="knip">▌</span> ' + tekst;
-  }
-  function laagste(b){
-    var items = [["energie",b.energie],["data",b.data],["fit",b.fit],["geluk",b.geluk]];
-    items.sort(function(x,y){ return x[1]-y[1]; });
-    return items[0][0];
-  }
+  // ---------- Live AI-verzorger ----------
+  function setTicker(tekst){ document.getElementById("ticker").innerHTML = '<span class="knip">▌</span> ' + tekst; }
+  function updateActies(){ document.getElementById("kpi-acties").textContent = acties.toLocaleString("nl-NL"); }
   function aiStap(){
-    // Kies de Botty die de zorg het hardst nodig heeft (zieke gaat altijd voor).
-    var doel = null, ziekste = null;
-    bottys.forEach(function(b){
-      if(b.ziek && !ziekste) ziekste = b;
-      if(!doel || gem(b) < gem(doel)) doel = b;
-    });
-    var b = ziekste || doel;
-    acties++;
-    document.getElementById("kpi-acties").textContent = acties.toLocaleString("nl-NL");
-
-    if(b.ziek){
-      b.ziek = false; b.geluk = klem(b.geluk + 14); b.energie = klem(b.energie + 8);
-      floater(b, "💊 +herstel", "#5ec6ff"); hop(b);
-      setTicker("🤖 AI verhelpt de bug bij <b>"+b.naam+"</b>");
-    } else {
-      var k = laagste(b);
-      if(k === "fit"){ b.fit = klem(b.fit+18); b.energie = klem(b.energie+6); floater(b,"+fit","#7fd06f"); hop(b);
-        setTicker("🤖 AI laat <b>"+b.naam+"</b> bewegen"); }
-      else if(k === "geluk"){ b.geluk = klem(b.geluk+18); floater(b,"+geluk 🤖","#f6a623");
-        setTicker("🤖 AI houdt <b>"+b.naam+"</b> blij (maar geen band)"); }
-      else if(k === "data"){ b.data = klem(b.data+18); b.energie = klem(b.energie+5); floater(b,"+data","#39ff85"); hop(b);
-        setTicker("🤖 AI voert <b>"+b.naam+"</b> duurzame data"); }
-      else { b.energie = klem(b.energie+18); b.data = klem(b.data+4); floater(b,"+energie","#5ec6ff"); hop(b);
-        setTicker("🤖 AI laadt <b>"+b.naam+"</b> bij"); }
-    }
+    var b = kiesDoel(bottys);
+    acties++; updateActies();
+    var d = zorg(b);
+    floater(b, d.label, d.kleur);
+    if(d.animeer) hop(b);
+    setTicker("🤖 " + d.tekst);
     renderBotty(b);
   }
-
-  // ---------- Verval over tijd ----------
-  function vervalStap(){
-    bottys.forEach(function(b){
-      b.energie = klem(b.energie - rnd(2,5));
-      b.data    = klem(b.data    - rnd(1,4));
-      b.fit     = klem(b.fit     - rnd(1,4));
-      b.geluk   = klem(b.geluk   - rnd(1,3));
-      if(!b.ziek && Math.random() < 0.03) b.ziek = true;   // af en toe een bug — de AI lost 'm zo op
-      renderBotty(b);
-    });
-  }
+  function vervalStap(){ bottys.forEach(function(b){ vervalEen(b); renderBotty(b); }); }
 
   // ---------- Uptime ----------
-  var start = Date.now();
   function fmtDuur(ms){
-    var s = Math.floor(ms/1000), m = Math.floor(s/60), u = Math.floor(m/60);
-    if(u > 0) return u + "u " + (m%60) + "m";
-    if(m > 0) return m + "m " + (s%60) + "s";
-    return s + "s";
+    var s=Math.floor(ms/1000), m=Math.floor(s/60), u=Math.floor(m/60), d=Math.floor(u/24);
+    if(d>0) return d+"d "+(u%24)+"u";
+    if(u>0) return u+"u "+(m%60)+"m";
+    if(m>0) return m+"m "+(s%60)+"s";
+    return s+"s";
   }
-  function updateUptime(){ document.getElementById("kpi-uptime").textContent = fmtDuur(Date.now()-start); }
+  function updateUptime(){ document.getElementById("kpi-uptime").textContent = fmtDuur(Date.now()-firstOpened); }
 
   // ---------- Matrix-regen ----------
   (function rain(){
@@ -389,11 +494,22 @@
     frame();
   })();
 
-  // ---------- Lussen ----------
+  // ---------- Nieuwe hive genereren ----------
+  document.getElementById("btn-nieuw").addEventListener("click", function(){
+    wisOpslag();
+    location.reload();   // bij herladen vindt laad() niets → verse willekeurige hive vanaf nu
+  });
+
+  // ---------- Bewaren op de juiste momenten ----------
+  updateActies(); updateUptime();
   setTimeout(function(){ setTicker("De hive draait. De AI verzorgt alle Botty's volledig zelf."); }, 1400);
-  setInterval(aiStap, 1100);        // de AI grijpt voortdurend in
+  setInterval(aiStap, INTERVAL);    // de AI grijpt voortdurend in
   setInterval(vervalStap, 2200);    // meters lopen langzaam terug
   setInterval(updateUptime, 1000);
+  setInterval(bewaar, 4000);        // periodiek opslaan
+  window.addEventListener("visibilitychange", function(){ if(document.hidden) bewaar(); });
+  window.addEventListener("pagehide", bewaar);
+  bewaar();                          // meteen vastleggen (o.a. firstOpened bij eerste bezoek)
 })();
 </script>
 </body>
