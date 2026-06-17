@@ -829,9 +829,9 @@
         if(typeof s.leegSinds !== "number") s.leegSinds = 0;
         if(typeof s.stadium !== "string") s.stadium = "baby";
         if(typeof s.naam !== "string" || !s.naam) s.naam = "Botty";
-        // AI-niveau (0–4). Oude opslag kende alleen aiVerzorger (aan/uit) → uit=0, aan=4 (volledig).
-        if(typeof s.aiNiveau !== "number"){ s.aiNiveau = s.aiVerzorger ? 4 : 0; }
-        if(s.aiNiveau < 0 || s.aiNiveau > 4) s.aiNiveau = 0;
+        // AI-niveau (0–5). Oude opslag kende alleen aiVerzorger (aan/uit) → uit=0, aan=5 (volledig).
+        if(typeof s.aiNiveau !== "number"){ s.aiNiveau = s.aiVerzorger ? 5 : 0; }
+        if(s.aiNiveau < 0 || s.aiNiveau > 5) s.aiNiveau = 0;
         if(typeof s.band !== "number") s.band = 0;
         if(typeof s.zorgAi !== "number") s.zorgAi = 0;     // tellers voor het reflectiescherm
         if(typeof s.zorgJij !== "number") s.zorgJij = 0;
@@ -1893,11 +1893,11 @@
   // De zes niveaus van automatisering (naar Molenaar, gebaseerd op SAE J3016), van mens-stuurt naar AI-stuurt.
   var aiNiveaus = [
     {naam:"Uit",            tag:"jij doet alles",   uitleg:"Jij verzorgt " + "Botty" + " volledig zelf en let zelf op de meters.",                                  band:"groeit volledig 💚"},
-    {naam:"Signalering",    tag:"AI wijst aan",      uitleg:"De AI let op de meters en licht de knop op die aandacht nodig heeft. Jij beslist en handelt zelf.",    band:"groeit volledig 💚"},
-    {naam:"Advisering",     tag:"AI tipt",           uitleg:"De AI geeft een tekstuele tip over de beste actie. Jij beslist en handelt zelf.",                       band:"groeit volledig 💚"},
-    {naam:"Gedeeltelijk",   tag:"samen",             uitleg:"De AI doet het voeren en bewegen. Welzijn, bugs én dilemma's blijven aan jou.",                         band:"groeit nog goed 💚"},
-    {naam:"Voorwaardelijk", tag:"AI met vangnet",    uitleg:"De AI verzorgt en bewaakt Botty zelf, maar bij een dilemma vraagt ze jóu om te beslissen.",            band:"groeit beperkt 🧡"},
-    {naam:"Volledig",       tag:"AI doet alles",     uitleg:"De AI neemt alles over, ook de dilemma's. Jij kijkt toe. Alleen Botty aaien laat de band nog groeien.", band:"groeit niet meer 🤍"}
+    {naam:"Signalering",    tag:"AI geeft seintje",  uitleg:"De AI houdt de meters in de gaten en laat de knop oplichten die aandacht nodig heeft. Jij beslist en handelt zelf.",  band:"groeit volledig 💚"},
+    {naam:"Advisering",     tag:"AI tipt",           uitleg:"De AI geeft je een tip over wat je het beste kunt doen. Jij beslist en handelt zelf.",                                          band:"groeit volledig 💚"},
+    {naam:"Gedeeltelijk",   tag:"samen",             uitleg:"De AI doet het voeren en bewegen. Geluk, bugs én dilemma's blijven aan jou.",                                                   band:"groeit nog goed 💚"},
+    {naam:"Voorwaardelijk", tag:"AI met vangnet",    uitleg:"De AI verzorgt Botty zelf en bewaakt de meters, maar bij een dilemma vraagt ze jóu om te beslissen.",                          band:"groeit beperkt 🧡"},
+    {naam:"Volledig",       tag:"AI doet alles",     uitleg:"De AI neemt alles over, ook de dilemma's. Jij kijkt toe. Alleen Botty aaien laat de band nog groeien.",                       band:"groeit niet meer 🤍"}
   ];
   function niveauNaam(n){ return aiNiveaus[n] ? aiNiveaus[n].naam.toLowerCase() : "uit"; }
   // Vult het info-blok in het paneel voor het getoonde niveau (los van wat actief is, voor live preview bij slepen).
@@ -2012,9 +2012,9 @@
     state.aiNiveau = n; bewaar(); updateAiUI();
     var berichten = [
       "Je zorgt weer helemaal zelf voor " + naam() + "! 💚",
-      "De AI signaleert welke knop je nodig hebt. Jij blijft beslissen en handelen. 🔦",
-      "De AI geeft je nu tips. Jij blijft beslissen en handelen. 💡",
-      "De AI doet het voeren en bewegen. Welzijn, bugs en dilemma's blijven aan jou. 🤖",
+      "De AI geeft een seintje als een knop aandacht nodig heeft. Jij beslist en handelt zelf. 🔦",
+      "De AI geeft tips over wat je kunt doen. Jij beslist en handelt zelf. 💡",
+      "De AI doet het voeren en bewegen. Geluk, bugs en dilemma's blijven aan jou. 🤖",
       "De AI verzorgt " + naam() + " zelf, maar vraagt jóu bij dilemma's. 🤖",
       "De AI verzorgt " + naam() + " volledig, ook de dilemma's. Jij houdt toezicht. 🤖"
     ];
