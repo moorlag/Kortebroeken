@@ -141,9 +141,20 @@
   .vloer{position:absolute;left:0;right:0;bottom:0;height:42px;
     background:linear-gradient(180deg,#bfe8c7,#9ed6aa);border-top:2px solid #84c490;}
 
-  .botty-wrap{position:absolute;left:50%;bottom:30px;width:170px;cursor:pointer;}
+  .botty-wrap{position:absolute;left:50%;bottom:30px;width:170px;cursor:pointer;transition:left .9s ease;}
   .botty-wrap svg{width:100%;height:auto;display:block;overflow:visible;
     transform:scale(var(--groei,1));transform-origin:50% 100%;transition:transform 1s ease, filter .5s ease;}
+
+  /* ---- Op bezoek: gastheer schuift naar links, de gast loopt rechts in beeld ---- */
+  .scene.op-bezoek #botty{left:30%;}
+  .scene.op-bezoek #ballon{left:30%;}            /* host-ballon volgt de host */
+  .gast{left:118%;}                 /* start buiten beeld; JS zet 'm op zijn plek */
+  .scene.op-bezoek .gast{left:70%;}
+  /* smallere ballonnen tijdens een bezoek, zodat ze elkaar niet overlappen */
+  .scene.op-bezoek #ballon,.gast-ballon{max-width:150px;font-size:11px;padding:.4rem .6rem;}
+  .gast-naam{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);
+    background:var(--groen);color:#fff;font-weight:900;font-size:11px;white-space:nowrap;
+    padding:2px 9px;border-radius:10px;box-shadow:0 2px 6px rgba(0,0,0,.18);}
 
   .ballon{position:absolute;left:50%;top:10px;transform:translateX(-50%);
     background:#fff;border:2px solid var(--groen);border-radius:16px;
@@ -436,6 +447,13 @@
   .ziek-balk button{font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;border:none;
     background:#c8472f;color:#fff;border-radius:10px;padding:.4rem .8rem;touch-action:manipulation;}
   .botty-wrap.ziek-look svg{filter:saturate(.5) hue-rotate(35deg) brightness(.96);}
+  /* ---- Bezoek-balk (verschijnt als er een gast-Botty op bezoek is) ---- */
+  .bezoek-balk{display:flex;align-items:center;justify-content:center;gap:.5rem;flex-wrap:wrap;
+    background:#e8f6ef;border:2px solid #8fcbb5;color:var(--groen);font-weight:900;font-size:13px;
+    border-radius:14px;padding:.5rem .7rem;margin-bottom:.6rem;}
+  .bezoek-balk button{font-family:inherit;font-weight:900;font-size:13px;cursor:pointer;border:none;
+    background:var(--groen);color:#fff;border-radius:10px;padding:.4rem .8rem;touch-action:manipulation;}
+  .bezoek-balk button.licht{background:#cfe7db;color:var(--groen);}
   .ziek-icoon{position:absolute;left:50%;top:42px;margin-left:18px;font-size:22px;display:none;z-index:5;
     animation:zweef-ziek 2s ease-in-out infinite;}
   @keyframes zweef-ziek{0%,100%{transform:translateY(0);}50%{transform:translateY(-5px);}}
@@ -576,11 +594,23 @@
           </g>
         </svg>
       </div>
+      <!-- Gast-Botty: een Botty die op bezoek komt via een #b=-deellink. SVG wordt
+           bij het bezoek ingespoten (kloon van de host met de juiste look en groei). -->
+      <div class="botty-wrap gast" id="gast" style="display:none" aria-hidden="true">
+        <div class="ballon gast-ballon" id="gast-ballon"></div>
+        <div class="gast-naam" id="gast-naam"></div>
+      </div>
     </div>
 
     <div class="ziek-balk" id="ziek-balk" style="display:none">
       <span id="ziek-tekst">🤒 Botty heeft een bug!</span>
       <button id="btn-herstel">💊 Herstel <kbd class="toets-kbd">4</kbd></button>
+    </div>
+
+    <div class="bezoek-balk" id="bezoek-balk" style="display:none">
+      <span id="bezoek-tekst">🤖 is op bezoek!</span>
+      <button id="btn-samenspelen">🎉 Samen spelen</button>
+      <button id="btn-totziens" class="licht">👋 Tot ziens</button>
     </div>
 
     <div class="knoppen">
@@ -697,13 +727,14 @@
        Laat de meegedeelde momentopname (leeftijd, meters, look) read-only zien. -->
   <div class="overlay" id="overlay-gedeeld">
     <div class="modal">
-      <div class="deel-badge">🤖 Iemand deelt zijn Botty met je!<small>Dit is een momentopname — speel zelf om je eigen Botty groot te maken.</small></div>
+      <div class="deel-badge" id="gedeeld-badge"></div>
       <div class="deelkaart">
         <div class="mini" id="gedeeld-botty"></div>
         <div class="d-titel" id="gedeeld-naam"></div>
         <div class="d-regels" id="gedeeld-regels"></div>
       </div>
-      <button class="sluit" id="gedeeld-speel" style="margin-top:.9rem">Speel zelf met Botty 🤖</button>
+      <button class="sluit" id="gedeeld-bezoek" style="margin-top:.9rem;display:none">🚪 Laat binnen — kom op bezoek!</button>
+      <button class="sluit knop-licht" id="gedeeld-speel" style="margin-top:.5rem">Speel met je eigen Botty 🤖</button>
     </div>
   </div>
 
@@ -1097,7 +1128,7 @@
       zwerm.appendChild(b);
     }
     laag.appendChild(zwerm);
-    if(state.geboren && !huidigeAnim && !modalOpen() && Math.random()<0.5){ speel("kijk", 2000, "neutraal"); }
+    if(state.geboren && !huidigeAnim && !modalOpen() && !bezoekActief && Math.random()<0.5){ speel("kijk", 2000, "neutraal"); }
     setTimeout(function(){ zwerm.remove(); }, dur*1000+300);
   }
   function planVogels(){ setTimeout(function(){ spawnVogels(); planVogels(); }, 15000+Math.random()*25000); }
@@ -1111,6 +1142,7 @@
     {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid."},
     {e:"🤖", t:"AI-assistent (⚡)", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt, in 5 stappen naar de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Advies — AI tipt, jij handelt\n2 · Gedeeltelijk — AI voert & beweegt\n3 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n4 · Volledig — AI doet alles\n\nDe controle verschuift zo stap voor stap van mens naar AI. Hoe meer je uit handen geeft, hoe minder jullie band groeit."},
     {e:"⌨️", t:"Sneltoetsen", x:"Bedien Botty snel met je toetsenbord:\n\n1 · Voeren\n2 · Bewegen\n3 · Dilemma\n4 · Bug verhelpen (alleen als Botty ziek is)\n\nBij het voer-scherm: kies kaart 1–4 met het getal.\nBij een dilemma: kies antwoord 1–3 met het getal."},
+    {e:"🚪", t:"Op bezoek", x:"Deel Botty's link (📤) met een vriend. Als die de link opent, loopt jouw Botty bij hém op bezoek! Krijg jij een link, klik dan op 'Laat binnen'. Samen spelen maakt je Botty blijer en versterkt jullie band. 💞"},
     {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan."}
   ];
   var tutI=0;
@@ -1202,18 +1234,119 @@
     try{ var s = JSON.parse(b64dec(m[1])); return (s && typeof s.g === "number") ? s : null; }
     catch(e){ return null; }
   }
+  var gedeeldeSnap = null;   // onthoudt wie er via de link langs wil komen
+  function wisHash(){
+    if(history.replaceState){ history.replaceState(null, "", location.pathname + location.search); }
+    else { location.hash = ""; }
+  }
   function toonGedeeld(s){
+    gedeeldeSnap = s;
     vulKaart(el("gedeeld-botty"), el("gedeeld-naam"), el("gedeeld-regels"), s);
+    // Heeft de speler zelf al een Botty? Dan kan de gast op bezoek; anders alleen de kaart tonen.
+    var kanBezoek = state.geboren;
+    el("gedeeld-bezoek").style.display = kanBezoek ? "" : "none";
+    el("gedeeld-badge").innerHTML = kanBezoek
+      ? (s.n + " wil bij " + naam() + " op bezoek komen!<small>Laat de gast-Botty binnen — samen spelen maakt ze blij.</small>")
+      : ("🤖 " + s.n + " deelt zijn Botty met je!<small>Start eerst je eigen Botty; dan kunnen ze op bezoek bij elkaar.</small>");
     el("overlay-gedeeld").classList.add("open");
   }
   // "Speel zelf": sluit de gedeelde kaart, wis de hash uit de URL en ga verder met het eigen spel.
   el("gedeeld-speel").addEventListener("click", function(){
     sfx.klik();
     el("overlay-gedeeld").classList.remove("open");
-    if(history.replaceState){ history.replaceState(null, "", location.pathname + location.search); }
-    else { location.hash = ""; }
+    wisHash();
     if(!state.geboren && !el("overlay-einde").classList.contains("open")){ el("overlay-geboorte").classList.add("open"); }
   });
+  // "Laat binnen": sluit de kaart en laat de gast-Botty de scène in lopen.
+  el("gedeeld-bezoek").addEventListener("click", function(){
+    sfx.klik();
+    el("overlay-gedeeld").classList.remove("open");
+    wisHash();
+    startBezoek(gedeeldeSnap);
+  });
+
+  // ---------- Bezoek: een gast-Botty komt langs ----------
+  var bezoekActief = false;
+  var gastBallonTimer = null;
+  function gastZeg(tekst, ms){
+    var b = el("gast-ballon");
+    b.textContent = tekst; b.classList.add("toon");
+    if(gastBallonTimer) clearTimeout(gastBallonTimer);
+    gastBallonTimer = setTimeout(function(){ b.classList.remove("toon"); }, ms || 3200);
+  }
+  // De gast-Botty kan alleen heel-lichaams-animaties (de limb-animaties werken op id's
+  // die we bij het klonen weghalen). 'beweeg' en 'blij' bewegen het hele wrap-element.
+  function gastSpeel(klasse, ms){
+    var g = el("gast");
+    g.classList.remove("beweeg", "blij");
+    void g.offsetWidth;                 // herstart de animatie
+    g.classList.add(klasse);
+    setTimeout(function(){ g.classList.remove(klasse); }, ms);
+  }
+  function startBezoek(s){
+    if(!state.geboren || !s) return;
+    bezoekActief = true;
+    var gast = el("gast");
+    var oudeSvg = gast.querySelector("svg"); if(oudeSvg) oudeSvg.remove();
+    // look-klassen op de gast-wrap (vitaal/verwaarloosd) + naam-label
+    gast.className = "botty-wrap gast" + (s.lk==="vitaal"?" vitaal":"") + (s.lk==="verwaarloosd"?" verwaarloosd":"");
+    el("gast-naam").textContent = s.n + (s.z ? " 🤒" : "");
+    var svg = document.querySelector("#botty svg");
+    if(svg){
+      var c = svg.cloneNode(true);
+      var ids = c.querySelectorAll("[id]"); for(var i=0;i<ids.length;i++){ ids[i].removeAttribute("id"); }
+      c.style.setProperty("--groei", s.gr);
+      gast.insertBefore(c, gast.firstChild);   // svg onderaan, ballon/naam erbovenop
+    }
+    gast.style.display = "block";
+    void gast.offsetWidth;                       // reflow zodat de slide-in animeert
+    el("scene").classList.add("op-bezoek");       // host naar links, gast loopt in beeld
+    el("bezoek-tekst").textContent = "🤖 " + s.n + " is op bezoek!";
+    el("bezoek-balk").style.display = "";
+    sfx.goed();
+    // Begroeting nadat de gast is binnengelopen.
+    setTimeout(function(){
+      speel("blij", 1800, "blij");
+      zeg("Hoi " + s.n + "! Welkom! 👋", 3400);
+      setTimeout(function(){ gastSpeel("blij", 1600); gastZeg("Hallo " + naam() + "! 😊", 3000); }, 500);
+    }, 1000);
+  }
+  // Samen spelen: beide Bottys huppelen, hartjes vliegen rond en de gastheer-Botty
+  // wordt er blijer van en bouwt band op (sociale zorg telt ook).
+  var samenTeller = 0;
+  function samenSpelen(){
+    if(!bezoekActief) return;
+    sfx.beweeg();
+    speel("blij", 2000, "blij");
+    gastSpeel("blij", 2000);
+    floater("💞", "#e0556b");
+    setTimeout(function(){ floater("✨", "#ffd54a"); }, 220);
+    state.geluk = klem(state.geluk + 8);
+    state.band  = klem(state.band + 5);
+    flitsBalk(".b-geluk"); flitsBalk(".b-band");
+    var jubel = ["Samen spelen is het allerleukst! 😄","Wat een feestje! 🎉","Jullie hebben lol samen! 😁","Vriendjes maken blij! 💚"];
+    zeg(jubel[samenTeller % jubel.length], 2600);
+    gastZeg(["Jippie! 🎉","Hihi! 😄","Nog een keer! 🤸","Leuk! ✨"][samenTeller % 4], 2400);
+    samenTeller++;
+    bewaar(); render();
+  }
+  // Tot ziens: de gast zwaait en loopt het beeld weer uit, de host keert terug naar het midden.
+  function eindigBezoek(){
+    if(!bezoekActief) return;
+    bezoekActief = false;
+    gastZeg("Tot ziens! 👋", 2200);
+    zeg("Dag! Kom snel weer spelen! 💚", 2800);
+    el("scene").classList.remove("op-bezoek");   // gast schuift uit beeld, host naar midden
+    var gast = el("gast");
+    setTimeout(function(){
+      gast.style.display = "none";
+      var svg = gast.querySelector("svg"); if(svg) svg.remove();
+      el("gast-ballon").classList.remove("toon");
+      el("bezoek-balk").style.display = "none";
+    }, 950);
+  }
+  el("btn-samenspelen").addEventListener("click", function(){ sfx.klik(); samenSpelen(); });
+  el("btn-totziens").addEventListener("click", function(){ sfx.klik(); eindigBezoek(); });
 
   // ================= VOEREN =================
   var voedsel = [
@@ -1694,7 +1827,7 @@
   // Eén stap van de assistent (loopt elke 4,5s). Het niveau bepaalt hoeveel de AI zélf doet:
   //  1 = alleen adviseren · 2 = voeren+bewegen (fysieke upkeep) · 3+ = volledige routinezorg.
   function aiStap(){
-    if(state.aiNiveau < 1 || !state.geboren || modalOpen() || huidigeAnim) return;  // niet ingrijpen tijdens modal/animatie
+    if(state.aiNiveau < 1 || !state.geboren || modalOpen() || huidigeAnim || bezoekActief) return;  // niet ingrijpen tijdens modal/animatie/bezoek
     if(state.aiNiveau === 1){ aiAdvies(); return; }   // niveau 1: alleen adviseren, jij handelt
     // Bugs verhelpen hoort bij de volledige routinezorg (niveau 3+); op niveau 2 blijft dat jouw taak.
     if(state.ziek && state.aiNiveau >= 3){ aiHerstel(); return; }
@@ -1772,7 +1905,7 @@
   // Niveau 4 (volledig) → de AI beslist zelf. Niveau 3 (voorwaardelijk) → de AI vraagt jóu (vangnet).
   // Niveau 0–2 → het dilemma is sowieso aan jou.
   setInterval(function(){
-    if(!state.geboren || modalOpen()) return;
+    if(!state.geboren || modalOpen() || bezoekActief) return;
     if(nu() - state.laatsteDilemma > 75000){
       state.laatsteDilemma = nu(); bewaar();
       if(state.aiNiveau >= 4){ aiDilemma(); return; }    // volledige automatisering → AI beslist (wijs)
