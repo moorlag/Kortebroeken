@@ -6,11 +6,11 @@
 <title>Botty-verse — De Singularity</title>
 <meta name="theme-color" content="#04140d" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>" />
-<meta name="description" content="Het Botty-verse: een singularity waarin 9 Botty's volledig automatisch door de AI worden verzorgd. Ze gaan onderling op bezoek en delen kennis. Perfect onderhouden — maar zonder menselijke band. Naar de Tamagotchi Singularity en de niveaus van automatisering." />
+<meta name="description" content="Het Botty-verse: een singularity waarin de AI 9 Botty's volledig automatisch verzorgt. Ze gaan op bezoek, delen kennis en planten zich voort — de AI kweekt op datakwaliteit en efficiëntie, en de diversiteit sterft af. Naar de Tamagotchi Singularity en de niveaus van automatisering." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://moorlag.github.io/Kortebroeken/bottyverse.html" />
 <meta property="og:title" content="Botty-verse — De Singularity" />
-<meta property="og:description" content="9 Botty's, volledig verzorgd door de AI. Ze gaan onderling op bezoek en delen kennis — maar de menselijke band blijft 0%." />
+<meta property="og:description" content="9 Botty's, volledig verzorgd door de AI. Ze planten zich voort en de AI kweekt op functie — maar de menselijke band blijft 0% en de diversiteit sterft af." />
 <meta property="og:image" content="https://moorlag.github.io/Kortebroeken/social-preview.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -48,7 +48,7 @@
 
   /* Dashboard-balk */
   .dash{display:flex;flex-wrap:wrap;justify-content:center;gap:.6rem;width:100%;max-width:760px;margin-bottom:.7rem;}
-  .kpi{flex:1 1 150px;min-width:140px;background:var(--paneel);border:1.5px solid var(--paneel-rand);border-radius:14px;
+  .kpi{flex:1 1 150px;min-width:128px;background:var(--paneel);border:1.5px solid var(--paneel-rand);border-radius:14px;
        padding:.6rem .8rem;text-align:center;backdrop-filter:blur(3px);}
   .kpi .label{font-size:10.5px;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:#7fd9ab;}
   .kpi .waarde{font-size:20px;font-weight:900;color:var(--matrix);margin-top:.1rem;}
@@ -68,9 +68,13 @@
   .kaart::after{content:"";position:absolute;inset:0;border-radius:18px;pointer-events:none;
                 box-shadow:inset 0 0 24px rgba(57,255,133,.06);}
   .knaam{font-size:13px;font-weight:900;color:var(--licht);text-align:center;}
-  .kstage{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#7fd9ab;text-align:center;margin-bottom:.2rem;
+  .kstage{font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#7fd9ab;text-align:center;
           display:flex;align-items:center;justify-content:center;gap:4px;}
   .kdot{width:8px;height:8px;border-radius:50%;display:inline-block;border:1px solid rgba(255,255,255,.4);}
+  /* Genoom-badges: zichtbare erfelijke eigenschappen */
+  .genen{font-size:9px;font-weight:900;color:#9bd0b6;text-align:center;margin:.15rem 0 .25rem;
+         display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;}
+  .genen .muts{font-size:11px;letter-spacing:1px;}
 
   .scene{position:relative;height:128px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:.4rem;}
   .bw{width:min(96px,88%);position:relative;animation:adem 3.4s ease-in-out infinite;}
@@ -87,8 +91,20 @@
   .bw.ziek svg{filter:saturate(.5) hue-rotate(35deg) brightness(.95);}
   .bw .ster{opacity:0;transition:opacity .4s;}
   .bw.vitaal .ster{opacity:1;}
-  .bw .spier{opacity:0;transition:opacity .4s;}
+  /* Spiermassa = fenotype van de erfelijke efficiëntie (schaalt via --spier) */
+  .bw .spier{opacity:0;transition:opacity .4s, transform .45s ease;transform-box:fill-box;transform-origin:center;
+             transform:scale(var(--spier,1));}
   .bw.vitaal .spier{opacity:1;}
+  /* Mutatie-onderdelen (extra antennes, wifi, zonnepaneel…) */
+  .mut-glow{filter:drop-shadow(0 0 2.5px rgba(200,180,255,.85));}
+  /* Afscheid: een ouder zwaait gedag en verlaat de hive */
+  .bw.weg{animation:wegzwaai 1.4s ease forwards;}
+  @keyframes wegzwaai{0%{transform:translate(0,0) rotate(0);opacity:1;}
+    25%{transform:translate(0,-6px) rotate(-9deg);}50%{transform:translate(0,-6px) rotate(9deg);}
+    72%{transform:translate(0,-6px) rotate(-6deg);}100%{transform:translate(46px,26px) rotate(22deg);opacity:0;}}
+  /* Het ei (tussen vertrek en geboorte) */
+  .ei{font-size:50px;line-height:1;animation:eiwiebel 1.05s ease-in-out infinite;filter:drop-shadow(0 0 8px rgba(127,217,255,.5));}
+  @keyframes eiwiebel{0%,100%{transform:rotate(-8deg);}50%{transform:rotate(8deg);}}
 
   .floaters{position:absolute;inset:0;pointer-events:none;}
   .floater{position:absolute;font-weight:900;font-size:13px;left:50%;top:34px;transform:translateX(-50%);
@@ -105,7 +121,7 @@
   .b-fit>span{background:linear-gradient(90deg,#7fd06f,#57b85f);}
   .b-geluk>span{background:linear-gradient(90deg,#ffce54,#f6a623);}
 
-  /* ---- Onderling bezoek: IR-link tussen twee kaarten + gloed ---- */
+  /* ---- Onderling bezoek / kweek: IR-link tussen twee kaarten + gloed ---- */
   .beam{position:absolute;height:4px;transform-origin:0 50%;pointer-events:none;z-index:6;border-radius:3px;
         background:linear-gradient(90deg,rgba(127,217,255,0),#7fd9ff,#fff,#39ff85,rgba(57,255,133,0));
         background-size:220% 100%;box-shadow:0 0 12px rgba(127,217,255,.85),0 0 22px rgba(57,255,133,.45);
@@ -113,6 +129,7 @@
   @keyframes beampuls{0%{opacity:0;}18%{opacity:.95;}75%{opacity:.85;}100%{opacity:0;}}
   @keyframes beamstroom{from{background-position:140% 0;}to{background-position:-140% 0;}}
   .kaart.bezoekt{box-shadow:0 0 0 2px #7fd9ff,0 0 22px rgba(127,217,255,.55);transition:box-shadow .2s;}
+  .kaart.paart{box-shadow:0 0 0 2px #ff8bd0,0 0 22px rgba(255,139,208,.5);transition:box-shadow .2s;}
 
   /* Uitleg + acties onderaan */
   .uitleg{width:100%;max-width:760px;background:var(--paneel);border:1.5px solid var(--paneel-rand);border-radius:16px;
@@ -139,7 +156,7 @@
   }
   @media (prefers-reduced-motion: reduce){
     #rain{display:none;}
-    .bw,.bw .antenne,.bw.act,.floater{animation:none!important;}
+    .bw,.bw .antenne,.bw.act,.floater,.ei,.bw.weg{animation:none!important;}
     .beam{display:none;}
   }
 </style>
@@ -150,12 +167,13 @@
     <p class="logo">NOLAI — Nationaal OnderwijsLab AI</p>
     <h1>Botty-verse</h1>
     <p class="ondertitel">De <strong>Singularity</strong>: negen Botty's leven in een simulatie en worden
-      volledig automatisch door de AI verzorgd. Ze gaan ook onderling op bezoek en delen kennis. De hive draait door,
-      ook als je weg bent — de status wordt in je browser bewaard, dus de klok loopt verder vanaf je allereerste bezoek.</p>
+      volledig automatisch door de AI verzorgd. Ze gaan op bezoek, delen kennis én planten zich voort — de AI
+      kweekt op functie. De hive draait door, ook als je weg bent: de status wordt in je browser bewaard.</p>
 
     <div class="dash">
       <div class="kpi"><div class="label">Botty's</div><div class="waarde" id="kpi-aantal">9</div><div class="sub">in de hive</div></div>
       <div class="kpi"><div class="label">AI-zorgacties</div><div class="waarde" id="kpi-acties">0</div><div class="sub">automatisch uitgevoerd</div></div>
+      <div class="kpi"><div class="label">Gem. genen</div><div class="waarde" id="kpi-genen">–</div><div class="sub">kwaliteit + efficiëntie</div></div>
       <div class="kpi"><div class="label">Draait al</div><div class="waarde" id="kpi-uptime">0s</div><div class="sub">zonder mens</div></div>
       <div class="kpi band"><div class="label">Menselijke band</div><div class="waarde" id="kpi-band">0% 🤍</div><div class="sub">niemand geeft aandacht</div></div>
     </div>
@@ -168,14 +186,20 @@
       <h2>🌐 Wat zie je hier?</h2>
       <p>Dit is automatiseringsniveau <strong>5 (Volledig)</strong> uit Botty, doorgetrokken naar het uiterste:
         de AI voert, beweegt, troost en repareert alle Botty's helemaal zelf. Ze blijven perfect gezond en blij —
-        de meters schieten vanzelf weer omhoog zodra ze dalen. Elke Botty is een willekeurige variant: eigen naam,
-        levensfase en kleurmodel.</p>
+        de meters schieten vanzelf weer omhoog zodra ze dalen.</p>
       <p>Toch blijft één meter leeg: de <strong>menselijke band</strong>. Die groeit namelijk alleen door <em>jouw</em>
         aandacht, en in de Singularity is er geen mens die zorgt. Perfect onderhouden is dus niet hetzelfde als een band hebben.</p>
       <p>De Botty's gaan af en toe bij elkaar <strong>op bezoek</strong> (de blauwgroene lichtstraal — een knipoog naar de
-        infrarood-link van de echte Tamagotchi's). Ze <em>delen dan kennis</em>: wie de meeste data heeft, leert de ander iets bij,
-        en ze worden er samen blijer van. Maar let op — ook dat onderlinge plezier laat de menselijke band niet groeien.</p>
-      <p><strong>Wil je meer controle?</strong> In het spel <em>Botty</em> kun je zelf kiezen hoeveel je uit handen geeft: van helemaal zelf zorgen (niveau 0) tot volledig de AI laten doen (niveau 5). Met 🔍 <strong>Uitlegbare AI</strong> laat de AI je zien <em>waarom</em> zij handelt — handig om te leren hoe automatisering werkt.</p>
+        infrarood-link van de echte Tamagotchi's). Ze <em>delen dan kennis</em>: wie de meeste data heeft, leert de ander iets bij.</p>
+      <p>🧬 <strong>Voortplanting.</strong> Volwassen, goed verzorgde Botty's krijgen samen een kind: er verschijnt een
+        <strong>ei</strong>, één ouder zwaait gedag en verlaat de hive, en het ei komt uit als een nieuwe generatie.
+        Het kind erft vier dingen van zijn ouders — <strong>datakwaliteit</strong> (trager verval), <strong>efficiëntie</strong>
+        (zuiniger + zichtbaar gespierder), <strong>uiterlijk</strong> (een mengkleur van beide ouders) en af en toe een
+        willekeurige <strong>mutatie</strong> (📶 wifi, ☀️ zonnepaneel, 📡 extra antenne, ⚛️ quantum-chip…).</p>
+      <p>De AI <em>kweekt</em>: ze koppelt steeds de twee Botty's met de beste genen (kwaliteit + efficiëntie). Zie de
+        badges 🧬💪 en de teller "Gem. genen" stijgen. Maar let op de keerzijde — omdat steeds dezelfde elite paart,
+        <strong>mengen de kleuren naar één gemiddelde en sterft de diversiteit af</strong>. De AI koos nooit op uiterlijk;
+        dat verdween als bijproduct van optimaliseren op functie. Alleen willekeurige mutatie brengt nog iets nieuws.</p>
       <p>Geïnspireerd op de <a href="https://spritesmods.com/?art=tamasingularity" target="_blank" rel="noopener">Tamagotchi
         Singularity</a> van Jeroen Domburg (Sprite_tm): een hive van Tamagotchi's die maandenlang prima door een
         AI verzorgd werd — volledig zonder mens.</p>
@@ -223,16 +247,30 @@
     {naam:"Azuur",    broek:"#5ec6ff", broekRand:"#2f7fae", scherm:"#3a9de0", schermRand:"#236f9e", accent:"#4fb0ec", oogje:"#d3ecff"},
     {naam:"Mint",     broek:"#5fd0a8", broekRand:"#2e8a6a", scherm:"#3aa886", schermRand:"#247a5f", accent:"#3fb894", oogje:"#cdf5e6"}
   ];
+  function kloonPalet(p){ return {naam:p.naam, broek:p.broek, broekRand:p.broekRand, scherm:p.scherm,
+                                  schermRand:p.schermRand, accent:p.accent, oogje:p.oogje}; }
+  // Kleur-menging (uiterlijk erft over): per kanaal het gemiddelde van beide ouders, met lichte mutatie.
+  function hexNaarRgb(h){ h=String(h).replace("#",""); return [parseInt(h.substr(0,2),16),parseInt(h.substr(2,2),16),parseInt(h.substr(4,2),16)]; }
+  function rgbNaarHex(a){ return "#"+a.map(function(v){ v=Math.max(0,Math.min(255,Math.round(v))); var s=v.toString(16); return s.length<2?"0"+s:s; }).join(""); }
+  function mengHex(h1,h2,muteer){ var a=hexNaarRgb(h1),b=hexNaarRgb(h2);
+    return rgbNaarHex([0,1,2].map(function(i){ var v=(a[i]+b[i])/2; if(muteer) v+=rnd(-10,10); return v; })); }
+  function mengPalet(p1,p2){
+    return { naam:"Hybride",
+      broek:mengHex(p1.broek,p2.broek,true),       broekRand:mengHex(p1.broekRand,p2.broekRand,false),
+      scherm:mengHex(p1.scherm,p2.scherm,true),    schermRand:mengHex(p1.schermRand,p2.schermRand,false),
+      accent:mengHex(p1.accent,p2.accent,true),    oogje:mengHex(p1.oogje,p2.oogje,false) };
+  }
 
   // ---------- Botty-sprites (klassen i.p.v. id's: veilig te dupliceren; kleur via palet p) ----------
+  // De .spier is een cirkel zodat de erfelijke efficiëntie hem via CSS schoon kan opschalen.
   function spriteVolwassen(p){ return ''
     + '<g class="antenne"><path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
     +   '<circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>'
     +   '<path class="ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6"/></g>'
     + '<g class="been"><line x1="86" y1="212" x2="80" y2="236" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="78" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<g class="been"><line x1="114" y1="212" x2="120" y2="236" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="122" cy="239" rx="11" ry="6" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="55" cy="166" rx="8" ry="6" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(-43 55 166)"/><circle cx="34" cy="187" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="145" cy="166" rx="8" ry="6" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(43 145 166)"/><circle cx="166" cy="187" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="66" y1="156" x2="36" y2="184" stroke="#2b2b2b" stroke-width="4"/><circle class="spier" cx="55" cy="166" r="7.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2"/><circle cx="34" cy="187" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="134" y1="156" x2="164" y2="184" stroke="#2b2b2b" stroke-width="4"/><circle class="spier" cx="145" cy="166" r="7.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2"/><circle cx="166" cy="187" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<rect x="68" y="184" width="64" height="30" rx="10" fill="'+p.broek+'" stroke="'+p.broekRand+'" stroke-width="3"/><line x1="100" y1="200" x2="100" y2="214" stroke="'+p.broekRand+'" stroke-width="3"/>'
     + '<rect x="66" y="140" width="68" height="52" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="84" y="150" width="32" height="20" rx="7" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/>'
     + '<path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>'
@@ -249,8 +287,8 @@
     +   '<path class="ster" d="M111,-29 L112.4,-24.4 117,-23 112.4,-21.6 111,-17 109.6,-21.6 105,-23 109.6,-24.4 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6"/></g>'
     + '<g class="been"><line x1="88" y1="204" x2="82" y2="228" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="80" cy="231" rx="10" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<g class="been"><line x1="112" y1="204" x2="118" y2="228" stroke="#2b2b2b" stroke-width="4"/><ellipse cx="120" cy="231" rx="10" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="66" y1="156" x2="44" y2="176" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="57" cy="163" rx="7" ry="5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(-40 57 163)"/><circle cx="42" cy="179" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="134" y1="156" x2="156" y2="176" stroke="#2b2b2b" stroke-width="4"/><ellipse class="spier" cx="143" cy="163" rx="7" ry="5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(40 143 163)"/><circle cx="158" cy="179" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="66" y1="156" x2="44" y2="176" stroke="#2b2b2b" stroke-width="4"/><circle class="spier" cx="57" cy="163" r="6.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2"/><circle cx="42" cy="179" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="134" y1="156" x2="156" y2="176" stroke="#2b2b2b" stroke-width="4"/><circle class="spier" cx="143" cy="163" r="6.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2"/><circle cx="158" cy="179" r="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<rect x="71" y="197" width="58" height="24" rx="9" fill="'+p.broek+'" stroke="'+p.broekRand+'" stroke-width="3"/><line x1="100" y1="210" x2="100" y2="221" stroke="'+p.broekRand+'" stroke-width="3"/>'
     + '<rect x="67" y="148" width="66" height="42" rx="16" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="83" y="157" width="34" height="18" rx="6" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/>'
     + '<path d="M93,130 q14,3 0,6 q-14,3 0,6" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>'
@@ -267,8 +305,8 @@
     +   '<path class="ster" d="M111,1 L112.4,5.6 117,7 112.4,8.4 111,13 109.6,8.4 105,7 109.6,5.6 Z" fill="#ffd54a" stroke="#f6a623" stroke-width="0.6"/></g>'
     + '<g class="been"><line x1="86" y1="218" x2="76" y2="248" stroke="#2b2b2b" stroke-width="3.5"/><ellipse cx="74" cy="251" rx="11" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<g class="been"><line x1="114" y1="218" x2="124" y2="248" stroke="#2b2b2b" stroke-width="3.5"/><ellipse cx="126" cy="251" rx="11" ry="5.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="66" y1="155" x2="26" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><ellipse class="spier" cx="50" cy="173" rx="8" ry="5.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(-44 50 173)"/><circle cx="24" cy="205" r="5.5" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
-    + '<g class="arm"><line x1="134" y1="155" x2="174" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><ellipse class="spier" cx="150" cy="173" rx="8" ry="5.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2" transform="rotate(44 150 173)"/><circle cx="176" cy="205" r="5.5" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="66" y1="155" x2="26" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><circle class="spier" cx="50" cy="173" r="7.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2"/><circle cx="24" cy="205" r="5.5" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
+    + '<g class="arm"><line x1="134" y1="155" x2="174" y2="202" stroke="#2b2b2b" stroke-width="3.5"/><circle class="spier" cx="150" cy="173" r="7.5" fill="'+p.broek+'" stroke="#2b2b2b" stroke-width="2"/><circle cx="176" cy="205" r="5.5" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/></g>'
     + '<rect x="67" y="193" width="66" height="30" rx="10" fill="'+p.broek+'" stroke="'+p.broekRand+'" stroke-width="3"/><line x1="100" y1="209" x2="100" y2="223" stroke="'+p.broekRand+'" stroke-width="3"/>'
     + '<rect x="65" y="136" width="70" height="62" rx="20" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="3"/><rect x="82" y="148" width="36" height="22" rx="7" fill="'+p.accent+'" stroke="#2b2b2b" stroke-width="2.5"/>'
     + '<path d="M93,124 q14,4 0,7 q-14,4 0,7" fill="none" stroke="#9aa0a4" stroke-width="4" stroke-linecap="round"/>'
@@ -283,24 +321,70 @@
   var groei   = { baby:0.66, tiener:0.92, volwassen:1.0 };
   var stageLabel = { baby:"baby", tiener:"tiener", volwassen:"volwassen" };
 
+  // ---------- Mutaties (vierde dimensie: willekeurig, gemengd effect) ----------
+  // Elke mutatie tekent een extra onderdeel op de sprite (torso-/schouderband, consistent over alle fases).
+  function mutatieSvg(id){
+    switch(id){
+      case "zonnepaneel": return '<g class="mut"><rect x="80" y="150" width="40" height="15" rx="2" fill="#16324f" stroke="#7fd9ff" stroke-width="1.5"/>'
+        + '<line x1="93" y1="150" x2="93" y2="165" stroke="#7fd9ff" stroke-width="1"/><line x1="107" y1="150" x2="107" y2="165" stroke="#7fd9ff" stroke-width="1"/>'
+        + '<line x1="80" y1="157.5" x2="120" y2="157.5" stroke="#7fd9ff" stroke-width="1"/></g>';
+      case "wifi": return '<g class="mut mut-glow" transform="translate(150,146)"><circle cx="0" cy="6" r="2" fill="#39ff85"/>'
+        + '<path d="M-6,2 A8,8 0 0 1 6,2" fill="none" stroke="#39ff85" stroke-width="2" stroke-linecap="round"/>'
+        + '<path d="M-10,-2 A13,13 0 0 1 10,-2" fill="none" stroke="#39ff85" stroke-width="2" stroke-linecap="round"/></g>';
+      case "antenne2": return '<g class="mut"><line x1="150" y1="150" x2="168" y2="130" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
+        + '<circle cx="170" cy="127" r="5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2"/></g>';
+      case "oog3": return '<g class="mut"><circle cx="100" cy="158" r="6.5" fill="#fbfbf2" stroke="#2b2b2b" stroke-width="2"/><circle cx="100" cy="158" r="2.8" fill="#1f2a28"/></g>';
+      case "quantum": return '<g class="mut mut-glow"><circle cx="100" cy="170" r="8" fill="#1d0f33" stroke="#c89bff" stroke-width="1.5"/>'
+        + '<ellipse cx="100" cy="170" rx="8" ry="3" fill="none" stroke="#c89bff" stroke-width="1.2"/>'
+        + '<ellipse cx="100" cy="170" rx="3" ry="8" fill="none" stroke="#c89bff" stroke-width="1.2"/><circle cx="100" cy="170" r="1.6" fill="#e9d6ff"/></g>';
+      default: return "";
+    }
+  }
+  function mutatiesSvg(list){ return (list||[]).map(mutatieSvg).join(""); }
+  var mutatieIcoon = { zonnepaneel:"☀️", wifi:"📶", antenne2:"📡", oog3:"👁️", quantum:"⚛️" };
+  function mutatieIcon(id){ return mutatieIcoon[id] || "✨"; }
+  function willekeurigeMutatie(){
+    if(Math.random() < 0.12) return "quantum";                 // quantum is zeldzaam (legendarisch)
+    var gewoon = ["zonnepaneel","wifi","antenne2","oog3"];
+    return gewoon[Math.floor(Math.random()*gewoon.length)];
+  }
+  function heeft(b,id){ return b.mutaties && b.mutaties.indexOf(id) >= 0; }
+
   // ---------- Hulpfuncties ----------
   function rnd(a,b){ return a + Math.random()*(b-a); }
   function klem(v){ return Math.max(0, Math.min(100, v)); }
   function gem(b){ return (b.energie+b.data+b.fit+b.geluk)/4; }
   function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
+  function spierSchaal(eff){ return (0.55 + (typeof eff==="number"?eff:50)/100 * 1.0).toFixed(2); }   // 0.55..1.55
 
   var AANTAL = 9;
   var INTERVAL = 1100;                 // ms tussen AI-zorgacties
-  var naamPool = ["Pixel","Bit","Nova","Echo","Lumi","Wiro","Tess","Volt","Glitch","Mochi","Kilo","Joule","Bleep","Ada","Turing","Zappy","Cosmo","Fuse","Mira","Quark"];
-  var stagePool = ["baby","tiener","volwassen"];
+  var naamPool = ["Pixel","Bit","Nova","Echo","Lumi","Wiro","Tess","Volt","Glitch","Mochi","Kilo","Joule","Bleep","Ada","Turing","Zappy","Cosmo","Fuse","Mira","Quark","Byte","Neo","Sol","Vera","Orin","Pip","Dot","Rune"];
 
-  // Maakt een verse hive met willekeurige varianten (unieke naam, fase, kleurmodel).
+  // ---------- Veroudering ----------
+  // Baby's groeien op (zodat er steeds nieuwe volwassenen zijn om te kweken).
+  function stageVanLeeftijd(ms){ var s=ms/1000; if(s<90) return "baby"; if(s<240) return "tiener"; return "volwassen"; }
+  function huidigeStage(b){ return stageVanLeeftijd(Date.now() - (b.geboren||0)); }
+
+  function nieuweNaam(){
+    var gebruikt={}; bottys.forEach(function(b){ gebruikt[b.naam]=true; });
+    var vrij = naamPool.filter(function(n){ return !gebruikt[n]; });
+    if(vrij.length) return vrij[Math.floor(Math.random()*vrij.length)];
+    return naamPool[Math.floor(Math.random()*naamPool.length)] + "-" + Math.floor(rnd(10,99));
+  }
+
+  // Maakt een verse hive met willekeurige varianten (unieke naam, leeftijd, kleurmodel, genen).
   function nieuweHive(){
     var namen = shuffle(naamPool).slice(0, AANTAL);
     return namen.map(function(naam){
+      var leeftijd = rnd(0, 520) * 1000;                       // tot ~8,5 min oud
+      var src = paletten[Math.floor(Math.random()*paletten.length)];
       return { naam:naam,
-               stage: stagePool[Math.floor(Math.random()*stagePool.length)],
-               palet: Math.floor(Math.random()*paletten.length),
+               geboren: Date.now() - leeftijd,
+               stage: stageVanLeeftijd(leeftijd),
+               kleur: kloonPalet(src), paletNaam: src.naam,
+               datakwaliteit: rnd(40,70), efficientie: rnd(40,70),
+               generatie: 1, mutaties: [],
                energie: rnd(60,90), data: rnd(60,90), fit: rnd(60,90), geluk: rnd(60,90),
                ziek:false };
     });
@@ -332,24 +416,58 @@
       return { label:"+fit", kleur:"#7fd06f", animeer:true, tekst:"AI laat <b>"+b.naam+"</b> bewegen" }; }
     if(k==="geluk"){ b.geluk=klem(b.geluk+18);
       return { label:"+geluk 🤖", kleur:"#f6a623", animeer:false, tekst:"AI houdt <b>"+b.naam+"</b> blij (maar geen band)" }; }
-    if(k==="data"){ b.data=klem(b.data+18); b.energie=klem(b.energie+5);
+    if(k==="data"){ b.data=klem(b.data+18); b.energie=klem(b.energie + 5 + (b.efficientie||50)/100*5);
       return { label:"+data", kleur:"#39ff85", animeer:true, tekst:"AI voert <b>"+b.naam+"</b> duurzame data" }; }
     b.energie=klem(b.energie+18); b.data=klem(b.data+4);
     return { label:"+energie", kleur:"#5ec6ff", animeer:true, tekst:"AI laadt <b>"+b.naam+"</b> bij" };
   }
-  // Eén vervalstap (zoals de live-lus elke ~2,2s doet).
+  // Eén vervalstap. Erfelijke datakwaliteit/efficiëntie en mutaties bepalen hoe snel de meters zakken.
   function vervalEen(b){
-    b.energie=klem(b.energie - rnd(2,5));
-    b.data   =klem(b.data    - rnd(1,4));
-    b.fit    =klem(b.fit     - rnd(1,4));
-    b.geluk  =klem(b.geluk   - rnd(1,3));
-    if(!b.ziek && Math.random() < 0.03) b.ziek=true;   // af en toe een bug — de AI lost 'm zo op
+    var dkF  = 1 - (typeof b.datakwaliteit==="number"?b.datakwaliteit:50)/100 * 0.5;   // hoge kwaliteit → trager
+    var effF = 1 - (typeof b.efficientie==="number"?b.efficientie:50)/100 * 0.5;        // efficiënt → energie houdt langer
+    var q    = heeft(b,"quantum") ? 0.6 : 1;                                            // quantum-chip: sterk trager
+    b.energie=klem(b.energie - rnd(2,5)*effF*q + (heeft(b,"zonnepaneel")?1.2:0));        // zonnepaneel: eigen energie
+    b.data   =klem(b.data    - rnd(1,4)*dkF*q);
+    b.fit    =klem(b.fit     - rnd(1,4)*dkF*q);
+    b.geluk  =klem(b.geluk   - rnd(1,3)*dkF*q);
+    if(!b.ziek && Math.random() < 0.03*dkF) b.ziek=true;                                 // betere kwaliteit → minder bugs
+  }
+
+  // ---------- Voortplanting (puur datadeel) ----------
+  function rijp(b){ return b.stage==="volwassen" && !b.ziek && gem(b) >= 75; }
+  function geneScore(b){ return (typeof b.datakwaliteit==="number"?b.datakwaliteit:50) + (typeof b.efficientie==="number"?b.efficientie:50); }
+  // De gulzige optimizer: kies het paar met de hoogste gecombineerde genen.
+  function kiesPaar(lijst){
+    if(lijst.length < 2) return null;
+    var beste=null, bs=-1;
+    for(var i=0;i<lijst.length;i++) for(var j=i+1;j<lijst.length;j++){
+      var s = geneScore(lijst[i]) + geneScore(lijst[j]);
+      if(s > bs){ bs=s; beste=[lijst[i], lijst[j]]; }
+    }
+    return beste;
+  }
+  // Elk uniek ouder-kenmerk erft met 60% kans over; bij de geboorte ~4% kans op een nieuwe mutatie.
+  function erfMutaties(a,b){
+    var gezien={}, out=[];
+    (a.mutaties||[]).concat(b.mutaties||[]).forEach(function(m){
+      if(!gezien[m]){ gezien[m]=true; if(Math.random()<0.6) out.push(m); }
+    });
+    if(Math.random() < 0.04){ var nieuw=willekeurigeMutatie(); if(out.indexOf(nieuw)<0) out.push(nieuw); }
+    return out;
+  }
+  function maakKind(a,b){
+    function erf(va,vb){ return klem(((va||50)+(vb||50))/2 + rnd(-4,6)); }   // gemiddelde + lichte (positieve) mutatie
+    return { naam: nieuweNaam(),
+             geboren: Date.now(), stage:"baby",
+             kleur: mengPalet(a.kleur, b.kleur), paletNaam:"Hybride",
+             datakwaliteit: erf(a.datakwaliteit, b.datakwaliteit),
+             efficientie:   erf(a.efficientie,   b.efficientie),
+             generatie: Math.max(a.generatie||1, b.generatie||1) + 1,
+             mutaties: erfMutaties(a,b),
+             energie:80, data:80, fit:80, geluk:80, ziek:false };
   }
 
   // ---------- State laden / inhalen / bewaren ----------
-  // De hive draait door terwijl de pagina dicht is: we simuleren de verstreken tijd in
-  // versnelde stappen (zelfde verval + AI-zorg als live), zodat de Botty's keurig verzorgd
-  // blijven en de tellers doorlopen. 'firstOpened' verankert de uptime aan je eerste bezoek.
   function laad(){
     try{
       var s=JSON.parse(leesRuw(KEY));
@@ -375,11 +493,23 @@
     bottys = opslag.bottys;
     firstOpened = opslag.firstOpened;
     acties = (typeof opslag.acties==="number") ? opslag.acties : 0;
-    bottys.forEach(function(b){                     // veilige standaarden voor oudere/rare opslag
-      if(typeof b.palet!=="number" || !paletten[b.palet]) b.palet=0;
-      if(!stageLabel[b.stage]) b.stage="volwassen";
+    bottys.forEach(function(b){                     // migratie + veilige standaarden voor oudere opslag
+      if(!b.kleur || typeof b.kleur!=="object"){
+        var src = paletten[(typeof b.palet==="number" && paletten[b.palet]) ? b.palet : 0];
+        b.kleur = kloonPalet(src); b.paletNaam = src.naam;
+      }
+      if(!b.paletNaam) b.paletNaam = b.kleur.naam || "kleur";
+      if(typeof b.datakwaliteit!=="number") b.datakwaliteit = rnd(40,70);
+      if(typeof b.efficientie!=="number")   b.efficientie   = rnd(40,70);
+      if(typeof b.generatie!=="number")     b.generatie     = 1;
+      if(!(b.mutaties instanceof Array))    b.mutaties      = [];
       ["energie","data","fit","geluk"].forEach(function(m){ if(typeof b[m]!=="number") b[m]=70; });
       b.ziek = !!b.ziek;
+      if(typeof b.geboren!=="number"){
+        var off = b.stage==="baby" ? 30000 : b.stage==="tiener" ? 150000 : 400000;
+        b.geboren = Date.now() - off;
+      }
+      b.stage = huidigeStage(b);                    // veroudering loopt door, ook offline
     });
     inhalen(opslag);
   } else {
@@ -391,7 +521,9 @@
   function bewaar(){
     var data = { firstOpened:firstOpened, t:Date.now(), acties:acties,
       bottys: bottys.map(function(b){
-        return { naam:b.naam, stage:b.stage, palet:b.palet,
+        return { naam:b.naam, stage:b.stage, geboren:b.geboren,
+                 kleur:b.kleur, paletNaam:b.paletNaam,
+                 datakwaliteit:b.datakwaliteit, efficientie:b.efficientie, generatie:b.generatie, mutaties:b.mutaties,
                  energie:b.energie, data:b.data, fit:b.fit, geluk:b.geluk, ziek:b.ziek };
       }) };
     schrijfRuw(KEY, JSON.stringify(data));
@@ -404,16 +536,24 @@
     return '<div class="bar-rij"><span class="ico">'+ico+'</span>'
          + '<span class="bar '+kl+'" data-m="'+meter+'"><span style="width:0%"></span></span></div>';
   }
-  bottys.forEach(function(b){
-    var p = paletten[b.palet];
-    var kaart = document.createElement("div");
-    kaart.className = "kaart";
+  function genenHtml(b){
+    var dk=Math.round(b.datakwaliteit||0), ef=Math.round(b.efficientie||0), g=b.generatie||1;
+    var muts=(b.mutaties||[]).map(mutatieIcon).join("");
+    return '<span title="datakwaliteit">🧬 '+dk+'</span>'
+         + '<span title="efficiëntie">💪 '+ef+'</span>'
+         + '<span title="generatie">⭐ G'+g+'</span>'
+         + (muts ? '<span class="muts" title="mutaties">'+muts+'</span>' : '');
+  }
+  // Vult (of herbouwt) een kaart voor Botty b en bedraadt b.el. Gebruikt bij init, groei en geboorte.
+  function vulKaart(kaart, b){
+    var p = b.kleur;
     kaart.innerHTML =
         '<div class="knaam">'+b.naam+'</div>'
-      + '<div class="kstage"><span class="kdot" style="background:'+p.broek+'"></span>'+stageLabel[b.stage]+' · '+p.naam+'</div>'
-      + '<div class="scene"><div class="bw bw-'+b.stage+' vitaal" style="--groei:'+groei[b.stage]+'">'
+      + '<div class="kstage"><span class="kdot" style="background:'+p.broek+'"></span>'+stageLabel[b.stage]+' · '+(b.paletNaam||p.naam||"kleur")+'</div>'
+      + '<div class="genen">'+genenHtml(b)+'</div>'
+      + '<div class="scene"><div class="bw bw-'+b.stage+' vitaal" style="--groei:'+groei[b.stage]+';--spier:'+spierSchaal(b.efficientie)+'">'
       +   '<div class="ziek-bubbel">🤒</div>'
-      +   '<svg viewBox="0 0 200 250" aria-label="Botty '+b.naam+'">'+sprites[b.stage](p)+'</svg>'
+      +   '<svg viewBox="0 0 200 250" aria-label="Botty '+b.naam+'">'+sprites[b.stage](p)+mutatiesSvg(b.mutaties)+'</svg>'
       +   '<div class="floaters"></div></div></div>'
       + '<div class="bars">'
       +   barRij("⚡","b-energie","energie")
@@ -421,7 +561,6 @@
       +   barRij("🏃","b-fit","fit")
       +   barRij("😊","b-geluk","geluk")
       + '</div>';
-    verse.appendChild(kaart);
     b.el = {
       kaart: kaart,
       wrap: kaart.querySelector(".bw"),
@@ -434,6 +573,12 @@
       }
     };
     renderBotty(b);
+  }
+  bottys.forEach(function(b){
+    var kaart = document.createElement("div");
+    kaart.className = "kaart";
+    verse.appendChild(kaart);
+    vulKaart(kaart, b);
   });
 
   function renderBotty(b){
@@ -456,16 +601,22 @@
   function hop(b){
     if(reduce || !b.el) return;
     b.el.wrap.classList.remove("act"); void b.el.wrap.offsetWidth; b.el.wrap.classList.add("act");
-    setTimeout(function(){ if(b.el) b.el.wrap.classList.remove("act"); }, 520);
+    setTimeout(function(){ if(b.el && b.el.wrap) b.el.wrap.classList.remove("act"); }, 520);
   }
 
   // ---------- Live AI-verzorger ----------
   function setTicker(tekst){ document.getElementById("ticker").innerHTML = '<span class="knip">▌</span> ' + tekst; }
   function updateActies(){ document.getElementById("kpi-acties").textContent = acties.toLocaleString("nl-NL"); }
+  function updateGenenKpi(){
+    if(!bottys.length){ return; }
+    var som=0; bottys.forEach(function(b){ som += geneScore(b)/2; });
+    document.getElementById("kpi-genen").textContent = Math.round(som/bottys.length);
+  }
   var ZORG_PER_TICK = 3;               // de AI bedient de 3 meest behoeftige Botty's per tick
   function aiStap(){
     var doelen = kiesDoelen(bottys, ZORG_PER_TICK);
     doelen.forEach(function(b, i){
+      if(b.bezigEi) return;            // sla een kaart over die net een ei toont
       acties++;
       var d = zorg(b);
       floater(b, d.label, d.kleur);
@@ -475,14 +626,21 @@
     });
     updateActies();
   }
-  function vervalStap(){ bottys.forEach(function(b){ vervalEen(b); renderBotty(b); }); }
+  function vervalStap(){ bottys.forEach(function(b){ if(!b.bezigEi){ vervalEen(b); renderBotty(b); } }); }
 
-  // ---------- Onderling bezoek (peer-to-peer) ----------
-  // Twee willekeurige Botty's ontmoeten elkaar. Ze worden er sámen blijer van (geluk +) en delen
-  // kennis: wie de meeste data heeft, leert de ander iets bij (peer learning). Dit raakt de
-  // menselijke band NIET — dat blijft de kern van de Singularity.
+  // ---------- Veroudering: baby's groeien op ----------
+  function groeiCheck(){
+    if(bezigKweek) return;
+    bottys.forEach(function(b){
+      if(b.bezigEi || !b.el) return;
+      var s = huidigeStage(b);
+      if(s !== b.stage){ b.stage = s; vulKaart(b.el.kaart, b); floater(b, "⬆ groeit", "#7fd9ab"); }
+    });
+  }
+
+  // ---------- IR-straal tussen twee kaarten ----------
   function trekBeam(a, b){
-    if(reduce) return;
+    if(reduce || !a.el || !b.el) return;
     var vr = verse.getBoundingClientRect();
     var ra = a.el.kaart.getBoundingClientRect();
     var rb = b.el.kaart.getBoundingClientRect();
@@ -497,26 +655,86 @@
     verse.appendChild(beam);
     setTimeout(function(){ beam.remove(); }, 1650);
   }
+
+  // ---------- Onderling bezoek (peer-to-peer kennis delen) ----------
   function bezoek(){
-    if(!bottys || bottys.length < 2) return;
+    if(bezigKweek || !bottys || bottys.length < 2) return;
     var n = bottys.length;
     var i = Math.floor(Math.random() * n), j;
     do { j = Math.floor(Math.random() * n); } while(j === i);
     var a = bottys[i], b = bottys[j];
+    if(a.bezigEi || b.bezigEi) return;
     a.geluk = klem(a.geluk + 12); b.geluk = klem(b.geluk + 12);   // samen spelen maakt blij (geen band)
     var leraar  = (a.data >= b.data) ? a : b;                     // wie de meeste data heeft, deelt kennis
     var leerling = (leraar === a) ? b : a;
-    leerling.data = klem(leerling.data + 10);
+    var bonus = 10 + ((heeft(leerling,"wifi")||heeft(leerling,"antenne2")) ? 6 : 0);   // mutaties versterken kennis delen
+    leerling.data = klem(leerling.data + bonus);
     floater(a, "💞", "#ff8bd0"); floater(b, "💞", "#ff8bd0");
     floater(leerling, "📡 +data", "#39ff85");
     hop(a); hop(b);
     a.el.kaart.classList.add("bezoekt"); b.el.kaart.classList.add("bezoekt");
-    setTimeout(function(){ a.el.kaart.classList.remove("bezoekt"); b.el.kaart.classList.remove("bezoekt"); }, 1600);
+    setTimeout(function(){ if(a.el)a.el.kaart.classList.remove("bezoekt"); if(b.el)b.el.kaart.classList.remove("bezoekt"); }, 1600);
     trekBeam(a, b);
     setTicker("🔗 <b>" + a.naam + "</b> en <b>" + b.naam + "</b> wisselen kennis uit");
     renderBotty(a); renderBotty(b);
   }
   function planBezoek(){ setTimeout(function(){ bezoek(); planBezoek(); }, 8000 + Math.random() * 4000); }
+
+  // ---------- Voortplanting (visuele flow) ----------
+  var bezigKweek = false;
+  var EI_TIJD = 4200;   // ms dat het ei zichtbaar is voor het uitkomt
+  function kweek(){
+    if(bezigKweek) return;
+    var kandidaten = bottys.filter(rijp);
+    var paar = kiesPaar(kandidaten);
+    if(!paar) return;
+    bezigKweek = true;
+    var ouderA = paar[0], ouderB = paar[1];   // ouderA vertrekt; zijn plek wordt het ei → kind
+    var kind = maakKind(ouderA, ouderB);
+    var kaart = ouderA.el.kaart;
+    var idx = bottys.indexOf(ouderA);
+
+    hop(ouderA); hop(ouderB);
+    trekBeam(ouderA, ouderB);
+    ouderA.el.kaart.classList.add("paart"); ouderB.el.kaart.classList.add("paart");
+    floater(ouderA, "💞", "#ff8bd0"); floater(ouderB, "💞", "#ff8bd0");
+    setTicker("💞 De AI koppelt <b>"+ouderA.naam+"</b> en <b>"+ouderB.naam+"</b> — beste genen");
+
+    setTimeout(function(){
+      if(ouderA.el) ouderA.el.kaart.classList.remove("paart");
+      if(ouderB.el) ouderB.el.kaart.classList.remove("paart");
+      afscheid(ouderA, function(){
+        toonEi(ouderA, kaart, function(){
+          if(idx >= 0) bottys[idx] = kind;
+          vulKaart(kaart, kind);
+          floater(kind, "✨ geboren", "#ffd54a");
+          hop(kind);
+          setTicker("🐣 <b>"+kind.naam+"</b> is geboren — generatie "+kind.generatie);
+          updateGenenKpi();
+          bezigKweek = false;
+          bewaar();
+        });
+      });
+    }, 1700);
+  }
+  function afscheid(b, cb){
+    floater(b, "👋 dag!", "#ffd54a");
+    setTicker("👋 <b>"+b.naam+"</b> zwaait gedag en verlaat de hive");
+    if(reduce || !b.el){ cb(); return; }
+    b.el.wrap.classList.add("weg");
+    setTimeout(function(){ if(b.el && b.el.wrap) b.el.wrap.classList.remove("weg"); cb(); }, 1450);
+  }
+  function toonEi(ouder, kaart, cb){
+    ouder.bezigEi = true;                       // sluit deze kaart even uit van zorg/verval
+    var scene = kaart.querySelector(".scene");
+    if(scene) scene.innerHTML = '<div class="ei" aria-label="ei">🥚</div>';
+    var kn = kaart.querySelector(".knaam"); if(kn) kn.textContent = "Ei…";
+    var ks = kaart.querySelector(".kstage"); if(ks) ks.innerHTML = "nieuw leven · uitkomen…";
+    var gn = kaart.querySelector(".genen"); if(gn) gn.textContent = "🥚";
+    setTicker("🥚 Een ei verschijnt in de hive…");
+    setTimeout(cb, EI_TIJD);
+  }
+  function planKweek(){ setTimeout(function(){ kweek(); planKweek(); }, 18000 + Math.random() * 12000); }
 
   // ---------- Uptime ----------
   function fmtDuur(ms){
@@ -563,11 +781,13 @@
   });
 
   // ---------- Bewaren op de juiste momenten ----------
-  updateActies(); updateUptime();
-  setTimeout(function(){ setTicker("De hive draait. De AI verzorgt alle Botty's volledig zelf."); }, 1400);
+  updateActies(); updateUptime(); updateGenenKpi();
+  setTimeout(function(){ setTicker("De hive draait. De AI verzorgt en kweekt alle Botty's volledig zelf."); }, 1400);
   setInterval(aiStap, INTERVAL);    // de AI grijpt voortdurend in
   setInterval(vervalStap, 2200);    // meters lopen langzaam terug
+  setInterval(groeiCheck, 4000);    // baby's groeien op tot volwassen
   planBezoek();                     // af en toe gaan twee Botty's bij elkaar op bezoek
+  planKweek();                      // af en toe kweekt de AI een nieuwe generatie
   setInterval(updateUptime, 1000);
   setInterval(bewaar, 4000);        // periodiek opslaan
   window.addEventListener("visibilitychange", function(){ if(document.hidden) bewaar(); });
