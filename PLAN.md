@@ -56,6 +56,25 @@ van het optimaliseren op functie. De AI heeft het nooit "besloten"; het is colla
 - **Effect:** puur visueel — geen invloed op verval of energie. Maakt afstamming én het verlies
   van diversiteit tastbaar: je ziet de hive letterlijk naar één look toe kruipen.
 
+### Vierde dimensie: `mutaties` (willekeurig, gemengd effect) — de tegenkracht
+De eerste drie dimensies duwen de hive allemaal naar **uniformiteit** (selectie + mengen eroderen
+variatie). Mutatie is de enige kracht die de andere kant op werkt: de enige bron van écht nieuwe
+variatie. Samen vormen ze de complete evolutie-lus — *selectie + overerving eroderen, mutatie injecteert*.
+- **Discreet en willekeurig:** anders dan de continue genen verschijnt een mutatie bij de geboorte
+  (uitkomen van het ei) met een kleine kans (≈3–5%) en zit hij in *geen van beide ouders* — het is nieuw.
+- **Erft verder over:** zodra een mutatie bestaat, geeft de drager hem door. Een *nuttige* mutatie
+  wordt dus opgepikt door de gulzige AI en verspreidt zich door de hive — precies hoe aanpassing werkt.
+- **Gemengd effect (gekozen):** de meeste mutaties zijn neutraal/cosmetisch (zoals in de natuur) en
+  driften willekeurig; héél af en toe is er een functionele die zich via selectie door de hive verspreidt.
+- **Voorbeelden** (haken in de bestaande mechaniek):
+  - *Wifi-module* → versterkt het kennis-delen bij bezoekjes (deelt verder/sneller data). [functioneel]
+  - *Zonnepaneel* → genereert eigen energie, minder afhankelijk van voeren. [functioneel]
+  - *Extra antenne* → betere "ontvangst", leert sneller van een bezoek. [functioneel]
+  - *Tweede scherm / extra oog* → cosmetisch (of licht: ziet meer data). [meestal cosmetisch]
+  - *Quantum-chip* → zeldzame "legendarische" mutatie met groot effect.
+- **Educatief:** je ziet meestal nutteloze rariteiten opduiken en verdwijnen, en zelden iets dat de
+  hele hive verovert. Mutatie houdt de hive ook visueel verrassend, tegen de homogenisatie in.
+
 ### Matching (de AI optimaliseert) — gulzige optimizer
 **Gekozen filosofie:** elitaire, gulzige selectie op één eigenschap. De AI kiest
 niet echt een *koppel* dat bij elkaar past, maar simpelweg de twee beste individuen.
@@ -90,6 +109,8 @@ Dat is bewust: het laat zien wat er mísgaat als een AI blind op één getal opt
 - **Uiterlijk** erft over (niet geselecteerd):
   - kleur = mengkleur van beide ouders (per kanaal het gemiddelde), met eventueel lichte mutatie
   - compositie = elk vormgen van één van de ouders
+- **Mutatie:** bij het uitkomen ≈3–5% kans op een willekeurig nieuw kenmerk dat in geen van beide
+  ouders zat (zie "Vierde dimensie"); erft daarna verder over.
 
 ### Flow (visueel)
 - Beam tussen het paar (hergebruik `trekBeam`).
@@ -104,6 +125,8 @@ hun **kleuren en composities** zich generatie na generatie naar een gemiddelde: 
 letterlijk naar één look toe kruipen. De hive wordt "beter", maar ook steeds uniformer, de
 diversiteit sterft af — en de menselijke band blijft 0%. Het mooie/wrange: de AI optimaliseerde
 nooit op uiterlijk; die diversiteit ging verloren als bijproduct van optimaliseren op functie.
+Mutatie is de enige tegenkracht: af en toe duikt er iets nieuws op, en zelden verovert dat de hele
+hive. Zo zie je de volledige evolutie-spanning — eroderen vs. injecteren — in actie.
 Perfect geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren.
 
 ### Nog open (te beslissen in de bouwfase)
@@ -119,6 +142,8 @@ Perfect geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren.
 - **Sprite-refactor:** palet van een vaste index → een palet-*object* per Botty, zodat mengkleuren mogelijk zijn.
 - Welke compositie-/vormgenen we erfelijk maken (antenne, oren, ogen, scherm-/lichaamsvorm) en hoe ver ze variëren.
 - Hoeveel kleurmutatie we toestaan (puur middelen = snelle convergentie; iets mutatie = wat meer leven).
+- Mutatie-kans bij geboorte (≈3–5%) en de complete lijst mutaties + hun (cosmetische/functionele) effecten.
+- Hoe we een verschenen mutatie als sprite-onderdeel tekenen en erfelijk doorgeven.
 
 ---
 
