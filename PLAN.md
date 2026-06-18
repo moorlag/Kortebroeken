@@ -29,14 +29,32 @@ en is een knipoog naar het "paren via infrarood" uit Sprite_tm's Tamagotchi Sing
   om te "verbeteren" over generaties.
 - Zichtbaar als klein badge op de kaart, zodat je het gemiddelde over generaties ziet klimmen.
 
+### Tweede variabele: `efficiëntie` (0–100, erfelijk) — tweede kweekfactor
+Bepaalt hoe goed een Botty **data omzet in energie**. Een tweede erfelijke as naast
+`datakwaliteit`, dus de hive heeft nu een klein "genoom" van twee genen.
+- **Voeren:** efficiënte Botty's halen méér energie uit dezelfde portie data
+  (`energie += dataPortie × (1 + efficiëntie-bonus)`).
+- **Bewegen:** kost energie; efficiënte Botty's hebben **minder energie nodig per beweging**
+  (`energiekost = basis × (1 − efficiëntie-korting)`).
+- **Fenotype → spiermassa:** de winst zet zich om in **grotere spiermassa**. Maak de
+  bestaande `.spier` op de sprite gradueel (schaalbaar) i.p.v. binair, zodat je het gen
+  letterlijk ziet: een efficiënte Botty is zichtbaar gespierder. Zo wordt genotype → fenotype tastbaar.
+- **Netto fokvoordeel:** efficiënte Botty's bewegen goedkoper, bouwen meer spiermassa op en
+  zijn goedkoper te onderhouden — dus een echte reden voor de AI om erop te selecteren.
+
 ### Matching (de AI optimaliseert) — gulzige optimizer
 **Gekozen filosofie:** elitaire, gulzige selectie op één eigenschap. De AI kiest
 niet echt een *koppel* dat bij elkaar past, maar simpelweg de twee beste individuen.
 Dat is bewust: het laat zien wat er mísgaat als een AI blind op één getal optimaliseert.
 
 1. **Poort** — alleen rijpe kandidaten: `stage === "volwassen" && !ziek && gem(b) >= 75`.
-2. De AI scoort elk paar op `a.datakwaliteit + b.datakwaliteit` en kiest het hoogste (`kiesPaar`).
+2. De AI scoort elk paar op de som van **beide** genen:
+   `score = (a.datakwaliteit + a.efficiëntie) + (b.datakwaliteit + b.efficiëntie)` en kiest
+   het hoogste (`kiesPaar`). Nog steeds gulzig/elitair, maar nu over twee assen — de hive
+   convergeert naar Botty's die én lang meegaan (datakwaliteit) én zuinig + gespierd zijn (efficiëntie).
 3. Gebeurt zeldzaam, in de geest van de bestaande `planBezoek`-loop.
+
+> Open: weging van de twee genen in de score (nu gelijk; eventueel één gen zwaarder laten meetellen).
 
 **Overwogen en (voorlopig) afgewezen alternatieven** — bewaard zodat we ze niet opnieuw hoeven uit te zoeken:
 - *Diversiteitswacht* — straf op gelijk `palet`, zodat de hive niet homogeniseert.
@@ -52,7 +70,9 @@ Dat is bewust: het laat zien wat er mísgaat als een AI blind op één getal opt
 
 ### Het kind
 - `stage: "baby"`, palet van één ouder, `generatie: max(ouders)+1`, meters ~80.
-- `datakwaliteit = (a + b)/2 + mutatie` (licht positief gebiast, bijv. −4..+6).
+- Beide genen erven apart over, elk met eigen mutatie (licht positief gebiast, bijv. −4..+6):
+  - `datakwaliteit = (a + b)/2 + mutatie`
+  - `efficiëntie   = (a + b)/2 + mutatie`
 
 ### Flow (visueel)
 - Beam tussen het paar (hergebruik `trekBeam`).
@@ -61,15 +81,21 @@ Dat is bewust: het laat zien wat er mísgaat als een AI blind op één getal opt
 - Het ei komt na een tijdje uit als het kind.
 
 ### Educatieve boodschap
-De gemiddelde datakwaliteit klimt zichtbaar, de hive wordt "beter" — maar ook steeds
-uniformer (paletten convergeren), de diversiteit daalt, en de menselijke band blijft 0%.
-Perfect geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren.
+Beide genen (datakwaliteit én efficiëntie) klimmen zichtbaar — de Botty's gaan steeds
+langer mee én worden steeds gespierder/zuiniger. De hive wordt "beter", maar ook steeds
+uniformer (paletten convergeren, iedereen even buff), de diversiteit daalt, en de
+menselijke band blijft 0%. Perfect geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren.
 
 ### Nog open (te beslissen in de bouwfase)
 - Exacte matchfrequentie / cooldown.
 - Groeit de hive of blijft hij op 9 (1 ouder vertrekt per geboorte = stabiel)?
 - Uitkomsttijd van het ei.
 - Mutatiebreedte en of de mutatie positief gebiast is.
+- Weging van de twee genen in de matchscore (gelijk of één zwaarder).
+- Precieze formules/constanten voor de efficiëntie-bonus (voeren), -korting (bewegen) en de
+  schaal van de zichtbare spiermassa.
+- Of de efficiëntie/energie-economie ook al in de **huidige** verse gaat draaien, of pas
+  meekomt met de voortplanting-update.
 
 ---
 
