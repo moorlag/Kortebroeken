@@ -230,6 +230,19 @@
   .ai-niv-uitleg2{font-size:13px;font-weight:700;color:#41685c;line-height:1.35;}
   .ai-niv-band{font-size:12px;font-weight:900;color:#7b5bc4;margin-top:.45rem;}
 
+  /* ---- Uitlegbare AI toggle ---- */
+  .xai-rij{display:flex;align-items:center;gap:.6rem;margin:.5rem 0 .4rem;padding:.45rem .7rem;
+    background:#f0f7f0;border:1.5px solid #cde6d8;border-radius:12px;cursor:pointer;}
+  .xai-lbl{font-size:13px;font-weight:700;color:var(--groen);flex:1;line-height:1.2;cursor:pointer;}
+  .xai-lbl small{display:block;font-size:11px;font-weight:400;color:#5a7d72;margin-top:2px;}
+  .toggle-sw{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;}
+  .toggle-sw input{opacity:0;width:0;height:0;position:absolute;}
+  .toggle-sw .toggle-track{position:absolute;inset:0;border-radius:11px;background:#c5d8ce;transition:background .2s;cursor:pointer;}
+  .toggle-sw .toggle-track::after{content:"";position:absolute;top:3px;left:3px;width:16px;height:16px;
+    border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.22);}
+  .toggle-sw input:checked + .toggle-track{background:#2f9fe0;}
+  .toggle-sw input:checked + .toggle-track::after{transform:translateX(18px);}
+
   /* ---- Modals ---- */
   .overlay{position:fixed;inset:0;background:rgba(26,92,74,.45);display:none;
     align-items:center;justify-content:center;padding:1rem;z-index:50;}
@@ -767,6 +780,15 @@
         <div class="ai-niv-band" id="ai-niv-band"></div>
       </div>
       <p class="hint">Naar de niveaus van automatisering (Inge Molenaar). Lees meer via ❔ bovenin.</p>
+      <label class="xai-rij" for="xai-toggle">
+        <span class="xai-lbl">🔍 Uitlegbare AI
+          <small>Laat in de tekstballon zien waarom de AI handelt</small>
+        </span>
+        <span class="toggle-sw">
+          <input type="checkbox" id="xai-toggle" aria-label="Uitlegbare AI aan of uit" />
+          <span class="toggle-track"></span>
+        </span>
+      </label>
       <button class="sluit" id="sluit-ai">Klaar</button>
     </div>
   </div>
@@ -814,7 +836,7 @@
              data:0, fit:0, geluk:0, wijs:0, energie:0, t:nu(), laatsteDilemma:nu(),
              geluid:true, tutorialKlaar:false, naam:"Botty",
              ziek:false, ziekSinds:0, leegSinds:0, stadium:"baby",
-             aiNiveau:0, band:0, zorgAi:0, zorgJij:0 };
+             aiNiveau:0, band:0, zorgAi:0, zorgJij:0, uitlegbaar:false };
   }
   // Laadt opgeslagen state. Oudere opslag mist mogelijk nieuwere velden, daarom vult
   // elke regel hieronder een ontbrekend veld aan met een veilige standaardwaarde (migratie).
@@ -836,6 +858,7 @@
         if(typeof s.band !== "number") s.band = 0;
         if(typeof s.zorgAi !== "number") s.zorgAi = 0;     // tellers voor het reflectiescherm
         if(typeof s.zorgJij !== "number") s.zorgJij = 0;
+        if(typeof s.uitlegbaar !== "boolean") s.uitlegbaar = false;
         return s;
       }
     }catch(e){}
@@ -1920,24 +1943,36 @@
     botty.classList.toggle("ai-zorg", state.aiNiveau >= 3);   // gloed alleen als de AI écht handelt
     el("ai-slider").value = state.aiNiveau;                    // schuif gelijkzetten
     toonNiveauInfo(state.aiNiveau);
+    el("xai-toggle").checked = !!state.uitlegbaar;
   }
   function aiZeg(t){ zeg(t, 2600); }
   function markeerKnop(id){ var b=el(id); if(!b) return; b.classList.add("ai-druk"); setTimeout(function(){ b.classList.remove("ai-druk"); }, 700); }
 
   function aiVoer(){
     markeerKnop("btn-voer");
+    var dataBefore = Math.round(state.data);
     var goeden = voedsel.filter(function(v){ return v.goed; });
     eet(goeden[Math.floor(Math.random()*goeden.length)], true);
-    aiZeg("🤖 AI voert duurzame data");
+    aiZeg(state.uitlegbaar ? "🔍 Data was " + dataBefore + "% — ik voer duurzame data 🍃" : "🤖 AI voert duurzame data");
   }
-  function aiBeweeg(){ markeerKnop("btn-beweeg"); beweegActie(true); aiZeg("🤖 AI laat " + naam() + " bewegen"); }
-  function aiHerstel(){ markeerKnop("btn-herstel"); telZorg(true); herstel(); aiZeg("🤖 AI verhelpt de bug"); }
+  function aiBeweeg(){
+    markeerKnop("btn-beweeg");
+    var fitBefore = Math.round(state.fit);
+    beweegActie(true);
+    aiZeg(state.uitlegbaar ? "🔍 Fitheid was " + fitBefore + "% — ik laat " + naam() + " bewegen 🤸" : "🤖 AI laat " + naam() + " bewegen");
+  }
+  function aiHerstel(){
+    markeerKnop("btn-herstel");
+    telZorg(true); herstel();
+    aiZeg(state.uitlegbaar ? "🔍 Bug gedetecteerd → ik verhelp de fout 🛠️" : "🤖 AI verhelpt de bug");
+  }
   function aiTroost(){
     gezicht("verliefd", 1300, "blij");
     if(!huidigeAnim) speel("wuif", 1600, "blij");
     hartjes(); sfx.aai();
+    var gelukBefore = Math.round(state.geluk);
     state.geluk = klem(state.geluk + 6);          // wel blij, maar géén band (dat is jóuw taak)
-    aiZeg("🤖 AI houdt " + naam() + " blij");
+    aiZeg(state.uitlegbaar ? "🔍 Geluk was " + gelukBefore + "% — ik troost " + naam() + " 💙" : "🤖 AI houdt " + naam() + " blij");
     bewaar(); render();
   }
   function aiDilemma(){
@@ -1948,7 +1983,7 @@
     state.wijs += beste.w; state.geluk = klem(state.geluk + 8);
     markeerKnop("btn-dilemma");
     speel("blij", 1800, "blij"); flitsBalk(".b-wijs"); sfx.goed();
-    aiZeg("🤖 AI koos wijs bij een dilemma");
+    aiZeg(state.uitlegbaar ? "🔍 AI koos '" + beste.t + "' (+" + beste.w + " wijsheid) ⚖️" : "🤖 AI koos wijs bij een dilemma");
     state.laatsteDilemma = nu(); bewaar(); render();
   }
   // Niveau 1 (signalering): de AI handelt NIET, maar licht alleen de knop op die aandacht nodig heeft.
@@ -1957,11 +1992,21 @@
   function aiSignalering(){
     if(nu() - laatsSignalering < 11000) return;
     laatsSignalering = nu();
-    if(state.ziek){ markeerKnop("btn-herstel"); return; }
+    if(state.ziek){
+      markeerKnop("btn-herstel");
+      if(state.uitlegbaar) zeg("🔍 Bug gedetecteerd — herstelknop licht op 🔦", 3000);
+      return;
+    }
     var items=[["data",state.data],["energie",state.energie],["fit",state.fit]];
     items.sort(function(a,b){ return a[1]-b[1]; });
     if(items[0][1] >= 60) return;
-    if(items[0][0]==="fit") markeerKnop("btn-beweeg"); else markeerKnop("btn-voer");
+    if(items[0][0]==="fit"){
+      markeerKnop("btn-beweeg");
+      if(state.uitlegbaar) zeg("🔍 Fitheid " + Math.round(state.fit) + "% laag — beweegknop licht op 🔦", 3000);
+    } else {
+      markeerKnop("btn-voer");
+      if(state.uitlegbaar) zeg("🔍 " + (items[0][0]==="data" ? "Data" : "Energie") + " " + Math.round(items[0][1]) + "% laag — voerknop licht op 🔦", 3000);
+    }
   }
 
   // Niveau 2 (advisering): de AI wijst de beste actie aan met een tip én laat de knop oplichten.
@@ -1969,15 +2014,16 @@
   var laatsAdvies = 0;
   function aiAdvies(){
     if(nu() - laatsAdvies < 11000) return;
-    if(state.ziek){ laatsAdvies = nu(); markeerKnop("btn-herstel"); zeg("💡 Tip: herstel de bug van " + naam() + ".", 3200); return; }
+    if(state.ziek){ laatsAdvies = nu(); markeerKnop("btn-herstel"); zeg(state.uitlegbaar ? "🔍 Bug aanwezig — tip: herstel de fout 🛠️" : "💡 Tip: herstel de bug van " + naam() + ".", 3200); return; }
     var items=[["data",state.data],["energie",state.energie],["fit",state.fit],["geluk",state.geluk]];
     items.sort(function(a,b){ return a[1]-b[1]; });
     if(items[0][1] >= 60) return;                  // niets dringends → geen advies
     laatsAdvies = nu();
-    var k = items[0][0];
-    if(k==="fit"){ markeerKnop("btn-beweeg"); zeg("💡 Tip: laat " + naam() + " bewegen voor haar fitheid.", 3200); }
-    else if(k==="geluk"){ zeg("💡 Tip: geef " + naam() + " aandacht — aai haar of doe iets leuks.", 3200); }
-    else { markeerKnop("btn-voer"); zeg("💡 Tip: voer " + naam() + " duurzame data.", 3200); }
+    var k = items[0][0], pct = Math.round(items[0][1]);
+    var pre = state.uitlegbaar ? "🔍 " : "💡 Tip: ";
+    if(k==="fit"){ markeerKnop("btn-beweeg"); zeg(pre + (state.uitlegbaar ? "Fitheid " + pct + "% laag — laat " : "Laat ") + naam() + " bewegen.", 3200); }
+    else if(k==="geluk"){ zeg(pre + (state.uitlegbaar ? "Geluk " + pct + "% laag — geef " : "Geef ") + naam() + " aandacht — aai haar.", 3200); }
+    else { markeerKnop("btn-voer"); zeg(pre + (state.uitlegbaar ? (k==="data"?"Data":"Energie") + " " + pct + "% laag — voer " : "Voer ") + naam() + " duurzame data.", 3200); }
   }
 
   // Eén stap van de assistent (loopt elke 4,5s). Het niveau bepaalt hoeveel de AI zélf doet:
@@ -2028,6 +2074,10 @@
   el("ai-slider").addEventListener("input", function(){ toonNiveauInfo(+this.value); });
   el("ai-slider").addEventListener("change", function(){ sfx.klik(); setNiveau(+this.value); });
   el("sluit-ai").addEventListener("click", function(){ el("overlay-ai").classList.remove("open"); });
+  el("xai-toggle").addEventListener("change", function(){
+    state.uitlegbaar = this.checked; bewaar();
+    toastMsg(this.checked ? "Uitlegbare AI aan 🔍 — ik leg uit waarom ik handel." : "Uitlegbare AI uit.");
+  });
   setInterval(aiStap, 4500);   // assistent doet elke 4,5s hooguit één stap (advies of actie)
 
   // ================= LUSSEN =================
