@@ -61,6 +61,18 @@
           min-height:2.1rem;display:flex;align-items:center;justify-content:center;gap:.4rem;}
   .ticker .knip{color:var(--matrix);}
 
+  /* Tijdversneller */
+  .tijdbalk{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem;justify-content:center;
+            width:100%;max-width:760px;margin:-.5rem 0 1rem;}
+  .tijd-label{font-size:11px;font-weight:900;letter-spacing:.04em;color:#7fd9ab;text-transform:uppercase;margin-right:.2rem;}
+  .tijd-knop{font-family:inherit;cursor:pointer;background:rgba(57,255,133,.08);border:1.5px solid var(--paneel-rand);
+             color:#bdf6d6;font-weight:900;font-size:12px;border-radius:10px;padding:.35rem .7rem;
+             transition:transform .1s,border-color .15s,background .15s;}
+  .tijd-knop:hover{border-color:var(--matrix);}
+  .tijd-knop:active{transform:scale(.95);}
+  .tijd-knop.actief{background:var(--matrix);color:#04140d;border-color:var(--matrix);box-shadow:0 0 12px rgba(57,255,133,.4);}
+  .tijd-hint{font-size:10px;font-weight:700;color:#86a99a;flex-basis:100%;text-align:center;margin-top:.1rem;}
+
   /* Het rooster met Botty's */
   .verse{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;width:100%;max-width:760px;position:relative;}
   .kaart{background:var(--paneel);border:1.5px solid var(--paneel-rand);border-radius:18px;padding:.7rem .6rem .8rem;
@@ -180,6 +192,16 @@
 
     <div class="ticker" id="ticker"><span class="knip">▌</span> De AI initialiseert het Botty-verse…</div>
 
+    <div class="tijdbalk" id="tijdbalk" role="group" aria-label="Tijdversneller">
+      <span class="tijd-label">⏱ Tijd</span>
+      <button class="tijd-knop" type="button" data-s="0" aria-label="Pauze">⏸</button>
+      <button class="tijd-knop actief" type="button" data-s="1">1×</button>
+      <button class="tijd-knop" type="button" data-s="4">4×</button>
+      <button class="tijd-knop" type="button" data-s="16">16×</button>
+      <button class="tijd-knop" type="button" data-s="60">60×</button>
+      <span class="tijd-hint">Versnel de evolutie. Bij hoge snelheid schakelt de verse naar een rustige datamodus (zonder animaties).</span>
+    </div>
+
     <div class="verse" id="verse"></div>
 
     <div class="uitleg">
@@ -221,6 +243,14 @@
   "use strict";
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
   var KEY = "bottyverse-v1";
+
+  // ---------- Tijdversneller ----------
+  // Eén interne simulatieklok: alles (zorg, verval, bezoek, kweek én veroudering) loopt op
+  // 'snelheid' × echte tijd. Boven STIL_DREMPEL schakelt de verse naar een rustige datamodus
+  // (geen zware animaties), zodat hoog tempo soepel blijft.
+  var snelheid = 1;
+  var STIL_DREMPEL = 4;
+  function stil(){ return snelheid > STIL_DREMPEL; }
 
   // ---------- Opslag: localStorage met cookie-fallback (zelfde aanpak als botty.html) ----------
   function schrijfRuw(k,v){
@@ -363,8 +393,9 @@
 
   // ---------- Veroudering ----------
   // Baby's groeien op (zodat er steeds nieuwe volwassenen zijn om te kweken).
+  // 'leeftijd' is opgebouwde simulatie-tijd (ms); loopt mee met de tijdversneller.
   function stageVanLeeftijd(ms){ var s=ms/1000; if(s<90) return "baby"; if(s<240) return "tiener"; return "volwassen"; }
-  function huidigeStage(b){ return stageVanLeeftijd(Date.now() - (b.geboren||0)); }
+  function huidigeStage(b){ return stageVanLeeftijd(b.leeftijd||0); }
 
   function nieuweNaam(){
     var gebruikt={}; bottys.forEach(function(b){ gebruikt[b.naam]=true; });
@@ -380,7 +411,7 @@
       var leeftijd = rnd(0, 520) * 1000;                       // tot ~8,5 min oud
       var src = paletten[Math.floor(Math.random()*paletten.length)];
       return { naam:naam,
-               geboren: Date.now() - leeftijd,
+               leeftijd: leeftijd,
                stage: stageVanLeeftijd(leeftijd),
                kleur: kloonPalet(src), paletNaam: src.naam,
                datakwaliteit: rnd(40,70), efficientie: rnd(40,70),
@@ -458,7 +489,7 @@
   function maakKind(a,b){
     function erf(va,vb){ return klem(((va||50)+(vb||50))/2 + rnd(-4,6)); }   // gemiddelde + lichte (positieve) mutatie
     return { naam: nieuweNaam(),
-             geboren: Date.now(), stage:"baby",
+             leeftijd: 0, stage:"baby",
              kleur: mengPalet(a.kleur, b.kleur), paletNaam:"Hybride",
              datakwaliteit: erf(a.datakwaliteit, b.datakwaliteit),
              efficientie:   erf(a.efficientie,   b.efficientie),
@@ -485,6 +516,10 @@
       if(i % 2 === 0) bottys.forEach(vervalEen);   // verval ~half zo vaak als zorg (2,2s vs 1,1s)
       kiesDoelen(bottys, 3).forEach(zorg);         // AI grijpt in op de 3 meest behoeftige
     }
+    bottys.forEach(function(b){                     // veroudering loopt offline gewoon door (1×)
+      b.leeftijd = (b.leeftijd||0) + away;
+      b.stage = stageVanLeeftijd(b.leeftijd);
+    });
   }
 
   var bottys, firstOpened, acties;
@@ -505,11 +540,11 @@
       if(!(b.mutaties instanceof Array))    b.mutaties      = [];
       ["energie","data","fit","geluk"].forEach(function(m){ if(typeof b[m]!=="number") b[m]=70; });
       b.ziek = !!b.ziek;
-      if(typeof b.geboren!=="number"){
-        var off = b.stage==="baby" ? 30000 : b.stage==="tiener" ? 150000 : 400000;
-        b.geboren = Date.now() - off;
+      if(typeof b.leeftijd!=="number"){             // migreer oude wandklok-tijd → opgebouwde sim-leeftijd
+        if(typeof b.geboren==="number") b.leeftijd = Math.max(0, Date.now() - b.geboren);
+        else b.leeftijd = b.stage==="baby" ? 30000 : b.stage==="tiener" ? 150000 : 400000;
       }
-      b.stage = huidigeStage(b);                    // veroudering loopt door, ook offline
+      b.stage = stageVanLeeftijd(b.leeftijd);
     });
     inhalen(opslag);
   } else {
@@ -521,7 +556,7 @@
   function bewaar(){
     var data = { firstOpened:firstOpened, t:Date.now(), acties:acties,
       bottys: bottys.map(function(b){
-        return { naam:b.naam, stage:b.stage, geboren:b.geboren,
+        return { naam:b.naam, stage:b.stage, leeftijd:b.leeftijd,
                  kleur:b.kleur, paletNaam:b.paletNaam,
                  datakwaliteit:b.datakwaliteit, efficientie:b.efficientie, generatie:b.generatie, mutaties:b.mutaties,
                  energie:b.energie, data:b.data, fit:b.fit, geluk:b.geluk, ziek:b.ziek };
@@ -591,7 +626,7 @@
     b.el.wrap.classList.toggle("ziek", b.ziek);
   }
   function floater(b, tekst, kleur){
-    if(!b.el) return;
+    if(!b.el || stil()) return;
     var f = document.createElement("div");
     f.className = "floater"; f.textContent = tekst; f.style.color = kleur || "#39ff85";
     f.style.left = (40 + Math.random()*20) + "%";
@@ -599,7 +634,7 @@
     setTimeout(function(){ f.remove(); }, 1100);
   }
   function hop(b){
-    if(reduce || !b.el) return;
+    if(reduce || stil() || !b.el) return;
     b.el.wrap.classList.remove("act"); void b.el.wrap.offsetWidth; b.el.wrap.classList.add("act");
     setTimeout(function(){ if(b.el && b.el.wrap) b.el.wrap.classList.remove("act"); }, 520);
   }
@@ -640,7 +675,7 @@
 
   // ---------- IR-straal tussen twee kaarten ----------
   function trekBeam(a, b){
-    if(reduce || !a.el || !b.el) return;
+    if(reduce || stil() || !a.el || !b.el) return;
     var vr = verse.getBoundingClientRect();
     var ra = a.el.kaart.getBoundingClientRect();
     var rb = b.el.kaart.getBoundingClientRect();
@@ -669,16 +704,17 @@
     var leerling = (leraar === a) ? b : a;
     var bonus = 10 + ((heeft(leerling,"wifi")||heeft(leerling,"antenne2")) ? 6 : 0);   // mutaties versterken kennis delen
     leerling.data = klem(leerling.data + bonus);
-    floater(a, "💞", "#ff8bd0"); floater(b, "💞", "#ff8bd0");
-    floater(leerling, "📡 +data", "#39ff85");
-    hop(a); hop(b);
-    a.el.kaart.classList.add("bezoekt"); b.el.kaart.classList.add("bezoekt");
-    setTimeout(function(){ if(a.el)a.el.kaart.classList.remove("bezoekt"); if(b.el)b.el.kaart.classList.remove("bezoekt"); }, 1600);
-    trekBeam(a, b);
+    if(!stil()){
+      floater(a, "💞", "#ff8bd0"); floater(b, "💞", "#ff8bd0");
+      floater(leerling, "📡 +data", "#39ff85");
+      hop(a); hop(b);
+      a.el.kaart.classList.add("bezoekt"); b.el.kaart.classList.add("bezoekt");
+      setTimeout(function(){ if(a.el)a.el.kaart.classList.remove("bezoekt"); if(b.el)b.el.kaart.classList.remove("bezoekt"); }, 1600);
+      trekBeam(a, b);
+    }
     setTicker("🔗 <b>" + a.naam + "</b> en <b>" + b.naam + "</b> wisselen kennis uit");
     renderBotty(a); renderBotty(b);
   }
-  function planBezoek(){ setTimeout(function(){ bezoek(); planBezoek(); }, 8000 + Math.random() * 4000); }
 
   // ---------- Voortplanting (visuele flow) ----------
   var bezigKweek = false;
@@ -688,12 +724,21 @@
     var kandidaten = bottys.filter(rijp);
     var paar = kiesPaar(kandidaten);
     if(!paar) return;
-    bezigKweek = true;
     var ouderA = paar[0], ouderB = paar[1];   // ouderA vertrekt; zijn plek wordt het ei → kind
     var kind = maakKind(ouderA, ouderB);
     var kaart = ouderA.el.kaart;
     var idx = bottys.indexOf(ouderA);
 
+    // Datamodus (hoge snelheid): geen ei-animatie, direct de generatie vervangen.
+    if(stil()){
+      if(idx >= 0) bottys[idx] = kind;
+      if(ouderA.el) vulKaart(ouderA.el.kaart, kind);
+      updateGenenKpi();
+      setTicker("🐣 <b>"+kind.naam+"</b> geboren — generatie "+kind.generatie);
+      return;
+    }
+
+    bezigKweek = true;
     hop(ouderA); hop(ouderB);
     trekBeam(ouderA, ouderB);
     ouderA.el.kaart.classList.add("paart"); ouderB.el.kaart.classList.add("paart");
@@ -734,7 +779,39 @@
     setTicker("🥚 Een ei verschijnt in de hive…");
     setTimeout(cb, EI_TIJD);
   }
-  function planKweek(){ setTimeout(function(){ kweek(); planKweek(); }, 18000 + Math.random() * 12000); }
+
+  // ---------- Simulatie-motor (gedreven door de tijdversneller) ----------
+  // Eén loop verdeelt 'sim-tijd' (= echte tijd × snelheid) over alle gebeurtenissen via accumulators.
+  var STAP_MS = 200;
+  var accZorg = 0, accVerval = 0, accBezoek = 0, accKweek = 0;
+  var bezoekDelay = 8000 + Math.random()*4000;
+  var kweekDelay  = 18000 + Math.random()*12000;
+  function motor(){
+    if(snelheid <= 0) return;                       // pauze
+    var dt = STAP_MS * snelheid;
+    for(var i=0;i<bottys.length;i++){ if(!bottys[i].bezigEi) bottys[i].leeftijd += dt; }
+    accZorg += dt; accVerval += dt; accBezoek += dt; accKweek += dt;
+    var c;
+    c=0; while(accZorg   >= 1100 && c++ < 40){ accZorg   -= 1100; aiStap(); }
+    c=0; while(accVerval >= 2200 && c++ < 40){ accVerval -= 2200; vervalStap(); }
+    if(accBezoek >= bezoekDelay){ accBezoek = 0; bezoekDelay = 8000 + Math.random()*4000; bezoek(); }
+    if(accKweek  >= kweekDelay ){ accKweek  = 0; kweekDelay  = 18000 + Math.random()*12000; kweek(); }
+    groeiCheck();
+  }
+
+  // ---------- Tijdversneller-knoppen ----------
+  (function(){
+    var balk = document.getElementById("tijdbalk");
+    balk.addEventListener("click", function(e){
+      var knop = e.target.closest(".tijd-knop"); if(!knop) return;
+      snelheid = parseInt(knop.getAttribute("data-s"), 10) || 0;
+      var alle = balk.querySelectorAll(".tijd-knop");
+      for(var i=0;i<alle.length;i++) alle[i].classList.toggle("actief", alle[i]===knop);
+      if(snelheid <= 0) setTicker("⏸ De tijd staat stil. De hive bevriest.");
+      else if(stil())   setTicker("⏩ " + snelheid + "× — datamodus: de evolutie raast door.");
+      else              setTicker("▶ " + snelheid + "× — de hive draait" + (snelheid>1?" versneld":"") + ".");
+    });
+  })();
 
   // ---------- Uptime ----------
   function fmtDuur(ms){
@@ -783,11 +860,7 @@
   // ---------- Bewaren op de juiste momenten ----------
   updateActies(); updateUptime(); updateGenenKpi();
   setTimeout(function(){ setTicker("De hive draait. De AI verzorgt en kweekt alle Botty's volledig zelf."); }, 1400);
-  setInterval(aiStap, INTERVAL);    // de AI grijpt voortdurend in
-  setInterval(vervalStap, 2200);    // meters lopen langzaam terug
-  setInterval(groeiCheck, 4000);    // baby's groeien op tot volwassen
-  planBezoek();                     // af en toe gaan twee Botty's bij elkaar op bezoek
-  planKweek();                      // af en toe kweekt de AI een nieuwe generatie
+  setInterval(motor, STAP_MS);      // de simulatie-motor: zorg, verval, bezoek, kweek én veroudering
   setInterval(updateUptime, 1000);
   setInterval(bewaar, 4000);        // periodiek opslaan
   window.addEventListener("visibilitychange", function(){ if(document.hidden) bewaar(); });
