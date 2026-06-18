@@ -6,11 +6,11 @@
 <title>Botty-verse — De Singularity</title>
 <meta name="theme-color" content="#04140d" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>" />
-<meta name="description" content="Het Botty-verse: een singularity waarin 7 Botty's volledig automatisch door de AI worden verzorgd. Perfect onderhouden — maar zonder menselijke band. Naar de Tamagotchi Singularity en de niveaus van automatisering." />
+<meta name="description" content="Het Botty-verse: een singularity waarin 9 Botty's volledig automatisch door de AI worden verzorgd. Ze gaan onderling op bezoek en delen kennis. Perfect onderhouden — maar zonder menselijke band. Naar de Tamagotchi Singularity en de niveaus van automatisering." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://moorlag.github.io/Kortebroeken/bottyverse.html" />
 <meta property="og:title" content="Botty-verse — De Singularity" />
-<meta property="og:description" content="7 Botty's, volledig verzorgd door de AI. Perfect onderhouden — maar de menselijke band blijft 0%." />
+<meta property="og:description" content="9 Botty's, volledig verzorgd door de AI. Ze gaan onderling op bezoek en delen kennis — maar de menselijke band blijft 0%." />
 <meta property="og:image" content="https://moorlag.github.io/Kortebroeken/social-preview.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -62,7 +62,7 @@
   .ticker .knip{color:var(--matrix);}
 
   /* Het rooster met Botty's */
-  .verse{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.8rem;width:100%;max-width:760px;}
+  .verse{display:grid;grid-template-columns:repeat(3,1fr);gap:.8rem;width:100%;max-width:760px;position:relative;}
   .kaart{background:var(--paneel);border:1.5px solid var(--paneel-rand);border-radius:18px;padding:.7rem .6rem .8rem;
          backdrop-filter:blur(3px);position:relative;overflow:hidden;}
   .kaart::after{content:"";position:absolute;inset:0;border-radius:18px;pointer-events:none;
@@ -73,7 +73,7 @@
   .kdot{width:8px;height:8px;border-radius:50%;display:inline-block;border:1px solid rgba(255,255,255,.4);}
 
   .scene{position:relative;height:128px;display:flex;align-items:flex-end;justify-content:center;margin-bottom:.4rem;}
-  .bw{width:96px;position:relative;animation:adem 3.4s ease-in-out infinite;}
+  .bw{width:min(96px,88%);position:relative;animation:adem 3.4s ease-in-out infinite;}
   .bw svg{width:100%;height:auto;display:block;overflow:visible;transform:scale(var(--groei,1));transform-origin:50% 100%;}
   @keyframes adem{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
   .bw .antenne{transform-box:view-box;transform-origin:100px 46px;animation:wieber 3.4s ease-in-out infinite;}
@@ -105,6 +105,15 @@
   .b-fit>span{background:linear-gradient(90deg,#7fd06f,#57b85f);}
   .b-geluk>span{background:linear-gradient(90deg,#ffce54,#f6a623);}
 
+  /* ---- Onderling bezoek: IR-link tussen twee kaarten + gloed ---- */
+  .beam{position:absolute;height:4px;transform-origin:0 50%;pointer-events:none;z-index:6;border-radius:3px;
+        background:linear-gradient(90deg,rgba(127,217,255,0),#7fd9ff,#fff,#39ff85,rgba(57,255,133,0));
+        background-size:220% 100%;box-shadow:0 0 12px rgba(127,217,255,.85),0 0 22px rgba(57,255,133,.45);
+        opacity:0;animation:beampuls 1.6s ease forwards, beamstroom 1.6s linear;}
+  @keyframes beampuls{0%{opacity:0;}18%{opacity:.95;}75%{opacity:.85;}100%{opacity:0;}}
+  @keyframes beamstroom{from{background-position:140% 0;}to{background-position:-140% 0;}}
+  .kaart.bezoekt{box-shadow:0 0 0 2px #7fd9ff,0 0 22px rgba(127,217,255,.55);transition:box-shadow .2s;}
+
   /* Uitleg + acties onderaan */
   .uitleg{width:100%;max-width:760px;background:var(--paneel);border:1.5px solid var(--paneel-rand);border-radius:16px;
           padding:1rem 1.1rem;margin-top:1.3rem;font-size:13px;font-weight:700;color:#c7eedb;line-height:1.5;}
@@ -126,11 +135,12 @@
 
   @media (max-width:430px){
     h1{font-size:25px;}
-    .verse{grid-template-columns:repeat(2,1fr);}
+    .verse{gap:.45rem;}
   }
   @media (prefers-reduced-motion: reduce){
     #rain{display:none;}
     .bw,.bw .antenne,.bw.act,.floater{animation:none!important;}
+    .beam{display:none;}
   }
 </style>
 </head>
@@ -139,12 +149,12 @@
   <div class="inhoud">
     <p class="logo">NOLAI — Nationaal OnderwijsLab AI</p>
     <h1>Botty-verse</h1>
-    <p class="ondertitel">De <strong>Singularity</strong>: zeven Botty's leven in een simulatie en worden
-      volledig automatisch door de AI verzorgd. De hive draait door, ook als je weg bent — de status wordt
-      in je browser bewaard, dus de klok loopt verder vanaf je allereerste bezoek.</p>
+    <p class="ondertitel">De <strong>Singularity</strong>: negen Botty's leven in een simulatie en worden
+      volledig automatisch door de AI verzorgd. Ze gaan ook onderling op bezoek en delen kennis. De hive draait door,
+      ook als je weg bent — de status wordt in je browser bewaard, dus de klok loopt verder vanaf je allereerste bezoek.</p>
 
     <div class="dash">
-      <div class="kpi"><div class="label">Botty's</div><div class="waarde" id="kpi-aantal">7</div><div class="sub">in de hive</div></div>
+      <div class="kpi"><div class="label">Botty's</div><div class="waarde" id="kpi-aantal">9</div><div class="sub">in de hive</div></div>
       <div class="kpi"><div class="label">AI-zorgacties</div><div class="waarde" id="kpi-acties">0</div><div class="sub">automatisch uitgevoerd</div></div>
       <div class="kpi"><div class="label">Draait al</div><div class="waarde" id="kpi-uptime">0s</div><div class="sub">zonder mens</div></div>
       <div class="kpi band"><div class="label">Menselijke band</div><div class="waarde" id="kpi-band">0% 🤍</div><div class="sub">niemand geeft aandacht</div></div>
@@ -162,6 +172,9 @@
         levensfase en kleurmodel.</p>
       <p>Toch blijft één meter leeg: de <strong>menselijke band</strong>. Die groeit namelijk alleen door <em>jouw</em>
         aandacht, en in de Singularity is er geen mens die zorgt. Perfect onderhouden is dus niet hetzelfde als een band hebben.</p>
+      <p>De Botty's gaan af en toe bij elkaar <strong>op bezoek</strong> (de blauwgroene lichtstraal — een knipoog naar de
+        infrarood-link van de echte Tamagotchi's). Ze <em>delen dan kennis</em>: wie de meeste data heeft, leert de ander iets bij,
+        en ze worden er samen blijer van. Maar let op — ook dat onderlinge plezier laat de menselijke band niet groeien.</p>
       <p>Geïnspireerd op de <a href="https://spritesmods.com/?art=tamasingularity" target="_blank" rel="noopener">Tamagotchi
         Singularity</a> van Jeroen Domburg (Sprite_tm): een hive van Tamagotchi's die maandenlang prima door een
         AI verzorgd werd — volledig zonder mens.</p>
@@ -275,7 +288,7 @@
   function gem(b){ return (b.energie+b.data+b.fit+b.geluk)/4; }
   function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; } return a; }
 
-  var AANTAL = 7;
+  var AANTAL = 9;
   var INTERVAL = 1100;                 // ms tussen AI-zorgacties
   var naamPool = ["Pixel","Bit","Nova","Echo","Lumi","Wiro","Tess","Volt","Glitch","Mochi","Kilo","Joule","Bleep","Ada","Turing","Zappy","Cosmo","Fuse","Mira","Quark"];
   var stagePool = ["baby","tiener","volwassen"];
@@ -299,7 +312,7 @@
     return items[0][0];
   }
   // Geeft de n meest behoeftige Botty's terug: zieke eerst, daarna oplopend gemiddelde.
-  // De AI bedient er meerdere per tick, anders kan de zorg het verval van 7 Botty's niet bijbenen.
+  // De AI bedient er meerdere per tick, anders kan de zorg het verval van 9 Botty's niet bijbenen.
   function kiesDoelen(lijst, n){
     var gesorteerd = lijst.slice().sort(function(a,b){
       if(a.ziek !== b.ziek) return a.ziek ? -1 : 1;   // zieke Botty's krijgen voorrang
@@ -409,6 +422,7 @@
       + '</div>';
     verse.appendChild(kaart);
     b.el = {
+      kaart: kaart,
       wrap: kaart.querySelector(".bw"),
       floaters: kaart.querySelector(".floaters"),
       bars: {
@@ -462,6 +476,47 @@
   }
   function vervalStap(){ bottys.forEach(function(b){ vervalEen(b); renderBotty(b); }); }
 
+  // ---------- Onderling bezoek (peer-to-peer) ----------
+  // Twee willekeurige Botty's ontmoeten elkaar. Ze worden er sámen blijer van (geluk +) en delen
+  // kennis: wie de meeste data heeft, leert de ander iets bij (peer learning). Dit raakt de
+  // menselijke band NIET — dat blijft de kern van de Singularity.
+  function trekBeam(a, b){
+    if(reduce) return;
+    var vr = verse.getBoundingClientRect();
+    var ra = a.el.kaart.getBoundingClientRect();
+    var rb = b.el.kaart.getBoundingClientRect();
+    var x1 = ra.left + ra.width/2 - vr.left, y1 = ra.top + ra.height/2 - vr.top;
+    var x2 = rb.left + rb.width/2 - vr.left, y2 = rb.top + rb.height/2 - vr.top;
+    var dx = x2 - x1, dy = y2 - y1;
+    var len = Math.sqrt(dx*dx + dy*dy), ang = Math.atan2(dy, dx) * 180 / Math.PI;
+    var beam = document.createElement("div");
+    beam.className = "beam";
+    beam.style.left = x1 + "px"; beam.style.top = (y1 - 2) + "px";
+    beam.style.width = len + "px"; beam.style.transform = "rotate(" + ang + "deg)";
+    verse.appendChild(beam);
+    setTimeout(function(){ beam.remove(); }, 1650);
+  }
+  function bezoek(){
+    if(!bottys || bottys.length < 2) return;
+    var n = bottys.length;
+    var i = Math.floor(Math.random() * n), j;
+    do { j = Math.floor(Math.random() * n); } while(j === i);
+    var a = bottys[i], b = bottys[j];
+    a.geluk = klem(a.geluk + 12); b.geluk = klem(b.geluk + 12);   // samen spelen maakt blij (geen band)
+    var leraar  = (a.data >= b.data) ? a : b;                     // wie de meeste data heeft, deelt kennis
+    var leerling = (leraar === a) ? b : a;
+    leerling.data = klem(leerling.data + 10);
+    floater(a, "💞", "#ff8bd0"); floater(b, "💞", "#ff8bd0");
+    floater(leerling, "📡 +data", "#39ff85");
+    hop(a); hop(b);
+    a.el.kaart.classList.add("bezoekt"); b.el.kaart.classList.add("bezoekt");
+    setTimeout(function(){ a.el.kaart.classList.remove("bezoekt"); b.el.kaart.classList.remove("bezoekt"); }, 1600);
+    trekBeam(a, b);
+    setTicker("🔗 <b>" + a.naam + "</b> en <b>" + b.naam + "</b> wisselen kennis uit");
+    renderBotty(a); renderBotty(b);
+  }
+  function planBezoek(){ setTimeout(function(){ bezoek(); planBezoek(); }, 8000 + Math.random() * 4000); }
+
   // ---------- Uptime ----------
   function fmtDuur(ms){
     var s=Math.floor(ms/1000), m=Math.floor(s/60), u=Math.floor(m/60), d=Math.floor(u/24);
@@ -511,6 +566,7 @@
   setTimeout(function(){ setTicker("De hive draait. De AI verzorgt alle Botty's volledig zelf."); }, 1400);
   setInterval(aiStap, INTERVAL);    // de AI grijpt voortdurend in
   setInterval(vervalStap, 2200);    // meters lopen langzaam terug
+  planBezoek();                     // af en toe gaan twee Botty's bij elkaar op bezoek
   setInterval(updateUptime, 1000);
   setInterval(bewaar, 4000);        // periodiek opslaan
   window.addEventListener("visibilitychange", function(){ if(document.hidden) bewaar(); });
