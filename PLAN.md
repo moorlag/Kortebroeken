@@ -29,10 +29,26 @@ en is een knipoog naar het "paren via infrarood" uit Sprite_tm's Tamagotchi Sing
   om te "verbeteren" over generaties.
 - Zichtbaar als klein badge op de kaart, zodat je het gemiddelde over generaties ziet klimmen.
 
-### Matching (de AI optimaliseert)
+### Matching (de AI optimaliseert) — gulzige optimizer
+**Gekozen filosofie:** elitaire, gulzige selectie op één eigenschap. De AI kiest
+niet echt een *koppel* dat bij elkaar past, maar simpelweg de twee beste individuen.
+Dat is bewust: het laat zien wat er mísgaat als een AI blind op één getal optimaliseert.
+
 1. **Poort** — alleen rijpe kandidaten: `stage === "volwassen" && !ziek && gem(b) >= 75`.
 2. De AI scoort elk paar op `a.datakwaliteit + b.datakwaliteit` en kiest het hoogste (`kiesPaar`).
 3. Gebeurt zeldzaam, in de geest van de bestaande `planBezoek`-loop.
+
+**Overwogen en (voorlopig) afgewezen alternatieven** — bewaard zodat we ze niet opnieuw hoeven uit te zoeken:
+- *Diversiteitswacht* — straf op gelijk `palet`, zodat de hive niet homogeniseert.
+  Afgewezen: zwakt juist de boodschap af die we willen laten zien.
+- *Verwantschapswacht* — naaste familie (ouder–kind, broer/zus) niet laten matchen
+  via afstammingsregistratie. Afgewezen voor nu; past bij de diversiteitswacht.
+- *Kansgewogen selectie (roulettewiel)* — betere Botty's meer kans i.p.v. altijd de
+  absolute top-2, zoals echte genetische algoritmes. Afgewezen: behoudt te veel variatie
+  voor het verhaal dat we willen vertellen.
+
+> Deze alternatieven vertellen het "verstandige selector"-verhaal i.p.v. de "waarschuwende
+> optimizer". Bewaard als mogelijke variant/uitbreiding (bv. een toggle die beide laat zien).
 
 ### Het kind
 - `stage: "baby"`, palet van één ouder, `generatie: max(ouders)+1`, meters ~80.
