@@ -42,6 +42,20 @@ Bepaalt hoe goed een Botty **data omzet in energie**. Een tweede erfelijke as na
 - **Netto fokvoordeel:** efficiënte Botty's bewegen goedkoper, bouwen meer spiermassa op en
   zijn goedkoper te onderhouden — dus een echte reden voor de AI om erop te selecteren.
 
+### Derde variabele: `uiterlijk` (erfelijk, NIET geselecteerd) — zichtbare afstamming
+Anders dan de twee kweekfactoren stuurt de AI hier **niet** op; uiterlijk erft alleen over.
+Juist daardoor wordt de boodschap zichtbaar: omdat steeds dezelfde functionele elite paart,
+vervaagt het uiterlijk vanzelf naar een gemiddelde — diversiteit sterft af als *bijproduct*
+van het optimaliseren op functie. De AI heeft het nooit "besloten"; het is collaterale schade.
+- **Kleur:** het kind krijgt een **mengkleur** van beide ouders (per kanaal het gemiddelde van
+  `broek` / `scherm` / `accent` / …). Vereist dat een Botty een palet-*object* draagt i.p.v.
+  een vaste index, zodat nieuwe tussenkleuren kunnen ontstaan. Startpopulatie: de 7 bestaande paletten.
+- **Compositie:** een setje erfelijke vormgenen (bijv. antenne-lengte, oor-grootte, oog-stijl,
+  scherm-/lichaamsvorm). Elk gen komt van één ouder (of gemengd waar numeriek), zodat het kind
+  een herkenbare combinatie van beide ouders is.
+- **Effect:** puur visueel — geen invloed op verval of energie. Maakt afstamming én het verlies
+  van diversiteit tastbaar: je ziet de hive letterlijk naar één look toe kruipen.
+
 ### Matching (de AI optimaliseert) — gulzige optimizer
 **Gekozen filosofie:** elitaire, gulzige selectie op één eigenschap. De AI kiest
 niet echt een *koppel* dat bij elkaar past, maar simpelweg de twee beste individuen.
@@ -69,10 +83,13 @@ Dat is bewust: het laat zien wat er mísgaat als een AI blind op één getal opt
 > optimizer". Bewaard als mogelijke variant/uitbreiding (bv. een toggle die beide laat zien).
 
 ### Het kind
-- `stage: "baby"`, palet van één ouder, `generatie: max(ouders)+1`, meters ~80.
-- Beide genen erven apart over, elk met eigen mutatie (licht positief gebiast, bijv. −4..+6):
+- `stage: "baby"`, `generatie: max(ouders)+1`, meters ~80.
+- **Twee kweekgenen** erven apart over, elk met eigen mutatie (licht positief gebiast, bijv. −4..+6):
   - `datakwaliteit = (a + b)/2 + mutatie`
   - `efficiëntie   = (a + b)/2 + mutatie`
+- **Uiterlijk** erft over (niet geselecteerd):
+  - kleur = mengkleur van beide ouders (per kanaal het gemiddelde), met eventueel lichte mutatie
+  - compositie = elk vormgen van één van de ouders
 
 ### Flow (visueel)
 - Beam tussen het paar (hergebruik `trekBeam`).
@@ -81,10 +98,13 @@ Dat is bewust: het laat zien wat er mísgaat als een AI blind op één getal opt
 - Het ei komt na een tijdje uit als het kind.
 
 ### Educatieve boodschap
-Beide genen (datakwaliteit én efficiëntie) klimmen zichtbaar — de Botty's gaan steeds
-langer mee én worden steeds gespierder/zuiniger. De hive wordt "beter", maar ook steeds
-uniformer (paletten convergeren, iedereen even buff), de diversiteit daalt, en de
-menselijke band blijft 0%. Perfect geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren.
+Beide kweekgenen (datakwaliteit én efficiëntie) klimmen zichtbaar — de Botty's gaan steeds
+langer mee én worden steeds gespierder/zuiniger. En omdat steeds dezelfde elite paart, mengen
+hun **kleuren en composities** zich generatie na generatie naar een gemiddelde: je ziet de hive
+letterlijk naar één look toe kruipen. De hive wordt "beter", maar ook steeds uniformer, de
+diversiteit sterft af — en de menselijke band blijft 0%. Het mooie/wrange: de AI optimaliseerde
+nooit op uiterlijk; die diversiteit ging verloren als bijproduct van optimaliseren op functie.
+Perfect geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren.
 
 ### Nog open (te beslissen in de bouwfase)
 - Exacte matchfrequentie / cooldown.
@@ -96,6 +116,9 @@ menselijke band blijft 0%. Perfect geoptimaliseerd, perfect verzorgd, maar er ga
   schaal van de zichtbare spiermassa.
 - Of de efficiëntie/energie-economie ook al in de **huidige** verse gaat draaien, of pas
   meekomt met de voortplanting-update.
+- **Sprite-refactor:** palet van een vaste index → een palet-*object* per Botty, zodat mengkleuren mogelijk zijn.
+- Welke compositie-/vormgenen we erfelijk maken (antenne, oren, ogen, scherm-/lichaamsvorm) en hoe ver ze variëren.
+- Hoeveel kleurmutatie we toestaan (puur middelen = snelle convergentie; iets mutatie = wat meer leven).
 
 ---
 
