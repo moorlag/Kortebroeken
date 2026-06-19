@@ -164,6 +164,12 @@
   .alumni-leeg a{color:#d4945a;text-decoration:none;}
   .alumni-leeg a:hover{text-decoration:underline;}
 
+  /* Mededeling: de verse is verhuisd naar een ander domein */
+  .alumni-notice{width:100%;background:rgba(212,148,90,.1);border:1.5px solid rgba(212,148,90,.4);border-radius:12px;
+                 padding:.7rem 1rem;margin-bottom:1.2rem;font-size:12.5px;font-weight:700;color:#e8c79e;line-height:1.45;text-align:center;}
+  .alumni-notice a{color:#ffd24a;font-weight:900;text-decoration:none;}
+  .alumni-notice a:hover{text-decoration:underline;}
+
   .navlinks{display:flex;flex-wrap:wrap;gap:1.1rem;justify-content:center;margin-top:1.8rem;}
   .navlinks a{font-size:13px;font-weight:800;color:#ffd24a;text-decoration:none;}
   .navlinks a:hover{text-decoration:underline;}
@@ -199,11 +205,14 @@
     <div class="deck" id="deck"></div>
 
     <div class="serie-kop" id="alumni-kop" style="display:none">👋 Alumni-collectie — Botty's die iets anders zijn gaan doen</div>
+    <p class="alumni-notice" id="alumni-notice" style="display:none">🚚 De verse is verhuisd naar
+      <a href="https://botty-verse.github.io/singularity/">botty-verse.github.io/singularity</a>.
+      Nieuwe alumni verzamel je daar. Hieronder zie je wat er eerder op dit domein is verzameld.</p>
     <div class="deck" id="alumni-deck"></div>
 
     <div class="navlinks">
       <a href="botty.html">← Speel met je eigen Botty</a>
-      <a href="bottyverse.html">🌐 Botty-verse</a>
+      <a href="https://botty-verse.github.io/singularity/">🌐 Botty-verse</a>
       <a href="index.html">de kortebroekenmeter</a>
     </div>
   </div>
@@ -539,8 +548,10 @@
   var deck = document.getElementById("deck");
   kaarten.forEach(function(k){ deck.appendChild(bouwKaart(k)); });
 
-  var alumniDeck = document.getElementById("alumni-deck");
-  var alumniKop  = document.getElementById("alumni-kop");
+  var alumniDeck   = document.getElementById("alumni-deck");
+  var alumniKop    = document.getElementById("alumni-kop");
+  var alumniNotice = document.getElementById("alumni-notice");
+  var VERSE_URL    = "https://botty-verse.github.io/singularity/";
 
   function laadAlumni(){
     try{
@@ -554,15 +565,16 @@
   var alumniLijst = laadAlumni();
   var totaalAlumni = alumniLijst.length;
 
+  alumniKop.style.display = "";
+  alumniNotice.style.display = "";
   if(alumniLijst.length === 0){
-    alumniKop.style.display = "";
     var leeg = document.createElement("p");
     leeg.className = "alumni-leeg";
-    leeg.innerHTML = 'Nog geen alumni — bezoek de <a href="bottyverse.html">🌐 verse</a> '
-      + 'en laat wat Botty\'s vertrekken voor je eerste kaarten.';
+    leeg.innerHTML = 'Nog geen alumni op dit domein — bezoek de '
+      + '<a href="'+VERSE_URL+'">🌐 verse</a> en laat wat Botty\'s vertrekken. '
+      + 'Je collectie verschijnt dan daar.';
     alumniDeck.appendChild(leeg);
   } else {
-    alumniKop.style.display = "";
     alumniLijst.forEach(function(v, i){
       alumniDeck.appendChild(bouwAlumniKaart(v, i+1, totaalAlumni));
     });
@@ -624,7 +636,8 @@
     // Alumni
     var toonAlumni = (f==="alle" || f==="alumnus");
     alumniDeck.querySelectorAll(".tcg, .alumni-leeg").forEach(function(el){ el.style.display = toonAlumni ? "" : "none"; });
-    alumniKop.style.display = (f==="alle" || f==="alumnus") ? "" : "none";
+    alumniKop.style.display = toonAlumni ? "" : "none";
+    alumniNotice.style.display = toonAlumni ? "" : "none";
   });
 
   // ---------- Sterretjes-achtergrond ----------
