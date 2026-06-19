@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#0c3d24"/>
+      <stop offset="45%" stop-color="#06291a"/>
+      <stop offset="100%" stop-color="#03140d"/>
+    </radialGradient>
+    <linearGradient id="broek" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#4dffa0"/>
+      <stop offset="100%" stop-color="#23c46e"/>
+    </linearGradient>
+    <linearGradient id="scherm" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#0a2a1f"/>
+      <stop offset="100%" stop-color="#072018"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#39ff85" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#39ff85" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#39ff85" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="soft" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6"/>
+    </filter>
+  </defs>
+
+  <!-- Achtergrond (vult vierkant; veilig voor cirkelcrop) -->
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+
+  <!-- Matrix-stippen / datasfeer -->
+  <g fill="#39ff85" opacity="0.16">
+    <circle cx="150" cy="200" r="4"/><circle cx="210" cy="320" r="3"/><circle cx="120" cy="470" r="3"/>
+    <circle cx="180" cy="640" r="4"/><circle cx="250" cy="790" r="3"/><circle cx="860" cy="220" r="4"/>
+    <circle cx="900" cy="360" r="3"/><circle cx="820" cy="500" r="3"/><circle cx="880" cy="660" r="4"/>
+    <circle cx="800" cy="800" r="3"/><circle cx="500" cy="120" r="3"/><circle cx="640" cy="150" r="3"/>
+    <circle cx="380" cy="140" r="3"/>
+  </g>
+
+  <!-- Hex-hive ring -->
+  <g fill="none" stroke="#39ff85" stroke-width="3" opacity="0.30">
+    <g transform="translate(512 512)">
+      <g transform="rotate(0)  translate(0 -430)"><path d="M0,-34 L29.4,-17 L29.4,17 L0,34 L-29.4,17 L-29.4,-17 Z"/></g>
+      <g transform="rotate(60) translate(0 -430)"><path d="M0,-34 L29.4,-17 L29.4,17 L0,34 L-29.4,17 L-29.4,-17 Z"/></g>
+      <g transform="rotate(120)translate(0 -430)"><path d="M0,-34 L29.4,-17 L29.4,17 L0,34 L-29.4,17 L-29.4,-17 Z"/></g>
+      <g transform="rotate(180)translate(0 -430)"><path d="M0,-34 L29.4,-17 L29.4,17 L0,34 L-29.4,17 L-29.4,-17 Z"/></g>
+      <g transform="rotate(240)translate(0 -430)"><path d="M0,-34 L29.4,-17 L29.4,17 L0,34 L-29.4,17 L-29.4,-17 Z"/></g>
+      <g transform="rotate(300)translate(0 -430)"><path d="M0,-34 L29.4,-17 L29.4,17 L0,34 L-29.4,17 L-29.4,-17 Z"/></g>
+    </g>
+  </g>
+
+  <!-- Gloed achter de Botty -->
+  <circle cx="512" cy="540" r="300" fill="url(#glow)"/>
+
+  <!-- ===== Botty (geschaald en gecentreerd) ===== -->
+  <g transform="translate(512 545) scale(3.05) translate(-100 -76)">
+    <!-- antenne -->
+    <g>
+      <path d="M100,46 Q96,20 112,10" fill="none" stroke="#0c2a1d" stroke-width="3" stroke-linecap="round"/>
+      <circle cx="114" cy="6" r="7.5" fill="#39ff85" stroke="#0c2a1d" stroke-width="2.5"/>
+      <circle cx="114" cy="6" r="7.5" fill="#39ff85" filter="url(#soft)" opacity="0.7"/>
+    </g>
+    <!-- kop -->
+    <circle cx="52" cy="76" r="13" fill="url(#broek)" stroke="#0c2a1d" stroke-width="2.5"/>
+    <circle cx="52" cy="76" r="6" fill="#0c2a1d"/>
+    <circle cx="148" cy="76" r="13" fill="url(#broek)" stroke="#0c2a1d" stroke-width="2.5"/>
+    <circle cx="148" cy="76" r="6" fill="#0c2a1d"/>
+    <path d="M72,46 Q52,48 52,76 Q52,108 72,122 Q100,134 128,122 Q148,108 148,76 Q148,48 128,46 Q100,40 72,46 Z"
+          fill="#0a2a1f" stroke="#39ff85" stroke-width="3"/>
+    <!-- scherm-gezicht -->
+    <path d="M80,64 Q100,60 120,64 Q131,66 125,79 L107,106 Q100,115 93,106 L75,79 Q69,66 80,64 Z"
+          fill="url(#scherm)" stroke="#39ff85" stroke-width="1.5"/>
+    <line x1="90" y1="78" x2="90" y2="90" stroke="#39ff85" stroke-width="4.5" stroke-linecap="round"/>
+    <line x1="110" y1="78" x2="110" y2="90" stroke="#39ff85" stroke-width="4.5" stroke-linecap="round"/>
+    <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#39ff85"/>
+  </g>
+
+  <!-- Wordmark -->
+  <text x="512" y="930" text-anchor="middle"
+        font-family="'Nunito','Trebuchet MS',sans-serif" font-weight="900"
+        font-size="78" letter-spacing="2" fill="#bdf6d6">BOTTY-VERSE</text>
+</svg>
