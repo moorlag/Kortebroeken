@@ -6,11 +6,11 @@
 <title>Botty TCG — Verzamelkaarten</title>
 <meta name="theme-color" content="#161033" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🃏</text></svg>" />
-<meta name="description" content="Botty TCG: verzamelkaarten in Pokémon-stijl met Botty in de hoofdrol. Verschillende stadia (Basis, Fase 1, Fase 2), eigen types, HP en stat-balken, met holografische zeldzame kaarten." />
+<meta name="description" content="Botty TCG: verzamelkaarten in Pokémon-stijl met Botty in de hoofdrol. Serie 1 met drie stadia, en de Alumni-collectie van Botty's die de verse verlieten." />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="https://moorlag.github.io/Kortebroeken/kaarten.html" />
 <meta property="og:title" content="Botty TCG — Verzamelkaarten" />
-<meta property="og:description" content="Verzamelkaarten met Botty: drie stadia, eigen types en stat-balken, holografische zeldzame kaarten." />
+<meta property="og:description" content="Verzamelkaarten met Botty: Serie 1 en de Alumni-collectie van vertrokken Botty's." />
 <meta property="og:image" content="https://moorlag.github.io/Kortebroeken/social-preview.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -26,7 +26,7 @@
     padding:1.6rem 1rem 3rem;position:relative;overflow-x:hidden;
   }
   #sparks{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.7;}
-  .inhoud{position:relative;z-index:1;width:100%;max-width:1100px;display:flex;flex-direction:column;align-items:center;}
+  .inhoud{position:relative;z-index:1;width:100%;max-width:1140px;display:flex;flex-direction:column;align-items:center;}
 
   .logo{font-size:11px;font-weight:900;letter-spacing:.22em;text-transform:uppercase;color:#ffd24a;margin-bottom:.45rem;text-align:center;}
   h1{font-size:32px;font-weight:900;text-align:center;line-height:1.05;
@@ -35,20 +35,26 @@
   @keyframes glans{to{background-position:300% 0;}}
   .ondertitel{font-size:14px;font-weight:700;color:#c9c6ee;margin:.3rem 0 1.2rem;text-align:center;max-width:640px;line-height:1.45;}
 
+  /* Sectiekop */
+  .serie-kop{width:100%;font-size:13px;font-weight:900;color:#ffd24a;letter-spacing:.08em;text-transform:uppercase;
+             margin:1.6rem 0 .8rem;display:flex;align-items:center;gap:.7rem;}
+  .serie-kop::after{content:"";flex:1;height:1.5px;background:linear-gradient(90deg,rgba(255,210,74,.35),transparent);}
+
   /* Filterknoppen */
   .filters{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;margin-bottom:1.4rem;}
   .filter{font-family:inherit;cursor:pointer;border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.06);
           color:#dcd9ff;font-weight:800;font-size:12.5px;border-radius:999px;padding:.45rem .95rem;transition:all .15s;}
   .filter:hover{border-color:#ffd24a;color:#fff;}
   .filter.aan{background:linear-gradient(90deg,#ffd24a,#ffb347);color:#3a2a00;border-color:#ffd24a;box-shadow:0 4px 14px rgba(255,210,74,.3);}
+  .filter.alumni-f.aan{background:linear-gradient(90deg,#d4945a,#c47838);border-color:#d4945a;box-shadow:0 4px 14px rgba(212,148,90,.3);}
 
-  /* Kaartenrooster */
-  .deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(248px,1fr));gap:1.4rem 1.2rem;width:100%;justify-items:center;}
+  /* Kaartenrooster — standaard TCG-breedte 314px = hoogte ≈ 440px = 5:7 */
+  .deck{display:grid;grid-template-columns:repeat(auto-fill,minmax(314px,1fr));gap:1.4rem 1.2rem;width:100%;justify-items:center;}
 
-  /* ---- De kaart zelf (Pokémon-stijl) ---- */
+  /* ---- De kaart zelf (Pokémon-stijl, 5:7-verhouding) ---- */
   .tcg{
     --type:#57b85f;--type2:#2e6b34;
-    width:248px;border-radius:16px;padding:9px;position:relative;
+    width:314px;border-radius:18px;padding:10px;position:relative;
     background:linear-gradient(150deg,#fbe48a 0%,#f4c64b 30%,#e8a92e 55%,#f4c64b 80%,#fbe48a 100%);
     box-shadow:0 10px 26px rgba(0,0,0,.45),inset 0 0 0 1px rgba(255,255,255,.4);
     transform-style:preserve-3d;transition:transform .18s ease, box-shadow .18s ease;will-change:transform;
@@ -58,9 +64,21 @@
   .tcg.r-secret{background:linear-gradient(150deg,#ffe7a8,#ffd24a 25%,#ff8bd0 50%,#7fd9ff 75%,#ffe7a8);background-size:200% 200%;animation:secretrand 8s linear infinite;}
   @keyframes secretrand{to{background-position:200% 200%;}}
 
-  .binnen{position:relative;border-radius:10px;overflow:hidden;
+  /* Alumni-kaart: warme terracotta toon */
+  .tcg.r-alumnus{
+    background:linear-gradient(150deg,#f5dfc0 0%,#d9a06e 30%,#b87840 55%,#d9a06e 80%,#f5dfc0 100%);
+  }
+  .tcg.r-alumnus:hover{box-shadow:0 18px 40px rgba(0,0,0,.55),0 0 22px rgba(184,120,64,.3);}
+  .tcg.r-alumnus .binnen{
+    background:linear-gradient(160deg,color-mix(in srgb,var(--type) 20%,#2e1a08),#1a0e05 70%);
+  }
+  .tcg.r-alumnus .art{
+    background:radial-gradient(120% 90% at 50% 18%,color-mix(in srgb,var(--type) 45%,#3d1e08) 0%,color-mix(in srgb,var(--type) 25%,#18090200) 60%,#18090200 100%);
+  }
+
+  .binnen{position:relative;border-radius:11px;overflow:hidden;
           background:linear-gradient(160deg,color-mix(in srgb,var(--type) 30%,#1a1430),#120d26 70%);
-          border:1px solid rgba(0,0,0,.35);padding:8px 9px 9px;display:flex;flex-direction:column;gap:6px;min-height:438px;}
+          border:1px solid rgba(0,0,0,.35);padding:8px 9px 9px;display:flex;flex-direction:column;gap:5px;min-height:436px;}
 
   .stage-band{display:flex;align-items:center;gap:5px;font-size:9px;font-weight:900;text-transform:uppercase;letter-spacing:.07em;
               color:#fff;background:rgba(0,0,0,.32);border-radius:6px;padding:2px 7px;align-self:flex-start;}
@@ -77,14 +95,14 @@
            border:2px solid rgba(255,255,255,.85);box-shadow:0 2px 5px rgba(0,0,0,.4);}
 
   /* Kunstvenster */
-  .art{position:relative;height:150px;border-radius:8px;overflow:hidden;
+  .art{position:relative;height:152px;border-radius:8px;overflow:hidden;
        border:3px solid;border-image:linear-gradient(140deg,#fff,#b9bed0,#fff) 1;
        background:
          radial-gradient(120% 90% at 50% 18%,color-mix(in srgb,var(--type) 55%,#fff) 0%,color-mix(in srgb,var(--type) 35%,#0c0820) 60%,#0c0820 100%);
        display:flex;align-items:center;justify-content:center;}
   .art::before{content:"";position:absolute;inset:0;opacity:.5;mix-blend-mode:soft-light;
        background:repeating-linear-gradient(115deg,transparent 0 7px,rgba(255,255,255,.18) 7px 9px);}
-  .art svg{position:relative;z-index:1;height:128px;width:auto;overflow:visible;filter:drop-shadow(0 6px 7px rgba(0,0,0,.45));}
+  .art svg{position:relative;z-index:1;height:132px;width:auto;overflow:visible;filter:drop-shadow(0 6px 7px rgba(0,0,0,.45));}
   .art .glans{position:absolute;inset:0;z-index:2;pointer-events:none;opacity:0;
        background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.55) 48%,transparent 60%);
        transform:translateX(-30%);transition:opacity .2s;}
@@ -102,7 +120,7 @@
   .tcg.r-secret .holo{mix-blend-mode:screen;}
 
   /* Statbalken */
-  .stats{display:flex;flex-direction:column;gap:3px;background:rgba(0,0,0,.26);border-radius:8px;padding:6px 8px;}
+  .stats{display:flex;flex-direction:column;gap:3px;background:rgba(0,0,0,.26);border-radius:8px;padding:5px 8px;}
   .srij{display:flex;align-items:center;gap:6px;font-size:9.5px;font-weight:900;color:#e6e3ff;}
   .srij .ico{width:14px;text-align:center;}
   .srij .lab{width:46px;}
@@ -115,7 +133,7 @@
   .srij .num{width:22px;text-align:right;color:#cfd9ff;}
 
   /* Vaardigheid + aanval */
-  .kunde{background:rgba(255,255,255,.94);color:#1c1730;border-radius:8px;padding:6px 8px;font-size:10px;line-height:1.32;}
+  .kunde{background:rgba(255,255,255,.94);color:#1c1730;border-radius:8px;padding:5px 8px;font-size:10px;line-height:1.32;}
   .kunde .titel{font-weight:900;font-size:11px;display:flex;align-items:center;gap:5px;margin-bottom:1px;}
   .kunde .kosten{display:inline-flex;gap:2px;}
   .pip{width:12px;height:12px;border-radius:50%;display:inline-grid;place-items:center;font-size:8px;
@@ -125,6 +143,8 @@
   .kunde + .kunde{margin-top:4px;}
   .badge-vaardig{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#b8423f;
        border:1px solid #e2a3a1;border-radius:4px;padding:0 3px;}
+  .badge-alumnus{font-size:8px;font-weight:900;text-transform:uppercase;letter-spacing:.05em;color:#8a5a1a;
+       border:1px solid #c49040;border-radius:4px;padding:0 3px;background:rgba(255,200,100,.15);}
 
   /* Onderbalk: zwakte/weerstand/terugtocht */
   .onderbalk{display:flex;justify-content:space-between;gap:4px;font-size:8px;font-weight:800;color:#d8d5f5;
@@ -134,14 +154,28 @@
   .onderbalk .cel .waarde{display:flex;align-items:center;gap:2px;font-size:11px;}
 
   .flavor{font-size:8.5px;font-style:italic;color:#bfbce4;line-height:1.3;padding:0 2px;}
+  .tcg.r-alumnus .flavor{color:#c9a880;}
   .voet{display:flex;align-items:center;justify-content:space-between;font-size:8px;font-weight:800;color:#cbc7ee;padding:0 2px;}
   .voet .rar{letter-spacing:1px;}
+  .tcg.r-alumnus .voet{color:#c9a880;}
+
+  /* Leeg-state alumni */
+  .alumni-leeg{width:100%;text-align:center;padding:2rem 1rem;color:#a09898;font-weight:700;font-size:13px;}
+  .alumni-leeg a{color:#d4945a;text-decoration:none;}
+  .alumni-leeg a:hover{text-decoration:underline;}
+
+  /* Mededeling: de verse is verhuisd naar een ander domein */
+  .alumni-notice{width:100%;background:rgba(212,148,90,.1);border:1.5px solid rgba(212,148,90,.4);border-radius:12px;
+                 padding:.7rem 1rem;margin-bottom:1.2rem;font-size:12.5px;font-weight:700;color:#e8c79e;line-height:1.45;text-align:center;}
+  .alumni-notice a{color:#ffd24a;font-weight:900;text-decoration:none;}
+  .alumni-notice a:hover{text-decoration:underline;}
 
   .navlinks{display:flex;flex-wrap:wrap;gap:1.1rem;justify-content:center;margin-top:1.8rem;}
   .navlinks a{font-size:13px;font-weight:800;color:#ffd24a;text-decoration:none;}
   .navlinks a:hover{text-decoration:underline;}
 
-  @media (max-width:430px){ h1{font-size:26px;} .deck{grid-template-columns:repeat(auto-fill,minmax(220px,1fr));} }
+  @media (max-width:680px){ h1{font-size:26px;} .deck{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));} .tcg{width:min(314px,100%);} }
+  @media (max-width:430px){ .deck{grid-template-columns:1fr;} .tcg{width:min(314px,100%);} }
   @media (prefers-reduced-motion: reduce){
     #sparks{display:none;}
     h1,.tcg.r-secret{animation:none!important;}
@@ -152,11 +186,11 @@
 <body>
   <canvas id="sparks" aria-hidden="true"></canvas>
   <div class="inhoud">
-    <p class="logo">Botty TCG · Serie 1 — Automatisering</p>
+    <p class="logo">Botty TCG · Serie 1 &amp; Alumni-collectie</p>
     <h1>Verzamelkaarten</h1>
-    <p class="ondertitel">Botty in de hoofdrol, in Pokémon-stijl. Elke kaart toont een ander
-      <strong>stadium</strong> (Basis → Fase 1 → Fase 2) met eigen type, HP en stat-balken.
-      Beweeg over een kaart voor de glans — de zeldzame kaarten zijn <em>holografisch</em>. ✨</p>
+    <p class="ondertitel">Botty's in Pokémon-stijl. Serie 1 heeft drie stadia met types en HP.
+      De <strong>Alumni-collectie</strong> verschijnt automatisch: Botty's die de verse verlieten worden hier
+      verzamelkaarten met hun echte kleuren, genen en bestemming. ✨</p>
 
     <div class="filters" id="filters">
       <button class="filter aan" data-f="alle" type="button">Alle</button>
@@ -164,13 +198,21 @@
       <button class="filter" data-f="tiener" type="button">🌱 Fase 1</button>
       <button class="filter" data-f="volwassen" type="button">⭐ Fase 2</button>
       <button class="filter" data-f="holo" type="button">💎 Holografisch</button>
+      <button class="filter alumni-f" data-f="alumnus" type="button">👋 Alumni</button>
     </div>
 
+    <div class="serie-kop">📦 Serie 1 — Automatisering</div>
     <div class="deck" id="deck"></div>
+
+    <div class="serie-kop" id="alumni-kop" style="display:none">👋 Alumni-collectie — Botty's die iets anders zijn gaan doen</div>
+    <p class="alumni-notice" id="alumni-notice" style="display:none">🚚 De verse is verhuisd naar
+      <a href="https://hive.ramonmoorlag.nl/">hive.ramonmoorlag.nl</a>.
+      Nieuwe alumni verzamel je daar. Hieronder zie je wat er eerder op dit domein is verzameld.</p>
+    <div class="deck" id="alumni-deck"></div>
 
     <div class="navlinks">
       <a href="botty.html">← Speel met je eigen Botty</a>
-      <a href="bottyverse.html">🌐 Botty-verse</a>
+      <a href="https://hive.ramonmoorlag.nl/">🌐 Botty-verse</a>
       <a href="index.html">de kortebroekenmeter</a>
     </div>
   </div>
@@ -180,7 +222,7 @@
   "use strict";
   var reduce = !!(window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches);
 
-  // ---------- Kleurpaletten (gelijk aan Botty / Botty-verse) ----------
+  // ---------- Kleurpaletten ----------
   var paletten = [
     {naam:"Klassiek", broek:"#57b85f", broekRand:"#2e6b34", scherm:"#3a9d94", schermRand:"#2b8077", accent:"#2f8f86", oogje:"#bfe3df"},
     {naam:"Aqua",     broek:"#3fb6c9", broekRand:"#1f6f7e", scherm:"#2f8fa8", schermRand:"#236f84", accent:"#2f9fb0", oogje:"#cdeef5"},
@@ -191,7 +233,7 @@
     {naam:"Mint",     broek:"#5fd0a8", broekRand:"#2e8a6a", scherm:"#3aa886", schermRand:"#247a5f", accent:"#3fb894", oogje:"#cdf5e6"}
   ];
 
-  // ---------- Botty-sprites (klassen i.p.v. id's: veilig te dupliceren; kleur via palet p) ----------
+  // ---------- Botty-sprites ----------
   function spriteVolwassen(p){ return ''
     + '<g class="antenne"><path d="M100,46 Q96,28 109,20" fill="none" stroke="#2b2b2b" stroke-width="3" stroke-linecap="round"/>'
     +   '<circle cx="111" cy="16" r="6.5" fill="#8c9196" stroke="#2b2b2b" stroke-width="2.5"/>'
@@ -265,7 +307,6 @@
   };
 
   // ---------- De kaartenset (Serie 1) ----------
-  // stats: 0–100 → balken. hp: Pokémon-stijl getal. rarity: common|uncommon|rare|secret.
   var kaarten = [
     { nr:1, naam:"Bitje", stage:"baby", palet:5, type:"data", hp:50, rarity:"common",
       stats:{energie:45,data:62,fit:34,geluk:82},
@@ -325,9 +366,46 @@
   ];
   var totaal = kaarten.length;
 
-  // ---------- Render ----------
+  // ---------- Alumni-data: bestemming → kaartinhoud ----------
+  var alumniData = {
+    "begint een moestuintje 🌱":   { type:"natuur", aanvalNaam:"Groene duim",       aanvalSchade:40, aanvalTekst:"Geneest 10 bij dit Botty.", flavor:"Ruilte algoritmes voor aardappelen. Heeft er geen spijt van." },
+    "gaat zuurdesem bakken 🍞":    { type:"natuur", aanvalNaam:"Rijsproces",         aanvalSchade:50, aanvalTekst:"Gooi een munt: kop = +20 extra.", flavor:"80% wachten, 20% genieten. De perfecte formule — maar dan lekkerder." },
+    "opent een datacafé ☕":        { type:"data",   aanvalNaam:"Dubbele espresso",   aanvalSchade:30, aanvalTekst:"Jij én de tegenstander krijgen +20 energie. Eerlijk is eerlijk.", flavor:"De latte art is een binaire boom. Klanten zijn verward maar tevreden." },
+    "wordt straat-dj 🎧":          { type:"elektro",aanvalNaam:"BPM-boost",          aanvalSchade:60, aanvalTekst:"Alle Botty's op jouw bank mogen nog 1× aanvallen.", flavor:"Dropt beats op frequenties die ook robots kunnen voelen." },
+    "gaat zeilen ⛵":              { type:"water",  aanvalNaam:"Windvlaag",          aanvalSchade:45, aanvalTekst:"Trek 2 kaarten van je stapel.", flavor:"GPS uitgeschakeld. Navigeert op sterren en gut feeling." },
+    "leert macramé 🪢":            { type:"natuur", aanvalNaam:"Knoopgooi",          aanvalSchade:35, aanvalTekst:"Vergrendel de tegenstander voor 1 beurt.", flavor:"Knoopwerk als code: elke node heeft zijn functie." },
+    "begint een wormenkwekerij 🪱": { type:"natuur", aanvalNaam:"Compostbom",        aanvalSchade:55, aanvalTekst:"Vergiftigt de tegenstander: 10 schade per beurt.", flavor:"Data composteren. De kringloop is compleet." },
+    "gaat vogels spotten 🐦":      { type:"natuur", aanvalNaam:"Vogelroep",          aanvalSchade:20, aanvalTekst:"Kijk de bovenste 5 kaarten van je stapel; leg ze terug.", flavor:"De enige dataset die nooit liegt: vogels zijn eerlijk." },
+    "opent een tiny library 📚":   { type:"psy",    aanvalNaam:"Stille kennis",      aanvalSchade:45, aanvalTekst:"Trek 2 kaarten.", flavor:"Leende kennis, bewaard in hout en papier." },
+    "leert blokfluit spelen 🎵":   { type:"psy",    aanvalNaam:"Valse noot",         aanvalSchade:30, aanvalTekst:"Verward de tegenstander: −20 data.", flavor:"Eenvoud als keuze. De AI kon het niet begrijpen." },
+    "gaat aquarel schilderen 🎨":  { type:"psy",    aanvalNaam:"Kleurensplash",      aanvalSchade:40, aanvalTekst:"Veroorzaakt een willekeurig cosmetisch effect. Mooi toch?", flavor:"Penseelt in kleuren die geen hexcode kennen." },
+    "zet een kraam op de markt 🛍️": { type:"natuur", aanvalNaam:"Ruilhandel",       aanvalSchade:35, aanvalTekst:"Wissel 1 kaart uit je hand met 1 van de tegenstander.", flavor:"De keten is kort, het contact is echt." },
+    "start een podcast over zeewier 🌊": { type:"water", aanvalNaam:"Niche content", aanvalSchade:45, aanvalTekst:"Toehoorders verliezen 1 kaart (hypnotische werking).", flavor:"Niche expertise. Dertig luisteraars, allemaal tevreden." },
+    "leert tango dansen 💃":        { type:"vuur",   aanvalNaam:"Tangoknip",         aanvalSchade:50, aanvalTekst:"Jij mag nog 1 extra actie uitvoeren deze beurt.", flavor:"Twee stappen voor, één terug. Net als elk lerend systeem." },
+    "wordt schaapherder 🐑":       { type:"natuur", aanvalNaam:"Kudde-oproep",       aanvalSchade:30, aanvalTekst:"Speel een extra Botty uit je hand op de bank.", flavor:"Kudde is optimaal met 14 schapen. Geen algoritme nodig." },
+    "gaat origami vouwen 🦢":      { type:"psy",    aanvalNaam:"Papierkraan",        aanvalSchade:40, aanvalTekst:"De tegenstander betaalt 1 extra energie voor hun volgende aanval.", flavor:"Eén vel papier, oneindig veel vormen. Efficiëntie op z'n mooist." },
+    "opent een fietsenwinkel 🚲":   { type:"elektro",aanvalNaam:"Kettingwissel",     aanvalSchade:45, aanvalTekst:"Herstel 30 HP bij een Botty op de bank.", flavor:"Repareren in plaats van vervangen. Radicale keuze." },
+    "start een imkerij 🐝":        { type:"natuur", aanvalNaam:"Bijensteken",        aanvalSchade:60, aanvalTekst:"Vergiftigt voor 20 per beurt. Lekker bijt dat.", flavor:"Bijen runnen hun eigen hive. Met honing." },
+    "schrijft ansichtkaarten ✉️":  { type:"psy",    aanvalNaam:"Persoonlijk bericht",aanvalSchade:25, aanvalTekst:"Toon je hand; trek daarna 2 kaarten.", flavor:"Eén kaart per week. Nooit teruggelezen. Altijd aankomend." },
+    "wordt campinghouder 🏕️":      { type:"natuur", aanvalNaam:"Haardvuur",         aanvalSchade:40, aanvalTekst:"Alle spelers herstellen 10 HP. Gezelligheid kost niets.", flavor:"Wifi: Nee. Natuur: Ja. Wachtrij: onbegrijpelijk lang." },
+    "bakt taarten voor buren 🎂":  { type:"natuur", aanvalNaam:"Botercrème",         aanvalSchade:35, aanvalTekst:"Geneest 20 HP. Zo werkt dat, met boter.", flavor:"Bracht suiker, bleef voor het koffiekopje. Geen algoritme deed dat ooit." },
+    "leert boulderen 🧗":          { type:"vuur",   aanvalNaam:"Mantelgreep",        aanvalSchade:55, aanvalTekst:"Trek 1 kaart als je schade doet.", flavor:"Hangt liever aan rotsen dan aan schema's." },
+    "start een plantenruil 🪴":    { type:"natuur", aanvalNaam:"Wortelstekje",       aanvalSchade:30, aanvalTekst:"Beide spelers trekken 1 kaart. Samen groeien.", flavor:"Verspreidt stekjes. En ook: een rustig alternatief voor datacenters." },
+    "gaat paddenstoelen kweken 🍄": { type:"natuur", aanvalNaam:"Myceliumwolk",      aanvalSchade:50, aanvalTekst:"Verward de tegenstander: hun kaarten zijn 1 beurt onzichtbaar.", flavor:"Leeft van het duistere en gedijt bij stilte. Net als de beste ideeën." }
+  };
+  var alumniDataDefault = { type:"data", aanvalNaam:"Vrije vlucht", aanvalSchade:35, aanvalTekst:"Onberekenbaar maar charmant.", flavor:"Ging gewoon ergens anders naartoe. Tevreden." };
+
+  var mutatieVaardigheden = {
+    "wifi":       { naam:"Wifi-module 📶", tekst:"Na elke aanval: geef een Botty op de bank +15 data." },
+    "zonnepaneel":{ naam:"Zonnepaneel ☀️", tekst:"Start van elke beurt: herstel automatisch 20 energie." },
+    "antenne2":   { naam:"Extra antenne 📡", tekst:"Je kijkt altijd de bovenste kaart van je stapel. Geen verrassingen." },
+    "oog3":       { naam:"Derde oog 👁️", tekst:"Negeer het eerste effect dat dit Botty per beurt zou treffen." },
+    "quantum":    { naam:"Quantum-chip ⚛️", tekst:"Kies elke beurt: +50 energie óf +50 data — nooit allebei." }
+  };
+
+  // ---------- Render helpers ----------
   var statRijen = [["energie","⚡"],["data","💾"],["fit","🏃"],["geluk","😊"]];
-  var rarLabel = { common:"● Gewoon", uncommon:"◆ Ongewoon", rare:"★ Zeldzaam", secret:"★ Geheim ★" };
+  var rarLabel = { common:"● Gewoon", uncommon:"◆ Ongewoon", rare:"★ Zeldzaam", secret:"★ Geheim ★", alumnus:"👋 Alumnus" };
 
   function pips(lijst, kleur){
     return lijst.map(function(){ return '<span class="pip" style="background:'+kleur+'"></span>'; }).join("");
@@ -389,23 +467,134 @@
     return div;
   }
 
+  // ---------- Alumni-kaarten bouwen vanuit vertrokken-data ----------
+  function bouwAlumniKaart(v, nr, totaalAlumni){
+    var p = v.kleur && v.kleur.broek ? v.kleur : paletten[0]; // gebruik echte mengkleur
+    var stage = v.stage || "volwassen";
+    var ad = alumniData[v.bestemming] || alumniDataDefault;
+    var t  = types[ad.type] || types["data"];
+    var hp = Math.min(200, 60 + Math.round((v.datakwaliteit||50)*0.7) + Math.round((v.efficientie||50)*0.3) + (v.generatie||1)*8);
+    var isHolo = (v.mutaties||[]).length > 0;
+    var isSecret = (v.mutaties||[]).indexOf("quantum") >= 0;
+
+    var div = document.createElement("article");
+    div.className = "tcg r-alumnus" + (isSecret ? " r-secret" : "");
+    div.dataset.stage = "alumnus";
+    div.dataset.holo = isHolo ? "1" : "0";
+    div.style.setProperty("--type", p.broek);
+    div.style.setProperty("--type2", p.broekRand || p.broek);
+
+    var stageBand = '<div class="stage-band"><span>👋 Alumnus · G'+( v.generatie||1)+'</span>'
+      + '<span class="pre">· '+{baby:"Basis",tiener:"Fase 1",volwassen:"Fase 2"}[stage]+'</span></div>';
+
+    var kop = '<div class="kop"><span class="naam">'+v.naam+'</span>'
+      + '<span class="rechts"><span class="hp"><span class="lab">HP</span><b>'+hp+'</b></span>'
+      + '<span class="typebol" title="'+t.naam+'">'+t.emoji+'</span></span></div>';
+
+    var art = '<div class="art"><svg viewBox="0 -34 200 292" aria-label="Botty '+v.naam+'">'
+      + sprites[stage](p) + '</svg><div class="glans"></div>'
+      + (isHolo ? '<div class="holo"></div>' : '') + '</div>';
+
+    var stats = '<div class="stats">' + statRijen.map(function(r){
+      var key=r[0], val=Math.round(v[key]!=null ? v[key] : 50);
+      return '<div class="srij"><span class="ico">'+r[1]+'</span>'
+        + '<span class="lab">'+key+'</span>'
+        + '<span class="balk s-'+key+'"><span data-w="'+val+'"></span></span>'
+        + '<span class="num">'+val+'</span></div>';
+    }).join("") + '</div>';
+
+    // Vaardigheid: van mutatie of generiek
+    var vaardigHtml = '';
+    var gevonden = null;
+    for(var i=0;i<(v.mutaties||[]).length;i++){
+      var mv = mutatieVaardigheden[v.mutaties[i]];
+      if(mv){ gevonden = mv; break; }
+    }
+    if(gevonden){
+      vaardigHtml = '<div class="kunde"><div class="titel"><span class="badge-alumnus">Mutatie</span>'
+        + gevonden.naam+'</div><div>'+gevonden.tekst+'</div></div>';
+    } else {
+      vaardigHtml = '<div class="kunde"><div class="titel"><span class="badge-alumnus">Gave</span>'
+        + 'Vrije geest</div><div>Onttrekking kost 0 symbolen. Onberekenbaar maar charmant.</div></div>';
+    }
+
+    var aanvalTekst = '<div class="kunde"><div class="titel">'
+      + '<span class="kosten">'+pips([0,0],p.broek)+'</span>'
+      + ad.aanvalNaam+'<span class="schade">'+ad.aanvalSchade+'</span></div>'
+      + '<div class="et">'+ad.aanvalTekst+'</div></div>';
+
+    var genen = '<div class="kunde"><div class="titel"><span class="badge-alumnus">Genen</span>'
+      + '🧬 '+Math.round(v.datakwaliteit||0)+'&nbsp;&nbsp;💪 '+Math.round(v.efficientie||0)
+      + ((v.mutaties||[]).length ? '&nbsp;&nbsp;🧩 '+(v.mutaties||[]).map(function(m){
+          return {wifi:"📶",zonnepaneel:"☀️",antenne2:"📡",oog3:"👁️",quantum:"⚛️"}[m]||"✨";
+        }).join("") : '')
+      + '</div></div>';
+
+    var onder = '<div class="onderbalk">'
+      + '<div class="cel"><span class="kop2">Vertrokken</span><span class="waarde" style="font-size:9px;white-space:nowrap">'
+      + v.bestemming.split(" ").pop()+'</span></div>'
+      + '<div class="cel"><span class="kop2">Terugtocht</span><span class="waarde">'+pips(new Array(Math.min(3,Math.ceil(hp/60))).fill(0),"#9aa0c0")+'</span></div>'
+      + '</div>';
+
+    var flavor = '<div class="flavor">"'+ad.flavor+'"</div>';
+    var voet = '<div class="voet"><span class="rar">'+rarLabel.alumnus+'</span>'
+      + '<span>'+nr3(nr)+'/'+nr3(totaalAlumni)+' · '+t.naam+'</span></div>';
+
+    div.innerHTML = '<div class="binnen">'+stageBand+kop+art+stats+vaardigHtml+aanvalTekst+genen+onder+flavor+voet+'</div>';
+    return div;
+  }
+
+  // ---------- Beide decks opbouwen ----------
   var deck = document.getElementById("deck");
   kaarten.forEach(function(k){ deck.appendChild(bouwKaart(k)); });
 
+  var alumniDeck   = document.getElementById("alumni-deck");
+  var alumniKop    = document.getElementById("alumni-kop");
+  var alumniNotice = document.getElementById("alumni-notice");
+  var VERSE_URL    = "https://hive.ramonmoorlag.nl/";
+
+  function laadAlumni(){
+    try{
+      var raw = localStorage.getItem("bottyverse-v1");
+      if(!raw) return [];
+      var data = JSON.parse(raw);
+      return (data.vertrokken instanceof Array) ? data.vertrokken : [];
+    } catch(e){ return []; }
+  }
+
+  var alumniLijst = laadAlumni();
+  var totaalAlumni = alumniLijst.length;
+
+  alumniKop.style.display = "";
+  alumniNotice.style.display = "";
+  if(alumniLijst.length === 0){
+    var leeg = document.createElement("p");
+    leeg.className = "alumni-leeg";
+    leeg.innerHTML = 'Nog geen alumni op dit domein — bezoek de '
+      + '<a href="'+VERSE_URL+'">🌐 verse</a> en laat wat Botty\'s vertrekken. '
+      + 'Je collectie verschijnt dan daar.';
+    alumniDeck.appendChild(leeg);
+  } else {
+    alumniLijst.forEach(function(v, i){
+      alumniDeck.appendChild(bouwAlumniKaart(v, i+1, totaalAlumni));
+    });
+  }
+
   // Balken vullen (kleine vertraging zodat de transitie zichtbaar is)
   setTimeout(function(){
-    deck.querySelectorAll(".balk > span").forEach(function(s){ s.style.width = s.dataset.w + "%"; });
+    document.querySelectorAll(".balk > span").forEach(function(s){ s.style.width = s.dataset.w + "%"; });
   }, 120);
 
   // ---------- Holo + 3D-tilt op de muis ----------
-  if(!reduce){
-    deck.addEventListener("pointermove", function(e){
+  function bindTilt(container){
+    if(reduce) return;
+    container.addEventListener("pointermove", function(e){
       var kaart = e.target.closest(".tcg"); if(!kaart) return;
       var r = kaart.getBoundingClientRect();
-      var px = (e.clientX - r.left) / r.width;       // 0..1
-      var py = (e.clientY - r.top) / r.height;       // 0..1
-      var rotY = (px - 0.5) * 16;                     // links/rechts kantelen
-      var rotX = (0.5 - py) * 16;                     // boven/onder kantelen
+      var px = (e.clientX - r.left) / r.width;
+      var py = (e.clientY - r.top) / r.height;
+      var rotY = (px - 0.5) * 16;
+      var rotX = (0.5 - py) * 16;
       kaart.style.transform = "perspective(800px) rotateX("+rotX.toFixed(2)+"deg) rotateY("+rotY.toFixed(2)+"deg) scale(1.04)";
       if(kaart.dataset.holo==="1"){
         kaart.classList.add("holo-aan");
@@ -417,21 +606,18 @@
         }
       }
     });
-    deck.addEventListener("pointerleave", function(){
-      deck.querySelectorAll(".tcg").forEach(function(kaart){
-        kaart.style.transform = "";
-        kaart.classList.remove("holo-aan");
+    container.addEventListener("pointerleave", function(){
+      container.querySelectorAll(".tcg").forEach(function(k){
+        k.style.transform = ""; k.classList.remove("holo-aan");
       });
     }, true);
-    // ook resetten als je één kaart verlaat
-    deck.addEventListener("pointerout", function(e){
+    container.addEventListener("pointerout", function(e){
       var kaart = e.target.closest(".tcg");
-      if(kaart && !kaart.contains(e.relatedTarget)){
-        kaart.style.transform = "";
-        kaart.classList.remove("holo-aan");
-      }
+      if(kaart && !kaart.contains(e.relatedTarget)){ kaart.style.transform = ""; kaart.classList.remove("holo-aan"); }
     });
   }
+  bindTilt(deck);
+  bindTilt(alumniDeck);
 
   // ---------- Filters ----------
   var filterBalk = document.getElementById("filters");
@@ -439,10 +625,19 @@
     var b = e.target.closest(".filter"); if(!b) return;
     filterBalk.querySelectorAll(".filter").forEach(function(x){ x.classList.toggle("aan", x===b); });
     var f = b.dataset.f;
+    // Serie 1
     deck.querySelectorAll(".tcg").forEach(function(kaart){
-      var toon = (f==="alle") || (f==="holo" ? kaart.dataset.holo==="1" : kaart.dataset.stage===f);
+      var toon;
+      if(f==="alle" || f==="alumnus") toon = (f==="alle");
+      else if(f==="holo") toon = kaart.dataset.holo==="1";
+      else toon = kaart.dataset.stage===f;
       kaart.style.display = toon ? "" : "none";
     });
+    // Alumni
+    var toonAlumni = (f==="alle" || f==="alumnus");
+    alumniDeck.querySelectorAll(".tcg, .alumni-leeg").forEach(function(el){ el.style.display = toonAlumni ? "" : "none"; });
+    alumniKop.style.display = toonAlumni ? "" : "none";
+    alumniNotice.style.display = toonAlumni ? "" : "none";
   });
 
   // ---------- Sterretjes-achtergrond ----------

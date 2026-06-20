@@ -83,8 +83,16 @@
       to   { transform: scale(1);   opacity: 1; }
     }
 
+    .links {
+      margin-top: 2.2rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      justify-content: center;
+      max-width: 580px;
+    }
+
     .speel-link {
-      margin-top: 2rem;
       font-size: 14px;
       font-weight: 700;
       color: #2f8f86;
@@ -108,6 +116,10 @@
   </div>
   <p class="question">Is het kortebroekenweer bij NOLAI?</p>
   <p class="answer">JA!</p>
-  <a class="speel-link" href="botty.html">🤖 Speel met Botty →</a>
+  <nav class="links" aria-label="Alle pagina's">
+    <a class="speel-link" href="botty.html">🤖 Speel met Botty</a>
+    <a class="speel-link" href="kaarten.html">🃏 Verzamelkaarten</a>
+    <a class="speel-link" href="https://hive.ramonmoorlag.nl/">🌐 Botty-verse: de Singularity</a>
+  </nav>
 </body>
 </html>

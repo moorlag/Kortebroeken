@@ -12,12 +12,73 @@ Onderdelen:
 
 ---
 
-## In ontwerp — Voortplanting in de verse (vervolgversie)
+## In ontwerp — Verveling & dynamische hive (vervolgversie)
 
-De Botty's in de verse kunnen zich voortplanten. De AI bepaalt zelf welke twee
+Twee nieuwe processen die samen één idee vormen: de hive wordt een *levende, ademende*
+populatie in plaats van een vaste 9, en de keerzijde van het optimaliseren wordt zichtbaar
+als een groeiende lijst van Botty's die zijn vertrokken.
+
+> **Thema-check (waarom dit past en het verhaal verdiept).** De kern van de verse is:
+> de AI verzorgt perfect en kweekt op functie, maar de *menselijke band blijft 0%* — perfect
+> geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren. Verveling is precies datzelfde
+> gat, nu mechanisch gemaakt: de AI kan `energie`/`data`/`fit` bijladen, maar **voldoening/nieuwheid
+> kan ze niet fabriceren** — net zomin als de band. En omdat de AI per tick maar de 3 meest
+> behoeftige Botty's haalt, kan ze bij een groeiende hive simpelweg **niet snel genoeg** iedereen
+> blijven prikkelen. Wie te lang aan zijn lot wordt overgelaten verveelt zich en vertrekt. De
+> "AI is niet snel genoeg"-gedachte is dan geen handwave maar volgt uit de bestaande 3-per-tick-limiet.
+> Belangrijk voor de toon: het is **geen doodgaan**. Botty's leven voor altijd en "gaan iets anders
+> doen" — de vertrokken-lijst is een *alumni-muur*, geen kerkhof.
+
+### Proces 1: Verveling → vertrek (dynamische hoeveelheid)
+- **Nieuwe meter `voldoening` (0–100).** Anders dan de andere meters lekt deze langzaam leeg en kan
+  de AI hem maar *beperkt* bijvullen (een kleine "entertainment"-boost in `zorg`, met een plafond).
+  Hij vult vooral via **nieuwheid**: een bezoekje (sociale prikkel), een geboorte in de buurt, of
+  het opduiken van een mutatie. Dat de AI hem niet op commando kan vullen, ís het punt.
+- **Health bars aanpassen.** `voldoening` komt als extra balk op de kaart (eigen kleur), zodat je
+  ziet aankomen wie gaat vertrekken. Te overwegen: hem als *verveling* (vult op) tonen i.p.v.
+  voldoening (lekt leeg), maar dat mengt vul- en leegloop-balken — voorstel houdt het op `voldoening`.
+- **Vertrek-trigger.** Zakt `voldoening` lang genoeg onder een drempel (en is de Botty al een tijdje
+  in de hive, via `leeftijd`), dan verveelt hij zich → `afscheid()` (de bestaande 👋-zwaai + `.weg`)
+  → hij verdwijnt uit `bottys` en komt op de vertrokken-lijst.
+- **Zelfregulerend.** Meer Botty's → minder aandacht per Botty (3-per-tick) → `voldoening` daalt
+  gemiddeld sneller → meer vertrek. De populatie zoekt vanzelf een evenwicht tussen kweek en vertrek.
+- **Kweek wordt netto +1.** Nu vervangt een geboorte de ouder (netto 0). Voor een dynamische hive
+  laten we de ouders staan en *voegen* we het kind toe; **vertrek loopt voortaan alleen via verveling**.
+  De mooie afscheids-animatie verhuist dus van "ouder bij geboorte" naar "verveelde Botty".
+- **Grenzen.** Ondergrens (~4–6: hive raakt nooit leeg; bij weinig Botty's remt vertrek / versnelt kweek)
+  en bovengrens (~12–16: grid/performance; daarboven intensiveert verveling / pauzeert kweek).
+- **Flavor "iets anders gaan doen".** Bij vertrek een licht, niet-fataal bestemmingszinnetje
+  ("begon een moestuin 🌱", "werd straat-dj 🎧", "opent een datacafé ☕"). Houdt de toon luchtig.
+
+### Proces 2: Vertrokken-lijst (automatisch aanvullende tabel)
+- **Onderaan de verse** een tabel die zichzelf vult zodra een Botty vertrekt.
+- **Kolommen:** volgnummer, mini-foto (sprite), naam, generatie, stats (🧬 datakwaliteit, ⚙️ efficiëntie,
+  evt. eindmeters), mutaties, en het "ging … doen"-zinnetje.
+- **Mini-foto:** hergebruik de sprite-render (kleur/genen/mutaties) op klein formaat — een statische SVG-snapshot.
+- **Opslag:** array `vertrokken[]` mee in `bewaar()` (lengte cappen, bijv. laatste ~50, met een totaalteller).
+- **Waarom het past:** dit is het *kostenboekhoudkundige tegenwicht* van de genoom-KPI's. Terwijl de
+  hive "beter" wordt (stijgende datakwaliteit/efficiëntie), groeit eronder zichtbaar de lijst van wie
+  er onderweg verloren ging. De prijs van optimaliseren wordt letterlijk afleesbaar.
+
+### Nog open (te beslissen vóór de bouwfase)
+- Meter als `voldoening` (leegloop) of `verveling` (oploop)? Voorstel: `voldoening`.
+- Refill-bronnen en -tempo van `voldoening`; hoe klein de AI-boost is (plafond).
+- Vertrekdrempel + hoe lang eronder + minimale `leeftijd` vóór vertrek mogelijk is.
+- Onder-/bovengrens van de populatie en wat er op de grenzen gebeurt (kweek/vertrek temperen).
+- Blijft de "ouder vertrekt bij geboorte" bestaan, of wordt kweek puur netto +1? Voorstel: netto +1.
+- Tabel: alle vertrokkenen of laatste N? Sortering (nieuwste boven?) en mobiel-layout.
+- Wel/geen "iets anders gaan doen"-flavor, en de lijst bestemmingen.
+
+---
+
+## Gereleased (uitgewerkt) — Voortplanting in de verse
+
+De Botty's in de verse planten zich voort. De AI bepaalt zelf welke twee
 Botty's matchen, er verschijnt een ei, en de eerste ouder vertrekt met een
 afscheidszwaai. Bouwt voort op het bestaande bezoek-mechaniek (de IR-lichtstraal)
 en is een knipoog naar het "paren via infrarood" uit Sprite_tm's Tamagotchi Singularity.
+*(Gebouwd; details + afgewezen alternatieven hieronder bewaard. NB: de "ouder vertrekt bij
+geboorte" wordt mogelijk herzien — zie "Verveling & dynamische hive".)*
 
 ### Nieuwe variabele: `datakwaliteit` (0–100, erfelijk)
 - Sluit aan op het datathema uit Botty (duurzame vs. vervuilde data): hoe "schoon/duurzaam"
@@ -159,3 +220,7 @@ Perfect geoptimaliseerd, perfect verzorgd, maar er gaat iets verloren.
 - **3×3 hive met onderlinge bezoekjes** — 9 Botty's, IR-lichtstraal, kennis delen (geen band).
 - **Uitlegbare AI** (`botty.html`) — toggle die in de tekstballon laat zien waarom de AI handelt.
 - **AI-uitleg in de verse** — verwijst naar de automatiseringsniveaus en de Uitlegbare AI-feature.
+- **Voortplanting in de verse** — gulzige AI-matching op vier erfelijke dimensies (datakwaliteit,
+  efficiëntie, uiterlijk/mengkleur, mutaties); ei-flow met afscheidszwaai. Zie het detailblok hierboven.
+- **Tijdversneller** — ⏸/1×/4×/16×/60× met één geünificeerde `motor()`-loop; veroudering via
+  `leeftijd`-accumulator; stille datamodus boven 4× (animaties uit voor soepele rendering).
