@@ -492,13 +492,54 @@
     #antenne,.wolk,.ster,.vogel,.botty-wrap.ai-zorg svg,.ai-knop.aan{animation:none!important;}
     .ai-knop.aan{background:#2f9fe0!important;transform:none!important;}
     .scene,.hemellichaam,.boom-schaduw{transition:none!important;}
+    .ai-ticker .knip{animation:none!important;}
   }
+
+  /* ===== Verse-look in lichte uitvoering: AI-ticker, micro-labels, panelen ===== */
+  /* Titel met zachte kleurverloop-gloed (Botty's eigen groenen) */
+  h1{
+    background:linear-gradient(90deg,#1a5c4a,#2f8f86,#1a5c4a);background-size:200% 100%;
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+    text-shadow:0 2px 16px rgba(47,143,134,.16);
+  }
+  /* Micro-label boven een paneel — uppercase met letterspatiëring, zoals in de verse */
+  .micro-kop{width:100%;max-width:420px;margin:0 auto .35rem;
+    font-size:10.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);
+    display:flex;align-items:center;gap:.5rem;}
+  .micro-kop::after{content:"";flex:1;height:1.5px;border-radius:2px;
+    background:linear-gradient(90deg,rgba(47,143,134,.35),transparent);}
+  /* AI-statusbalk met knipperende cursor — de ticker uit de verse */
+  .ai-ticker{width:100%;max-width:420px;margin:0 auto 1rem;
+    background:linear-gradient(160deg,#ffffff,#eef6f2);border:2px solid #cfe6dc;border-radius:14px;
+    font-size:12.5px;font-weight:700;color:var(--groen);padding:.5rem .85rem;min-height:2.15rem;
+    display:flex;align-items:center;justify-content:center;gap:.45rem;text-align:center;
+    box-shadow:0 6px 16px rgba(26,92,74,.07);}
+  .ai-ticker b{color:var(--teal);}
+  .ai-ticker .knip{color:var(--teal);font-weight:900;animation:knipper 1.05s step-end infinite;}
+  @keyframes knipper{0%,100%{opacity:1;}50%{opacity:0;}}
+  /* Het toestel krijgt de subtiele binnengloed van de verse-panelen */
+  .toestel{position:relative;}
+  .toestel::after{content:"";position:absolute;inset:0;border-radius:32px;pointer-events:none;
+    box-shadow:inset 0 0 26px rgba(47,143,134,.07);}
+  /* Footer als verse-paneel met micro-label */
+  .voet-paneel{width:100%;max-width:420px;margin:1.2rem auto 0;
+    background:linear-gradient(160deg,#ffffff,#eef6f2);border:2px solid #cfe6dc;border-radius:16px;
+    padding:.75rem .9rem;display:flex;flex-direction:column;gap:.5rem;align-items:center;
+    box-shadow:0 8px 20px rgba(26,92,74,.07);}
+  .voet-paneel .voet-kop{font-size:10.5px;font-weight:900;letter-spacing:.07em;text-transform:uppercase;color:var(--teal);}
+  .voet-paneel a.terug{margin-top:0;text-align:center;}
+  /* AI-spreekballon extra leesbaar: hoger contrast + zachte witrand over de scène */
+  .ballon{background:rgba(255,255,255,.97);color:#15403a;font-size:13px;
+    box-shadow:0 4px 14px rgba(0,0,0,.18),0 0 0 4px rgba(255,255,255,.4);}
 </style>
 </head>
 <body>
   <p class="logo">NOLAI — Nationaal OnderwijsLab AI</p>
   <h1>Botty</h1>
   <p class="ondertitel">Voer haar duurzame data, laat haar bewegen en denk samen na.</p>
+
+  <div class="micro-kop" style="max-width:420px">AI-assistent</div>
+  <div class="ai-ticker" id="ai-ticker"><span class="knip">▌</span> AI-assistent staat uit — jij verzorgt Botty zelf.</div>
 
   <main class="toestel">
     <div class="leefbalk">
@@ -641,11 +682,12 @@
 
   </main>
 
-  <div style="display:flex;flex-wrap:wrap;gap:1.2rem;justify-content:center;align-items:center;margin-top:1.2rem">
-    <a class="terug" style="margin-top:0" href="index.html">← terug naar de kortebroekenmeter</a>
-    <a class="terug" style="margin-top:0" href="https://hive.ramonmoorlag.nl/">🌐 Botty-verse: de Singularity →</a>
-    <a class="terug" style="margin-top:0" href="kaarten.html">🃏 Verzamelkaarten →</a>
-  </div>
+  <nav class="voet-paneel" aria-label="Meer pagina's">
+    <span class="voet-kop">Meer in het Botty-universum</span>
+    <a class="terug" href="index.html">← terug naar de kortebroekenmeter</a>
+    <a class="terug" href="https://hive.ramonmoorlag.nl/">🌐 Botty-verse: de Singularity →</a>
+    <a class="terug" href="kaarten.html">🃏 Verzamelkaarten →</a>
+  </nav>
 
   <!-- Voer-modal -->
   <div class="overlay" id="overlay-voer">
@@ -1944,8 +1986,14 @@
     el("ai-slider").value = state.aiNiveau;                    // schuif gelijkzetten
     toonNiveauInfo(state.aiNiveau);
     el("xai-toggle").checked = !!state.uitlegbaar;
+    // De AI-ticker geeft de huidige stand van de assistent weer (look & feel uit de verse).
+    var inf = aiNiveaus[state.aiNiveau] || aiNiveaus[0];
+    if(state.aiNiveau === 0) setTicker("AI-assistent staat <b>uit</b> — jij verzorgt " + naam() + " zelf.");
+    else setTicker("AI · niveau " + state.aiNiveau + " — <b>" + inf.naam + "</b> · " + inf.tag);
   }
-  function aiZeg(t){ zeg(t, 2600); }
+  // Schrijft een statusregel in de AI-ticker, met de knipperende cursor ervoor.
+  function setTicker(html){ var t = el("ai-ticker"); if(t) t.innerHTML = '<span class="knip">▌</span> ' + html; }
+  function aiZeg(t){ zeg(t, 2600); setTicker(t); }   // de AI 'praat' via de ballon én laat het in de ticker zien
   function markeerKnop(id){ var b=el(id); if(!b) return; b.classList.add("ai-druk"); setTimeout(function(){ b.classList.remove("ai-druk"); }, 700); }
 
   function aiVoer(){
