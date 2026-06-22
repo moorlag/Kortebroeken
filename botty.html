@@ -752,7 +752,7 @@
             <path d="M93,97 Q100,101 107,97 Q106,108 100,109 Q94,108 93,97 Z" fill="#15605a"/></g>
         </svg>
       </div>
-      <p class="geboorte-sub" id="geb-sub" style="display:none">Alle meters staan op nul. Geef Botty een naam en een goede start! Zorg je goed voor haar, dan groeit ze sterk en vrolijk op — verwaarloos je haar, dan krijgt ze roest en voelt ze zich niet lekker.</p>
+      <p class="geboorte-sub" id="geb-sub" style="display:none">Geef Botty een naam en een goede start! Zorg je goed voor haar — geef haar data, laat haar bewegen en los dilemma's op. Haar stemming (🧠) laat zien hoe ze zich écht voelt. Hoe meer bezoekers er zijn, hoe blijer ze wordt. Gaat ze goed mee, dan kan ze een nieuwe generatie starten!</p>
       <input id="naam-input" class="naam-input" maxlength="14" placeholder="Geef je Botty een naam…" style="display:none" />
       <button class="sluit start-ai" id="start-ai">🔧 START AI</button>
       <button class="sluit" id="start-knop" style="display:none">Begin het avontuur!</button>
@@ -1211,15 +1211,18 @@
 
   // ================= TUTORIAL =================
   var tutStappen=[
-    {e:"🤖", t:"Zorg goed voor Botty", x:"Botty begint als klein robotje. Zorg je goed voor haar, dan wordt ze sterk en kleurrijk met kleine spierballetjes. Verwaarloos je haar, dan krijgt ze roest en een bocheltje, voelt ze zich niet lekker en heeft ze vaker last van bugs."},
-    {e:"⚡", t:"Energie loopt terug", x:"Botty's energie daalt vanzelf. Blijf met haar bezig om haar fit en blij te houden!"},
-    {e:"🍃", t:"Voeren", x:"Geef Botty duurzame, eerlijke data. Weiger vervuilde data zoals nepnieuws en bias."},
-    {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook."},
-    {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid."},
-    {e:"🤖", t:"AI-assistent (⚡)", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt. De 6 stappen volgen de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Signalering — AI licht de juiste knop op; jij handelt\n2 · Advisering — AI geeft een tip; jij handelt\n3 · Gedeeltelijk — AI voert & beweegt\n4 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n5 · Volledig — AI doet alles\n\nDe controle verschuift zo stap voor stap van mens naar AI. Hoe meer je uit handen geeft, hoe minder jullie band groeit."},
+    {e:"🤖", t:"Zorg goed voor Botty", x:"Botty begint als klein robotje. Zorg je goed voor haar, dan wordt ze sterk en kleurrijk. Verwaarloos je haar, dan krijgt ze roest en een bocheltje, en voelt ze zich niet lekker. Ze heeft 5 meters: energie, data, fitheid, geluk én stemming."},
+    {e:"🧠", t:"Stemming", x:"De paarse 🧠-balk laat Botty's gemoedstoestand zien — los van haar gewone meters. Stemming stijgt als er bezoekers zijn, als jij haar verzorgt of als de AI voor haar zorgt. Ze daalt als Botty lang alleen is of ziek is. Een hoge stemming maakt haar blijer en beïnvloedt haar emotie!"},
+    {e:"😊", t:"10 emoties", x:"Botty toont hoe ze zich écht voelt:\n\n😄 enthousiast · 😊 blij · 😌 kalm\n🤔 nieuwsgierig · 🥺 eenzaam · 😟 verdrietig\n😰 angstig · 😵 verward · 🥲 ziek · 🦾 trots\n\nHaar stemming bepaalt mee welke emotie ze toont. Zorg goed voor haar — dan word je verrast!"},
+    {e:"👥", t:"Bezoekers", x:"Hoe meer mensen de hive bezoeken, hoe blijer Botty wordt! Bezoekers verhogen haar stemming automatisch. Je ziet het bezoekersaantal live bovenaan. Deel de link met vrienden en maak de hive levendig!"},
+    {e:"🍃", t:"Voeren", x:"Geef Botty duurzame, eerlijke data. Weiger vervuilde data zoals nepnieuws en bias. Goede voeding houdt haar data-bar vol én doet haar stemming goed."},
+    {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook. Regelmatig bewegen houdt haar bars op peil."},
+    {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid. Goede keuzes bouwen haar geluk en band met jou op."},
+    {e:"🤖", t:"AI-assistent", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt. De 6 stappen volgen de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Signalering — AI licht de juiste knop op\n2 · Advisering — AI geeft een tip\n3 · Gedeeltelijk — AI voert & beweegt\n4 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n5 · Volledig — AI doet alles\n\nLet op: AI-zorg heeft ook effect op Botty's stemming!"},
+    {e:"🧬", t:"Generaties", x:"Als Botty lang genoeg goed verzorgd is, kan ze een kind krijgen! Het kind erft genen van haar — inclusief een stukje stemming. Elk kind start een nieuwe generatie. Hoe verder de generatie, hoe trotser Botty kan worden. 🦾"},
+    {e:"🚪", t:"Op bezoek", x:"Deel Botty's link (📤) met een vriend. Als die de link opent, loopt jouw Botty bij hém op bezoek — en dat doet haar stemming goed! Krijg jij een link, klik dan op 'Laat binnen'. Samen spelen maakt je Botty blijer. 💞"},
     {e:"⌨️", t:"Sneltoetsen", x:"Bedien Botty snel met je toetsenbord:\n\n1 · Voeren\n2 · Bewegen\n3 · Dilemma\n4 · Bug verhelpen (alleen als Botty ziek is)\n\nBij het voer-scherm: kies kaart 1–4 met het getal.\nBij een dilemma: kies antwoord 1–3 met het getal."},
-    {e:"🚪", t:"Op bezoek", x:"Deel Botty's link (📤) met een vriend. Als die de link opent, loopt jouw Botty bij hém op bezoek! Krijg jij een link, klik dan op 'Laat binnen'. Samen spelen maakt je Botty blijer en versterkt jullie band. 💞"},
-    {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan."}
+    {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan. Botty's stemming kan ook fluctueren met het moment van de dag!"}
   ];
   var tutI=0;
   function toonTut(i){
