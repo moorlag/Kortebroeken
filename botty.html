@@ -7,7 +7,7 @@
 <meta name="theme-color" content="#1a5c4a" />
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="https://moorlag.github.io/Kortebroeken/botty.html" />
+<meta property="og:url" content="https://botty.ramonmoorlag.nl/" />
 <meta property="og:title" content="Botty — de NOLAI AI-tamagotchi" />
 <meta property="og:description" content="Verzorg Botty met duurzame data, denk samen na over ethische dilemma's en ontdek de niveaus van automatisering." />
 <meta property="og:image" content="https://moorlag.github.io/Kortebroeken/social-preview.jpg" />
@@ -1692,7 +1692,7 @@
              e:Math.round(state.energie), d:Math.round(state.data),
              f:Math.round(state.fit), gl:Math.round(state.geluk), b:Math.round(state.band) };
   }
-  function deelURL(){ return location.origin + location.pathname + "#b=" + b64enc(JSON.stringify(bouwSnapshot())); }
+  function deelURL(){ return "https://botty.ramonmoorlag.nl/#b=" + b64enc(JSON.stringify(bouwSnapshot())); }
   function deelTekst(){ return huidigeT.deelTekstFn(); }
 
   function toastMsg(t){ var e=el("toast"); e.textContent=t; e.classList.add("toon"); if(toastMsg._tm)clearTimeout(toastMsg._tm); toastMsg._tm=setTimeout(function(){ e.classList.remove("toon"); },2200); }
