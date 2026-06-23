@@ -713,6 +713,15 @@
     </div>
   </div>
 
+  <!-- Taal-modal -->
+  <div class="overlay open" id="overlay-taal" style="z-index:1000">
+    <div class="modal" style="text-align:center;max-width:300px">
+      <p style="font-size:18px;font-weight:900;color:var(--groen);margin-bottom:1.2rem">Kies je taal · Choose your language</p>
+      <button class="sluit" id="taal-nl" style="width:100%;margin-bottom:.7rem;font-size:16px">🇳🇱 Nederlands</button>
+      <button class="sluit" id="taal-en" style="width:100%;font-size:16px">🇬🇧 English</button>
+    </div>
+  </div>
+
   <!-- Geboorte-modal -->
   <div class="overlay" id="overlay-geboorte">
     <div class="geboorte-inhoud">
@@ -853,6 +862,437 @@
 (function(){
   "use strict";
 
+  // ================= VERTALINGEN =================
+  var huidigeT = null;
+  var huidigeLang = "nl";
+  var T = {
+    nl: {
+      ondertitel: "Voer haar duurzame data, laat haar bewegen en denk samen na.",
+      btnHelp: "Uitleg",
+      btnShare: "Deel Botty",
+      btnMuteLabel: "Geluid aan of uit",
+      btnMuteTitle: "Geluid aan/uit",
+      btnAiLabel: "AI-assistent instellen",
+      btnHerstel: "💊 Herstel",
+      btnSamenspelen: "🎉 Samen spelen",
+      btnTotziens: "👋 Tot ziens",
+      btnVoerTekst: "Voeren",
+      btnBeweegTekst: "Bewegen",
+      voerH2: "Voer Botty duurzame data",
+      voerVraag: "Kies wijs! Duurzame, eerlijke data maakt Botty sterk. Vervuilde data maakt haar ziek.",
+      voerHint: "Tip: betrouwbaar, privacy-vriendelijk en divers = duurzaam.",
+      sluitVoer: "Klaar",
+      dilemmaH2: "⚖️ Ethisch dilemma",
+      sluitDilemma: "Begrepen!",
+      naamPlaceholder: "Geef je Botty een naam…",
+      startKnop: "Begin het avontuur!",
+      tutVorige: "Vorige",
+      tutVolgende: "Volgende",
+      tutLaatste: "Aan de slag!",
+      deelKnop: "Deel",
+      kopieerKnop: "Kopieer",
+      sluitShare: "Sluiten",
+      gedeeldBezoek: "🚪 Laat binnen — kom op bezoek!",
+      gedeeldSpeel: "Speel met je eigen Botty 🤖",
+      aiH2: "🤖 AI-assistent",
+      aiVraag: "Hoeveel zorg geef je uit handen? Schuif van links (jij doet alles) naar rechts (AI doet alles).",
+      aiHint: "Naar de niveaus van automatisering (Inge Molenaar). Lees meer via ❔ bovenin.",
+      sluitAi: "Klaar",
+      nieuweGen: "Start een nieuwe generatie 🥚",
+      gebSub: "Geef Botty een naam en een goede start! Zorg je goed voor haar — geef haar data, laat haar bewegen en los dilemma's op. Haar stemming (🧠) laat zien hoe ze zich écht voelt. Hoe meer bezoekers er zijn, hoe blijer ze wordt. Gaat ze goed mee, dan kan ze een nieuwe generatie starten!",
+      gebTitel1: "Een stapel losse materialen…",
+      gebTitel2: "AI wordt geïnitialiseerd…",
+      gebTitel3: "🎉 Botty is in elkaar gezet! 🎉",
+      eindeTitelSuffix: " is uitgevallen",
+      leeftijdMinuut: "min",
+      leeftijdUur: "uur",
+      leeftijdDag: " dag",
+      leeftijdDagen: " dagen",
+      leeftijdPasgeboren: "pasgeboren",
+      voedsel: [
+        {em:"📊", nm:"Anonieme leerresultaten", goed:true},
+        {em:"📚", nm:"Open leermateriaal", goed:true},
+        {em:"✅", nm:"Toestemming gevraagd", goed:true},
+        {em:"🌍", nm:"Diverse voorbeelden", goed:true},
+        {em:"🔎", nm:"Gecontroleerde feiten", goed:true},
+        {em:"🔋", nm:"Energiezuinig getraind", goed:true},
+        {em:"🤝", nm:"Eerlijk gedeelde data", goed:true},
+        {em:"📰", nm:"Nepnieuws", goed:false},
+        {em:"⚖️", nm:"Bevooroordeelde data", goed:false},
+        {em:"🕵️", nm:"Gestolen gegevens", goed:false},
+        {em:"🗑️", nm:"Verouderde info", goed:false},
+        {em:"🚫", nm:"Discriminerende voorbeelden", goed:false}
+      ],
+      dilemmas: [
+        {v:"Een leerling laat AI haar opstel schrijven. Wat raad jij de school aan?",keuzes:[
+          {t:"AI helemaal verbieden", w:1, r:"Verbieden lijkt veilig, maar leerlingen leren dan niet hoe ze AI verstandig en eerlijk gebruiken. Beter: samen leren."},
+          {t:"Leren hóe je AI eerlijk gebruikt", w:3, r:"Goed gekozen! Leerlingen leren AI als hulpmiddel te gebruiken én eerlijk te zijn over wat ze zelf deden."},
+          {t:"Niks doen", w:0, r:"Zonder afspraken weet niemand wat mag. Duidelijke, eerlijke afspraken helpen iedereen."}]},
+        {v:"Een AI voorspelt welke leerlingen dreigen uit te vallen. Hoe gebruik je dat?",keuzes:[
+          {t:"Gebruiken om extra hulp te bieden", w:3, r:"Mooi! Voorspellingen mogen helpen, nooit een stempel zijn. De mens beslist, AI ondersteunt."},
+          {t:"Leerlingen apart zetten", w:0, r:"Dat is een stempel dat oneerlijk uitpakt. Voorspellingen mogen kansen niet wegnemen."},
+          {t:"Helemaal niet vertrouwen", w:1, r:"Voorzichtig zijn is goed, maar als de data eerlijk is kan het ook helpen. Blijf wel kritisch."}]},
+        {v:"Een gratis AI-tool wil álle leerlinggegevens, in ruil voor gratis gebruik.",keuzes:[
+          {t:"Doen, het is gratis!", w:0, r:"Niets is écht gratis: je betaalt met privacy. Persoonsgegevens van kinderen verdienen bescherming."},
+          {t:"Alleen geven wat echt nodig is", w:3, r:"Top! Verzamel zo min mogelijk data (dataminimalisatie). Dat is duurzaam én privacyvriendelijk."},
+          {t:"Eerst toestemming en uitleg vragen", w:3, r:"Heel goed! Transparantie en toestemming horen bij eerlijke data."}]},
+        {v:"De AI geeft één groep leerlingen steeds makkelijkere opdrachten. Wat is er aan de hand?",keuzes:[
+          {t:"Prima, lekker makkelijk", w:0, r:"Dit kan bias zijn: vooroordelen in de data. Dat is oneerlijk en houdt verschillen in stand."},
+          {t:"Onderzoeken of de data scheef is", w:3, r:"Precies! Controleer altijd op bias zodat iedereen eerlijke kansen krijgt."},
+          {t:"De AI gewoon uitzetten", w:1, r:"Begrijpelijk, maar eerst onderzoeken is slimmer. Misschien is de data te repareren."}]},
+        {v:"Een AI-model kost enorm veel energie om te trainen. Wat weegt mee?",keuzes:[
+          {t:"Alleen of het goed werkt", w:1, r:"Werken is belangrijk, maar duurzaamheid telt óók. Energie en milieu horen bij de keuze."},
+          {t:"Ook de energie en het milieu", w:3, r:"Goed! Duurzame AI kijkt ook naar energieverbruik. Soms is een kleiner model genoeg."},
+          {t:"Maakt niet uit", w:0, r:"Het maakt wél uit: AI heeft een echte voetafdruk op onze planeet."}]},
+        {v:"Een chatbot geeft leerlingen soms een fout antwoord met veel zelfvertrouwen.",keuzes:[
+          {t:"Altijd geloven wat AI zegt", w:0, r:"AI kan overtuigend én fout zijn. Blijf altijd zelf nadenken en controleer feiten."},
+          {t:"Leerlingen leren controleren", w:3, r:"Sterk! Kritisch denken en feiten checken is de beste bescherming tegen fouten."},
+          {t:"De chatbot verbieden", w:1, r:"Kan, maar leren omgaan met fouten is waardevoller dan vermijden."}]}
+      ],
+      aiNiveaus: [
+        {naam:"Uit",            tag:"jij doet alles",   uitleg:"Jij verzorgt Botty volledig zelf en let zelf op de meters.",                                  band:"groeit volledig 💚"},
+        {naam:"Signalering",    tag:"AI geeft seintje",  uitleg:"De AI houdt de meters in de gaten en laat de knop oplichten die aandacht nodig heeft. Jij beslist en handelt zelf.",  band:"groeit volledig 💚"},
+        {naam:"Advisering",     tag:"AI tipt",           uitleg:"De AI geeft je een tip over wat je het beste kunt doen. Jij beslist en handelt zelf.",                                          band:"groeit volledig 💚"},
+        {naam:"Gedeeltelijk",   tag:"samen",             uitleg:"De AI doet het voeren en bewegen. Geluk, bugs én dilemma's blijven aan jou.",                                                   band:"groeit nog goed 💚"},
+        {naam:"Voorwaardelijk", tag:"AI met vangnet",    uitleg:"De AI verzorgt Botty zelf en bewaakt de meters, maar bij een dilemma vraagt ze jóu om te beslissen.",                          band:"groeit beperkt 🧡"},
+        {naam:"Volledig",       tag:"AI doet alles",     uitleg:"De AI neemt alles over, ook de dilemma's. Jij kijkt toe. Alleen Botty aaien laat de band nog groeien.",                       band:"groeit niet meer 🤍"}
+      ],
+      berichten: function(n){ return [
+        "Je zorgt weer helemaal zelf voor " + naam() + "! 💚",
+        "De AI geeft een seintje als een knop aandacht nodig heeft. Jij beslist en handelt zelf. 🔦",
+        "De AI geeft tips over wat je kunt doen. Jij beslist en handelt zelf. 💡",
+        "De AI doet het voeren en bewegen. Geluk, bugs en dilemma's blijven aan jou. 🤖",
+        "De AI verzorgt " + naam() + " zelf, maar vraagt jóu bij dilemma's. 🤖",
+        "De AI verzorgt " + naam() + " volledig, ook de dilemma's. Jij houdt toezicht. 🤖"
+      ][n]; },
+      aaiZinnen: ["Hihi! 😄","Dat kriebelt!","Aaah, fijn ❤️","Nog een keer!","Jij bent lief 💚","*tevreden gezoem*"],
+      groetjes: ["👀","Hoi!","🎵","Lekker weer hè?","🤖"],
+      bewegingen: ["Jumping jacks! 🤸","Even surfen op de datagolf! 🏄","Dansje erbij! 💃","Stretchen en strekken! 🙆","Rondje rennen! 🏃","Molenwiek! 💨","Robotdans! 🤖"],
+      jubel: ["Samen spelen is het allerleukst! 😄","Wat een feestje! 🎉","Jullie hebben lol samen! 😁","Vriendjes maken blij! 💚"],
+      doodTekst: function(oorzaak){ if(oorzaak==="ouderdom") return "Na een lang en wijs leven is "+naam()+" vredig uitgeschakeld. 🌙"; if(oorzaak==="ziekte") return "De bug van "+naam()+" werd niet op tijd verholpen. 💔"; return naam()+" kreeg te weinig aandacht en is uitgevallen. 💔"; },
+      reflectieTekst: function(pctAi, band){ var regel = "🤖 De AI deed "+pctAi+"% van de zorg, jij "+(100-pctAi)+"%. Jullie band werd "+band+"%. "; if(pctAi<=20) return regel+"Je deed bijna alles zelf — zie je hoe persoonlijke aandacht de band sterk maakt? 💚"; else if(pctAi<=60) return regel+"Je deelde de zorg met de AI. Een mooie balans tussen hulp en eigen aandacht. 🤝"; else return regel+"Je liet veel aan de AI over. Handig — maar echte band vraagt jóuw aandacht. 🧡"; },
+      reflectieLeeg: "Er was te weinig zorg om iets over te zeggen.",
+      dagdeelGroet: function(h){ if(h<6) return "Goedenacht"; if(h<12) return "Goedemorgen ☀️"; if(h<18) return "Goedemiddag"; if(h<22) return "Goedenavond 🌆"; return "Het is laat 😴"; },
+      stadiumLabels: {baby:"baby 👶", kind:"kind", tiener:"tiener", volwassen:"volwassen"},
+      zegHoi: function(){ return "Hoi, ik ben "+naam()+"! Geef me duurzame data 🍃"; },
+      zegDuurzaam: "Mmm, duurzame data! 😋",
+      zegVervuild: "Bah! Deze data is vervuild… 🤢",
+      zegBug: "Oei… ik heb een bug! 🤒 Herstel me alsjeblieft.",
+      zegGepatcht: "Pff, gepatcht! Dankjewel 💚",
+      zegZiek: "Ik voel me niet lekker… 🤒",
+      zegEnergie: "Mijn energie loopt op… blijf met me bezig! ⚡",
+      zegHonger: "Ik heb honger naar goede data… 🍃",
+      zegBeweeg: "Ik wil graag bewegen! 🤸",
+      zegNietLekker: ["Ik voel me niet zo lekker… 🥺","Ik piep en kraak een beetje… 🛠️","Volgens mij heb ik wat roest… 😟"],
+      zegGaap: "*gaap* 😴",
+      zegWelkomGast: function(sn){ return "Hoi "+sn+"! Welkom! 👋"; },
+      zegGastKomt: function(sn){ return "🤖 "+sn+" is op bezoek!"; },
+      zegTotZiens: "Dag! Kom snel weer spelen! 💚",
+      zegDilemma: "Ik heb een dilemma voor je… ⚖️",
+      zegAiTwijfelt: "🤖 De AI twijfelt — jij beslist dit dilemma. ⚖️",
+      toastAi: "Let op: jullie band groeit alleen door jóuw aandacht 💚",
+      aiVoerTekst: function(dataBefore){ return state.uitlegbaar ? "🔍 Data was "+dataBefore+"% — ik voer duurzame data 🍃" : "🤖 AI voert duurzame data"; },
+      aiBeweegTekst: function(fitBefore){ return state.uitlegbaar ? "🔍 Fitheid was "+fitBefore+"% — ik laat "+naam()+" bewegen 🤸" : "🤖 AI laat "+naam()+" bewegen"; },
+      aiHerstelTekst: function(){ return state.uitlegbaar ? "🔍 Bug gedetecteerd → ik verhelp de fout 🛠️" : "🤖 AI verhelpt de bug"; },
+      aiTroostTekst: function(gelukBefore){ return state.uitlegbaar ? "🔍 Geluk was "+gelukBefore+"% — ik troost "+naam()+" 💙" : "🤖 AI houdt "+naam()+" blij"; },
+      aiDilemmaTekst: function(beste){ return state.uitlegbaar ? "🔍 AI koos '"+beste.t+"' (+"+beste.w+" wijsheid) ⚖️" : "🤖 AI koos wijs bij een dilemma"; },
+      aiTickerUit: function(){ return "AI-assistent staat <b>uit</b> — jij verzorgt "+naam()+" zelf."; },
+      aiTickerAan: function(n, inf){ return "AI · niveau "+n+" — <b>"+inf.naam+"</b> · "+inf.tag; },
+      signaleringBug: "🔍 Bug gedetecteerd — herstelknop licht op 🔦",
+      signaleringFit: function(pct){ return "🔍 Fitheid "+pct+"% laag — beweegknop licht op 🔦"; },
+      signaleringData: function(label, pct){ return "🔍 "+label+" "+pct+"% laag — voerknop licht op 🔦"; },
+      adviesBug: function(){ return state.uitlegbaar ? "🔍 Bug aanwezig — tip: herstel de fout 🛠️" : "💡 Tip: herstel de bug van "+naam()+"."; },
+      adviesFit: function(pct){ return state.uitlegbaar ? "🔍 Fitheid "+pct+"% laag — laat "+naam()+" bewegen." : "💡 Tip: Laat "+naam()+" bewegen."; },
+      adviesGeluk: function(pct){ return state.uitlegbaar ? "🔍 Geluk "+pct+"% laag — geef "+naam()+" aandacht — aai haar." : "💡 Tip: Geef "+naam()+" aandacht — aai haar."; },
+      adviesData: function(label, pct){ return state.uitlegbaar ? "🔍 "+label+" "+pct+"% laag — voer "+naam()+" duurzame data." : "💡 Tip: Voer "+naam()+" duurzame data."; },
+      welkomAfwezig: function(groet, duur){ return groet+"! Je was "+duur+" weg — ik miste je! 💚"; },
+      welkomTerug: function(groet){ return groet+"! Fijn dat je er bent! 👋"; },
+      humanizeDag: function(d){ return d+(d===1?" dag":" dagen"); },
+      humanizeUur: function(u){ return u+" uur"; },
+      humanizeMin: function(m){ return m+" min"; },
+      dilemmaWijs: "Wijs gekozen",
+      dilemmaNog: "Denk er nog eens over",
+      dilemmaBijna: "Bijna",
+      bezoekTekst: function(sn){ return "🤖 "+sn+" is op bezoek!"; },
+      gastHallo: function(){ return "Hallo "+naam()+"! 😊"; },
+      gastTotziens: "Tot ziens! 👋",
+      deelTekstFn: function(){ return "Mijn Botty heet "+naam()+" — "+leeftijdTekst()+" oud, Generatie "+state.generatie+", 🧠 wijsheid "+state.wijs+", ⚡ energie "+Math.round(state.energie)+"%. Speel ook mee bij NOLAI!"; },
+      gedeeldBadgeKan: function(sn){ return sn+" wil bij "+naam()+" op bezoek komen!<small>Laat de gast-Botty binnen — samen spelen maakt ze blij.</small>"; },
+      gedeeldBadgeNiet: function(sn){ return "🤖 "+sn+" deelt zijn Botty met je!<small>Start eerst je eigen Botty; dan kunnen ze op bezoek bij elkaar.</small>"; },
+      gekopieerd: "Gekopieerd! 📋",
+      kopierenFout: "Kon niet kopiëren",
+      kopierenNiet: "Kopiëren niet ondersteund",
+      xaiAan: "Uitlegbare AI aan 🔍 — ik leg uit waarom ik handel.",
+      xaiUit: "Uitlegbare AI uit.",
+      tutStappen: [
+        {e:"🤖", t:"Zorg goed voor Botty", x:"Botty begint als klein robotje. Zorg je goed voor haar, dan wordt ze sterk en kleurrijk. Verwaarloos je haar, dan krijgt ze roest en een bocheltje, en voelt ze zich niet lekker. Ze heeft 5 meters: energie, data, fitheid, geluk én stemming."},
+        {e:"🧠", t:"Stemming", x:"De paarse 🧠-balk laat Botty's gemoedstoestand zien — los van haar gewone meters. Stemming stijgt als er bezoekers zijn, als jij haar verzorgt of als de AI voor haar zorgt. Ze daalt als Botty lang alleen is of ziek is. Een hoge stemming maakt haar blijer en beïnvloedt haar emotie!"},
+        {e:"😊", t:"10 emoties", x:"Botty toont hoe ze zich écht voelt:\n\n😄 enthousiast · 😊 blij · 😌 kalm\n🤔 nieuwsgierig · 🥺 eenzaam · 😟 verdrietig\n😰 angstig · 😵 verward · 🥲 ziek · 🦾 trots\n\nHaar stemming bepaalt mee welke emotie ze toont. Zorg goed voor haar — dan word je verrast!"},
+        {e:"👥", t:"Bezoekers", x:"Hoe meer mensen de hive bezoeken, hoe blijer Botty wordt! Bezoekers verhogen haar stemming automatisch. Je ziet het bezoekersaantal live bovenaan. Deel de link met vrienden en maak de hive levendig!"},
+        {e:"🍃", t:"Voeren", x:"Geef Botty duurzame, eerlijke data. Weiger vervuilde data zoals nepnieuws en bias. Goede voeding houdt haar data-bar vol én doet haar stemming goed."},
+        {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook. Regelmatig bewegen houdt haar bars op peil."},
+        {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid. Goede keuzes bouwen haar geluk en band met jou op."},
+        {e:"🤖", t:"AI-assistent", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt. De 6 stappen volgen de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Signalering — AI licht de juiste knop op\n2 · Advisering — AI geeft een tip\n3 · Gedeeltelijk — AI voert & beweegt\n4 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n5 · Volledig — AI doet alles\n\nLet op: AI-zorg heeft ook effect op Botty's stemming!"},
+        {e:"🧬", t:"Generaties", x:"Als Botty lang genoeg goed verzorgd is, kan ze een kind krijgen! Het kind erft genen van haar — inclusief een stukje stemming. Elk kind start een nieuwe generatie. Hoe verder de generatie, hoe trotser Botty kan worden. 🦾"},
+        {e:"🚪", t:"Op bezoek", x:"Deel Botty's link (📤) met een vriend. Als die de link opent, loopt jouw Botty bij hém op bezoek — en dat doet haar stemming goed! Krijg jij een link, klik dan op 'Laat binnen'. Samen spelen maakt je Botty blijer. 💞"},
+        {e:"⌨️", t:"Sneltoetsen", x:"Bedien Botty snel met je toetsenbord:\n\n1 · Voeren\n2 · Bewegen\n3 · Dilemma\n4 · Bug verhelpen (alleen als Botty ziek is)\n\nBij het voer-scherm: kies kaart 1–4 met het getal.\nBij een dilemma: kies antwoord 1–3 met het getal."},
+        {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan. Botty's stemming kan ook fluctueren met het moment van de dag!"}
+      ]
+    },
+    en: {
+      ondertitel: "Feed her sustainable data, let her move, and think together.",
+      btnHelp: "Help",
+      btnShare: "Share Botty",
+      btnMuteLabel: "Sound on or off",
+      btnMuteTitle: "Sound on/off",
+      btnAiLabel: "Configure AI assistant",
+      btnHerstel: "💊 Fix",
+      btnSamenspelen: "🎉 Play together",
+      btnTotziens: "👋 Goodbye",
+      btnVoerTekst: "Feed",
+      btnBeweegTekst: "Move",
+      voerH2: "Feed Botty sustainable data",
+      voerVraag: "Choose wisely! Sustainable, fair data makes Botty strong. Polluted data makes her sick.",
+      voerHint: "Tip: reliable, privacy-friendly and diverse = sustainable.",
+      sluitVoer: "Done",
+      dilemmaH2: "⚖️ Ethical dilemma",
+      sluitDilemma: "Got it!",
+      naamPlaceholder: "Give your Botty a name…",
+      startKnop: "Start the adventure!",
+      tutVorige: "Back",
+      tutVolgende: "Next",
+      tutLaatste: "Let's go!",
+      deelKnop: "Share",
+      kopieerKnop: "Copy",
+      sluitShare: "Close",
+      gedeeldBezoek: "🚪 Let in — come visit!",
+      gedeeldSpeel: "Play with your own Botty 🤖",
+      aiH2: "🤖 AI assistant",
+      aiVraag: "How much care do you hand over? Slide from left (you do everything) to right (AI does everything).",
+      aiHint: "Based on levels of automation (Inge Molenaar). Learn more via ❔ above.",
+      sluitAi: "Done",
+      nieuweGen: "Start a new generation 🥚",
+      gebSub: "Give Botty a name and a great start! Take good care of her — give her data, let her move, and solve dilemmas. Her mood (🧠) shows how she really feels. The more visitors there are, the happier she gets. If she thrives, she can start a new generation!",
+      gebTitel1: "A pile of loose parts…",
+      gebTitel2: "AI is initialising…",
+      gebTitel3: "🎉 Botty is assembled! 🎉",
+      eindeTitelSuffix: " has shut down",
+      leeftijdMinuut: "min",
+      leeftijdUur: "h",
+      leeftijdDag: " day",
+      leeftijdDagen: " days",
+      leeftijdPasgeboren: "newborn",
+      voedsel: [
+        {em:"📊", nm:"Anonymous learning results", goed:true},
+        {em:"📚", nm:"Open learning material", goed:true},
+        {em:"✅", nm:"Consent obtained", goed:true},
+        {em:"🌍", nm:"Diverse examples", goed:true},
+        {em:"🔎", nm:"Fact-checked", goed:true},
+        {em:"🔋", nm:"Energy-efficient training", goed:true},
+        {em:"🤝", nm:"Fairly shared data", goed:true},
+        {em:"📰", nm:"Fake news", goed:false},
+        {em:"⚖️", nm:"Biased data", goed:false},
+        {em:"🕵️", nm:"Stolen data", goed:false},
+        {em:"🗑️", nm:"Outdated info", goed:false},
+        {em:"🚫", nm:"Discriminatory examples", goed:false}
+      ],
+      dilemmas: [
+        {v:"A student lets AI write her essay. What do you advise the school?",keuzes:[
+          {t:"Ban AI entirely", w:1, r:"Banning seems safe, but students don't learn how to use AI wisely and fairly. Better: learn together."},
+          {t:"Learn how to use AI honestly", w:3, r:"Good choice! Students learn to use AI as a tool and to be honest about what they did themselves."},
+          {t:"Do nothing", w:0, r:"Without agreements, nobody knows what's allowed. Clear, fair guidelines help everyone."}]},
+        {v:"An AI predicts which students are at risk of dropping out. How do you use that?",keuzes:[
+          {t:"Use it to offer extra support", w:3, r:"Great! Predictions may help, never label. Humans decide, AI supports."},
+          {t:"Separate those students", w:0, r:"That's a label that works out unfairly. Predictions must not take away chances."},
+          {t:"Don't trust it at all", w:1, r:"Being cautious is good, but if the data is fair it can help. Stay critical."}]},
+        {v:"A free AI tool wants all student data, in exchange for free use.",keuzes:[
+          {t:"Sure, it's free!", w:0, r:"Nothing is truly free: you pay with privacy. Children's personal data deserves protection."},
+          {t:"Only give what is strictly needed", w:3, r:"Great! Collect as little data as possible (data minimisation). That is sustainable and privacy-friendly."},
+          {t:"First ask for consent and explanation", w:3, r:"Excellent! Transparency and consent are part of fair data."}]},
+        {v:"The AI keeps giving one group of students easier tasks. What is going on?",keuzes:[
+          {t:"Fine, nice and easy", w:0, r:"This could be bias: prejudices in the data. That is unfair and keeps differences in place."},
+          {t:"Investigate whether the data is skewed", w:3, r:"Exactly! Always check for bias so everyone gets fair chances."},
+          {t:"Just switch the AI off", w:1, r:"Understandable, but investigating first is smarter. Maybe the data can be fixed."}]},
+        {v:"An AI model costs an enormous amount of energy to train. What counts?",keuzes:[
+          {t:"Only whether it works well", w:1, r:"Working well matters, but sustainability counts too. Energy and environment belong in the choice."},
+          {t:"Also the energy and environment", w:3, r:"Good! Sustainable AI also looks at energy use. Sometimes a smaller model is enough."},
+          {t:"Doesn't matter", w:0, r:"It does matter: AI has a real footprint on our planet."}]},
+        {v:"A chatbot sometimes gives students a wrong answer with great confidence.",keuzes:[
+          {t:"Always believe what AI says", w:0, r:"AI can be convincing and wrong. Always keep thinking for yourself and check facts."},
+          {t:"Teach students to verify", w:3, r:"Strong! Critical thinking and fact-checking is the best protection against errors."},
+          {t:"Ban the chatbot", w:1, r:"Possible, but learning to deal with errors is more valuable than avoiding them."}]}
+      ],
+      aiNiveaus: [
+        {naam:"Off",           tag:"you do everything",  uitleg:"You take full care of Botty yourself and monitor the meters yourself.",                                band:"grows fully 💚"},
+        {naam:"Signalling",   tag:"AI gives a hint",     uitleg:"The AI monitors the meters and highlights the button that needs attention. You decide and act.",      band:"grows fully 💚"},
+        {naam:"Advising",     tag:"AI tips",             uitleg:"The AI gives you a tip on what to do best. You decide and act.",                                       band:"grows fully 💚"},
+        {naam:"Partial",      tag:"together",            uitleg:"The AI handles feeding and moving. Happiness, bugs and dilemmas stay with you.",                       band:"still growing well 💚"},
+        {naam:"Conditional",  tag:"AI with safety net",  uitleg:"The AI takes care of Botty and monitors the meters, but asks you to decide on dilemmas.",             band:"grows limited 🧡"},
+        {naam:"Full",         tag:"AI does everything",  uitleg:"The AI takes over everything, including dilemmas. You supervise. Only petting Botty grows the bond slightly.", band:"barely grows ❤️"}
+      ],
+      berichten: function(n){ return [
+        "You're taking full care of " + naam() + " yourself! 💚",
+        "The AI gives a hint when a button needs attention. You decide and act. 🔦",
+        "The AI gives tips on what you can do. You decide and act. 💡",
+        "The AI handles feeding and moving. Happiness, bugs and dilemmas stay with you. 🤖",
+        "The AI takes care of " + naam() + " itself, but asks you at dilemmas. 🤖",
+        "The AI takes full care of " + naam() + ", including dilemmas. You supervise. 🤖"
+      ][n]; },
+      aaiZinnen: ["Hehe! 😄","That tickles!","Aaah, nice ❤️","One more!","You're sweet 💚","*happy hum*"],
+      groetjes: ["👀","Hi!","🎵","Nice day, right?","🤖"],
+      bewegingen: ["Jumping jacks! 🤸","Surfing the data wave! 🏄","Dance break! 💃","Stretch and reach! 🙆","Run a loop! 🏃","Windmill arms! 💨","Robot dance! 🤖"],
+      jubel: ["Playing together is the best! 😄","What a party! 🎉","You're having fun together! 😁","Making friends makes Botty happy! 💞"],
+      doodTekst: function(oorzaak){ if(oorzaak==="ouderdom") return "After a long and wise life, "+naam()+" has peacefully shut down. 🌙"; if(oorzaak==="ziekte") return naam()+"'s bug wasn't fixed in time. 💔"; return naam()+" received too little care and shut down. 💔"; },
+      reflectieTekst: function(pctAi, band){ var regel = "🤖 The AI did "+pctAi+"% of the care, you "+(100-pctAi)+"%. Your bond reached "+band+"%. "; if(pctAi<=20) return regel+"You did almost everything yourself — see how personal attention makes the bond strong? 💚"; else if(pctAi<=60) return regel+"You shared care with the AI. A nice balance between help and personal attention. 🤝"; else return regel+"You left a lot to the AI. Handy — but real bond requires YOUR attention. 🧡"; },
+      reflectieLeeg: "There was too little care to say anything about.",
+      dagdeelGroet: function(h){ if(h<6) return "Good night"; if(h<12) return "Good morning ☀️"; if(h<18) return "Good afternoon"; if(h<22) return "Good evening 🌆"; return "It's late 😴"; },
+      stadiumLabels: {baby:"baby 👶", kind:"child", tiener:"teenager", volwassen:"adult"},
+      zegHoi: function(){ return "Hi, I'm "+naam()+"! Give me sustainable data 🍃"; },
+      zegDuurzaam: "Mmm, sustainable data! 😋",
+      zegVervuild: "Ugh! This data is polluted… 🤢",
+      zegBug: "Oh no… I have a bug! 🤒 Please fix me.",
+      zegGepatcht: "Phew, patched! Thank you 💚",
+      zegZiek: "I don't feel well… 🤒",
+      zegEnergie: "My energy is running low… keep attending to me! ⚡",
+      zegHonger: "I'm hungry for good data… 🍃",
+      zegBeweeg: "I want to move! 🤸",
+      zegNietLekker: ["I'm not feeling great… 🥺","I'm creaking a bit… 🛠️","Better next time! 🛠️"],
+      zegGaap: "*yawn* 😴",
+      zegWelkomGast: function(sn){ return "Hi "+sn+"! Welcome! 👋"; },
+      zegGastKomt: function(sn){ return "🤖 "+sn+" is visiting!"; },
+      zegTotZiens: "Bye! Come play again soon! 💚",
+      zegDilemma: "I have a dilemma for you… ⚖️",
+      zegAiTwijfelt: "🤖 The AI hesitates — you decide this dilemma. ⚖️",
+      toastAi: "Note: your bond only grows through YOUR attention 💚",
+      aiVoerTekst: function(dataBefore){ return state.uitlegbaar ? "🔍 Data was "+dataBefore+"% — feeding sustainable data 🍃" : "🤖 AI feeds sustainable data"; },
+      aiBeweegTekst: function(fitBefore){ return state.uitlegbaar ? "🔍 Fitness was "+fitBefore+"% — letting "+naam()+" move 🤸" : "🤖 AI lets "+naam()+" move"; },
+      aiHerstelTekst: function(){ return state.uitlegbaar ? "🔍 Bug detected → fixing the error 🛠️" : "🤖 AI fixes the bug"; },
+      aiTroostTekst: function(gelukBefore){ return state.uitlegbaar ? "🔍 Happiness was "+gelukBefore+"% — comforting "+naam()+" 💙" : "🤖 AI keeps "+naam()+" happy"; },
+      aiDilemmaTekst: function(beste){ return state.uitlegbaar ? "🔍 AI chose '"+beste.t+"' (+"+beste.w+" wisdom) ⚖️" : "🤖 AI chose wisely on a dilemma"; },
+      aiTickerUit: function(){ return "AI assistant is <b>off</b> — you care for "+naam()+" yourself."; },
+      aiTickerAan: function(n, inf){ return "AI · level "+n+" — <b>"+inf.naam+"</b> · "+inf.tag; },
+      signaleringBug: "🔍 Bug detected — fix button highlighted 🔦",
+      signaleringFit: function(pct){ return "🔍 Fitness "+pct+"% low — move button highlighted 🔦"; },
+      signaleringData: function(label, pct){ return "🔍 "+label+" "+pct+"% low — feed button highlighted 🔦"; },
+      adviesBug: function(){ return state.uitlegbaar ? "🔍 Bug present — tip: fix the error 🛠️" : "💡 Tip: fix "+naam()+"'s bug."; },
+      adviesFit: function(pct){ return state.uitlegbaar ? "🔍 Fitness "+pct+"% low — let "+naam()+" move." : "💡 Tip: Let "+naam()+" move."; },
+      adviesGeluk: function(pct){ return state.uitlegbaar ? "🔍 Happiness "+pct+"% low — give "+naam()+" attention — pet her." : "💡 Tip: Give "+naam()+" attention — pet her."; },
+      adviesData: function(label, pct){ return state.uitlegbaar ? "🔍 "+label+" "+pct+"% low — feed "+naam()+" sustainable data." : "💡 Tip: Feed "+naam()+" sustainable data."; },
+      welkomAfwezig: function(groet, duur){ return groet+"! You were away for "+duur+" — I missed you! 💚"; },
+      welkomTerug: function(groet){ return groet+"! Great to see you! 👋"; },
+      humanizeDag: function(d){ return d+(d===1?" day":" days"); },
+      humanizeUur: function(u){ return u+"h"; },
+      humanizeMin: function(m){ return m+" min"; },
+      dilemmaWijs: "Wise choice",
+      dilemmaNog: "Think again",
+      dilemmaBijna: "Almost",
+      bezoekTekst: function(sn){ return "🤖 "+sn+" is visiting!"; },
+      gastHallo: function(){ return "Hello "+naam()+"! 😊"; },
+      gastTotziens: "Goodbye! 👋",
+      deelTekstFn: function(){ return "My Botty is called "+naam()+" — "+leeftijdTekst()+" old, Generation "+state.generatie+", 🧠 wisdom "+state.wijs+", ⚡ energy "+Math.round(state.energie)+"%. Join in at NOLAI!"; },
+      gedeeldBadgeKan: function(sn){ return sn+" wants to visit "+naam()+"!<small>Let the guest Botty in — playing together makes them happy.</small>"; },
+      gedeeldBadgeNiet: function(sn){ return "🤖 "+sn+" is sharing their Botty with you!<small>Start your own Botty first; then they can visit each other.</small>"; },
+      gekopieerd: "Copied! 📋",
+      kopierenFout: "Could not copy",
+      kopierenNiet: "Copy not supported",
+      xaiAan: "Explainable AI on 🔍 — I'll explain why I act.",
+      xaiUit: "Explainable AI off.",
+      tutStappen: [
+        {e:"🤖", t:"Take good care of Botty", x:"Botty starts as a small robot. Take good care of her and she becomes strong and colourful. Neglect her and she'll get rust and a hunch, and won't feel well. She has 5 meters: energy, data, fitness, happiness and mood."},
+        {e:"🧠", t:"Mood", x:"The purple 🧠 bar shows Botty's state of mind — separate from her normal meters. Mood rises when there are visitors, when you care for her, or when the AI cares for her. It drops when Botty is alone for a long time or is sick. A high mood makes her happier and influences her emotion!"},
+        {e:"😊", t:"10 emotions", x:"Botty shows how she really feels:\n\n😄 enthusiastic · 😊 happy · 😌 calm\n🤔 curious · 🥺 lonely · 😟 sad\n😰 anxious · 😵 confused · 🥲 sick · 🦾 proud\n\nHer mood helps determine which emotion she shows. Take good care of her — you might be surprised!"},
+        {e:"👥", t:"Visitors", x:"The more people visit the hive, the happier Botty gets! Visitors automatically raise her mood. You can see the visitor count live at the top. Share the link with friends and make the hive lively!"},
+        {e:"🍃", t:"Feeding", x:"Give Botty sustainable, fair data. Refuse polluted data like fake news and bias. Good nutrition keeps her data bar full and benefits her mood."},
+        {e:"🤸", t:"Moving", x:"Let Botty move for her fitness — and it's fun too. Moving regularly keeps her bars up."},
+        {e:"⚖️", t:"Dilemmas", x:"Think together about AI in education and earn wisdom. Good choices build her happiness and bond with you."},
+        {e:"🤖", t:"AI assistant", x:"With the ⚡ slider you choose how much the AI takes over. The 6 steps follow the levels of automation by Inge Molenaar:\n\n0 · Off — you do everything\n1 · Signalling — AI highlights the right button\n2 · Advising — AI gives a tip\n3 · Partial — AI feeds & moves\n4 · Conditional — AI cares, but asks you on dilemmas\n5 · Full — AI does everything\n\nNote: AI care also affects Botty's mood!"},
+        {e:"🧬", t:"Generations", x:"If Botty is well cared for long enough, she can have a child! The child inherits genes from her — including a bit of mood. Each child starts a new generation. The further the generation, the prouder Botty can be. 🦾"},
+        {e:"🚪", t:"Visiting", x:"Share Botty's link (📤) with a friend. When they open the link, your Botty visits them — and that does her mood good! If you get a link, click 'Let in'. Playing together makes your Botty happier. 💞"},
+        {e:"⌨️", t:"Shortcuts", x:"Control Botty quickly with your keyboard:\n\n1 · Feed\n2 · Move\n3 · Dilemma\n4 · Fix bug (only when Botty is sick)\n\nIn the feed screen: choose card 1–4 with the number.\nIn a dilemma: choose answer 1–3 with the number."},
+        {e:"🌞", t:"Day & night", x:"The sun rises and sets with the real clock. At night the moon shines. Botty's mood can also fluctuate with the time of day!"}
+      ]
+    }
+  };
+
+  function setLang(lang){
+    huidigeLang = lang;
+    huidigeT = T[lang] || T.nl;
+    // Update static HTML elements
+    var ondertitelEl = document.querySelector(".ondertitel");
+    if(ondertitelEl) ondertitelEl.textContent = huidigeT.ondertitel;
+    var btnHelp = document.getElementById("btn-help");
+    if(btnHelp){ btnHelp.setAttribute("aria-label", huidigeT.btnHelp); btnHelp.setAttribute("title", huidigeT.btnHelp); }
+    var btnShare = document.getElementById("btn-share");
+    if(btnShare){ btnShare.setAttribute("aria-label", huidigeT.btnShare); btnShare.setAttribute("title", huidigeT.btnShare); }
+    var btnMute = document.getElementById("btn-mute");
+    if(btnMute){ btnMute.setAttribute("aria-label", huidigeT.btnMuteLabel); btnMute.setAttribute("title", huidigeT.btnMuteTitle); }
+    var btnAi = document.getElementById("ai-toggle");
+    if(btnAi){ btnAi.setAttribute("aria-label", huidigeT.btnAiLabel); }
+    var btnHerstel = document.getElementById("btn-herstel");
+    if(btnHerstel){
+      // Text node is first child before the kbd
+      for(var hc=0;hc<btnHerstel.childNodes.length;hc++){
+        if(btnHerstel.childNodes[hc].nodeType===3){ btnHerstel.childNodes[hc].textContent=huidigeT.btnHerstel+" "; break; }
+      }
+    }
+    var btnSamen = document.getElementById("btn-samenspelen");
+    if(btnSamen) btnSamen.textContent = huidigeT.btnSamenspelen;
+    var btnTotziens = document.getElementById("btn-totziens");
+    if(btnTotziens) btnTotziens.textContent = huidigeT.btnTotziens;
+    // Feed/Move button text (the text node after the .ico span)
+    function setKnopTekst(id, tekst){
+      var btn = document.getElementById(id);
+      if(!btn) return;
+      // Find last text node and update it
+      for(var c=btn.childNodes.length-1;c>=0;c--){
+        if(btn.childNodes[c].nodeType===3){ btn.childNodes[c].textContent=tekst; return; }
+      }
+    }
+    setKnopTekst("btn-voer", huidigeT.btnVoerTekst);
+    setKnopTekst("btn-beweeg", huidigeT.btnBeweegTekst);
+    // Modals
+    var voerH2 = document.querySelector("#overlay-voer h2");
+    if(voerH2) voerH2.textContent = huidigeT.voerH2;
+    var voerVraag = document.querySelector("#overlay-voer .vraag");
+    if(voerVraag) voerVraag.textContent = huidigeT.voerVraag;
+    var voerHint = document.querySelector("#overlay-voer .hint");
+    if(voerHint) voerHint.textContent = huidigeT.voerHint;
+    var sluitVoer = document.getElementById("sluit-voer");
+    if(sluitVoer) sluitVoer.textContent = huidigeT.sluitVoer;
+    var dilemmaH2 = document.querySelector("#overlay-dilemma h2");
+    if(dilemmaH2) dilemmaH2.textContent = huidigeT.dilemmaH2;
+    var sluitDil = document.getElementById("sluit-dilemma");
+    if(sluitDil) sluitDil.textContent = huidigeT.sluitDilemma;
+    var naamInput = document.getElementById("naam-input");
+    if(naamInput) naamInput.placeholder = huidigeT.naamPlaceholder;
+    var startKnop = document.getElementById("start-knop");
+    if(startKnop) startKnop.textContent = huidigeT.startKnop;
+    var tutVorige = document.getElementById("tut-vorige");
+    if(tutVorige) tutVorige.textContent = huidigeT.tutVorige;
+    var deelKnop = document.getElementById("deel-knop");
+    if(deelKnop) deelKnop.textContent = huidigeT.deelKnop;
+    var kopieerKnop = document.getElementById("kopieer-knop");
+    if(kopieerKnop) kopieerKnop.textContent = huidigeT.kopieerKnop;
+    var sluitShare = document.getElementById("sluit-share");
+    if(sluitShare) sluitShare.textContent = huidigeT.sluitShare;
+    var gedeeldBezoek = document.getElementById("gedeeld-bezoek");
+    if(gedeeldBezoek) gedeeldBezoek.textContent = huidigeT.gedeeldBezoek;
+    var gedeeldSpeel = document.getElementById("gedeeld-speel");
+    if(gedeeldSpeel) gedeeldSpeel.textContent = huidigeT.gedeeldSpeel;
+    var aiH2 = document.querySelector("#overlay-ai h2");
+    if(aiH2) aiH2.textContent = huidigeT.aiH2;
+    var aiVraag = document.querySelector("#overlay-ai .vraag");
+    if(aiVraag) aiVraag.textContent = huidigeT.aiVraag;
+    var aiHint = document.querySelector("#overlay-ai .hint");
+    if(aiHint) aiHint.textContent = huidigeT.aiHint;
+    var sluitAi = document.getElementById("sluit-ai");
+    if(sluitAi) sluitAi.textContent = huidigeT.sluitAi;
+    var nieuweGen = document.getElementById("nieuwe-gen");
+    if(nieuweGen) nieuweGen.textContent = huidigeT.nieuweGen;
+    var gebSub = document.getElementById("geb-sub");
+    if(gebSub) gebSub.textContent = huidigeT.gebSub;
+  }
+
   var KEY = "botty-tamagotchi-v3";
   var DAG = 86400000;
   var nu = function(){ return Date.now(); };
@@ -946,10 +1386,11 @@
   function leeftijdTekst(){
     var ms = nu() - state.geboortetijd;
     var min = ms/60000, uur = min/60, dag = uur/24;
-    if(dag >= 1) return Math.floor(dag) + (Math.floor(dag)===1?" dag":" dagen");
-    if(uur >= 1) return Math.floor(uur) + " uur";
-    if(min >= 1) return Math.floor(min) + " min";
-    return "pasgeboren";
+    var d = Math.floor(dag);
+    if(dag >= 1) return d + (d===1 ? huidigeT.leeftijdDag : huidigeT.leeftijdDagen);
+    if(uur >= 1) return Math.floor(uur) + " " + huidigeT.leeftijdUur;
+    if(min >= 1) return Math.floor(min) + " " + huidigeT.leeftijdMinuut;
+    return huidigeT.leeftijdPasgeboren;
   }
 
   function render(){
@@ -1117,7 +1558,6 @@
   }
 
   // ---------- Aaien ----------
-  var aaiZinnen=["Hihi! 😄","Dat kriebelt!","Aaah, fijn ❤️","Nog een keer!","Jij bent lief 💚","*tevreden gezoem*"];
   var laatsteAai=0;
   function aai(){
     if(!state.geboren || modalOpen()) return;
@@ -1130,6 +1570,7 @@
       state.geluk=klem(state.geluk+3);
       state.band=klem(state.band+4);   // jóuw aandacht versterkt de band
       flitsBalk(".b-band");
+      var aaiZinnen = huidigeT.aaiZinnen;
       if(Math.random()<0.5) zeg(aaiZinnen[Math.floor(Math.random()*aaiZinnen.length)], 1800);
       bewaar(); render();
     }
@@ -1210,34 +1651,22 @@
   function planVogels(){ setTimeout(function(){ spawnVogels(); planVogels(); }, 15000+Math.random()*25000); }
 
   // ================= TUTORIAL =================
-  var tutStappen=[
-    {e:"🤖", t:"Zorg goed voor Botty", x:"Botty begint als klein robotje. Zorg je goed voor haar, dan wordt ze sterk en kleurrijk. Verwaarloos je haar, dan krijgt ze roest en een bocheltje, en voelt ze zich niet lekker. Ze heeft 5 meters: energie, data, fitheid, geluk én stemming."},
-    {e:"🧠", t:"Stemming", x:"De paarse 🧠-balk laat Botty's gemoedstoestand zien — los van haar gewone meters. Stemming stijgt als er bezoekers zijn, als jij haar verzorgt of als de AI voor haar zorgt. Ze daalt als Botty lang alleen is of ziek is. Een hoge stemming maakt haar blijer en beïnvloedt haar emotie!"},
-    {e:"😊", t:"10 emoties", x:"Botty toont hoe ze zich écht voelt:\n\n😄 enthousiast · 😊 blij · 😌 kalm\n🤔 nieuwsgierig · 🥺 eenzaam · 😟 verdrietig\n😰 angstig · 😵 verward · 🥲 ziek · 🦾 trots\n\nHaar stemming bepaalt mee welke emotie ze toont. Zorg goed voor haar — dan word je verrast!"},
-    {e:"👥", t:"Bezoekers", x:"Hoe meer mensen de hive bezoeken, hoe blijer Botty wordt! Bezoekers verhogen haar stemming automatisch. Je ziet het bezoekersaantal live bovenaan. Deel de link met vrienden en maak de hive levendig!"},
-    {e:"🍃", t:"Voeren", x:"Geef Botty duurzame, eerlijke data. Weiger vervuilde data zoals nepnieuws en bias. Goede voeding houdt haar data-bar vol én doet haar stemming goed."},
-    {e:"🤸", t:"Bewegen", x:"Laat Botty bewegen voor haar fitheid — en het is nog leuk ook. Regelmatig bewegen houdt haar bars op peil."},
-    {e:"⚖️", t:"Dilemma's", x:"Denk samen na over AI in het onderwijs en verdien wijsheid. Goede keuzes bouwen haar geluk en band met jou op."},
-    {e:"🤖", t:"AI-assistent", x:"Met de ⚡-schuif kies je hoeveel de AI overneemt. De 6 stappen volgen de niveaus van automatisering van Inge Molenaar:\n\n0 · Uit — jij doet alles\n1 · Signalering — AI licht de juiste knop op\n2 · Advisering — AI geeft een tip\n3 · Gedeeltelijk — AI voert & beweegt\n4 · Voorwaardelijk — AI zorgt, maar vraagt jóu bij dilemma's\n5 · Volledig — AI doet alles\n\nLet op: AI-zorg heeft ook effect op Botty's stemming!"},
-    {e:"🧬", t:"Generaties", x:"Als Botty lang genoeg goed verzorgd is, kan ze een kind krijgen! Het kind erft genen van haar — inclusief een stukje stemming. Elk kind start een nieuwe generatie. Hoe verder de generatie, hoe trotser Botty kan worden. 🦾"},
-    {e:"🚪", t:"Op bezoek", x:"Deel Botty's link (📤) met een vriend. Als die de link opent, loopt jouw Botty bij hém op bezoek — en dat doet haar stemming goed! Krijg jij een link, klik dan op 'Laat binnen'. Samen spelen maakt je Botty blijer. 💞"},
-    {e:"⌨️", t:"Sneltoetsen", x:"Bedien Botty snel met je toetsenbord:\n\n1 · Voeren\n2 · Bewegen\n3 · Dilemma\n4 · Bug verhelpen (alleen als Botty ziek is)\n\nBij het voer-scherm: kies kaart 1–4 met het getal.\nBij een dilemma: kies antwoord 1–3 met het getal."},
-    {e:"🌞", t:"Dag & nacht", x:"De zon komt op en gaat onder met de echte klok. 's Nachts schijnt de maan. Botty's stemming kan ook fluctueren met het moment van de dag!"}
-  ];
   var tutI=0;
   function toonTut(i){
+    var tutStappen = huidigeT.tutStappen;
     tutI=i; var s=tutStappen[i];
     el("tut-emoji").textContent=s.e; el("tut-titel").textContent=s.t; el("tut-tekst").textContent=s.x;
     var d=el("tut-stippen"); d.innerHTML="";
     for(var j=0;j<tutStappen.length;j++){ var sp=document.createElement("span"); sp.className="tut-stip"+(j===i?" actief":""); d.appendChild(sp); }
     el("tut-vorige").style.visibility = i===0 ? "hidden" : "visible";
-    el("tut-volgende").textContent = (i===tutStappen.length-1) ? "Aan de slag!" : "Volgende";
+    var last = (i===tutStappen.length-1);
+    el("tut-volgende").textContent = last ? huidigeT.tutLaatste : huidigeT.tutVolgende;
   }
   function startTut(){ el("overlay-tutorial").classList.add("open"); toonTut(0); }
   el("tut-vorige").addEventListener("click", function(){ sfx.klik(); if(tutI>0) toonTut(tutI-1); });
   el("tut-volgende").addEventListener("click", function(){
     sfx.klik();
-    if(tutI<tutStappen.length-1){ toonTut(tutI+1); }
+    if(tutI<huidigeT.tutStappen.length-1){ toonTut(tutI+1); }
     else { el("overlay-tutorial").classList.remove("open"); state.tutorialKlaar=true; bewaar(); }
   });
   el("btn-help").addEventListener("click", function(){ sfx.klik(); startTut(); });
@@ -1264,13 +1693,13 @@
              f:Math.round(state.fit), gl:Math.round(state.geluk), b:Math.round(state.band) };
   }
   function deelURL(){ return location.origin + location.pathname + "#b=" + b64enc(JSON.stringify(bouwSnapshot())); }
-  function deelTekst(){ return "Mijn Botty heet "+naam()+" — "+leeftijdTekst()+" oud, Generatie "+state.generatie+", 🧠 wijsheid "+state.wijs+", ⚡ energie "+Math.round(state.energie)+"%. Speel ook mee bij NOLAI!"; }
+  function deelTekst(){ return huidigeT.deelTekstFn(); }
 
   function toastMsg(t){ var e=el("toast"); e.textContent=t; e.classList.add("toon"); if(toastMsg._tm)clearTimeout(toastMsg._tm); toastMsg._tm=setTimeout(function(){ e.classList.remove("toon"); },2200); }
   function kopieer(txt){
     if(navigator.clipboard && navigator.clipboard.writeText){
-      navigator.clipboard.writeText(txt).then(function(){ toastMsg("Gekopieerd! 📋"); }, function(){ toastMsg("Kon niet kopiëren"); });
-    } else { toastMsg("Kopiëren niet ondersteund"); }
+      navigator.clipboard.writeText(txt).then(function(){ toastMsg(huidigeT.gekopieerd); }, function(){ toastMsg(huidigeT.kopierenFout); });
+    } else { toastMsg(huidigeT.kopierenNiet); }
   }
 
   // Vult een deelkaart (eigen preview én de gedeelde kaart) op basis van een snapshot.
@@ -1325,8 +1754,8 @@
     var kanBezoek = state.geboren;
     el("gedeeld-bezoek").style.display = kanBezoek ? "" : "none";
     el("gedeeld-badge").innerHTML = kanBezoek
-      ? (s.n + " wil bij " + naam() + " op bezoek komen!<small>Laat de gast-Botty binnen — samen spelen maakt ze blij.</small>")
-      : ("🤖 " + s.n + " deelt zijn Botty met je!<small>Start eerst je eigen Botty; dan kunnen ze op bezoek bij elkaar.</small>");
+      ? huidigeT.gedeeldBadgeKan(s.n)
+      : huidigeT.gedeeldBadgeNiet(s.n);
     el("overlay-gedeeld").classList.add("open");
   }
   // "Speel zelf": sluit de gedeelde kaart, wis de hash uit de URL en ga verder met het eigen spel.
@@ -1380,14 +1809,14 @@
     gast.style.display = "block";
     void gast.offsetWidth;                       // reflow zodat de slide-in animeert
     el("scene").classList.add("op-bezoek");       // host naar links, gast loopt in beeld
-    el("bezoek-tekst").textContent = "🤖 " + s.n + " is op bezoek!";
+    el("bezoek-tekst").textContent = huidigeT.bezoekTekst(s.n);
     el("bezoek-balk").style.display = "";
     sfx.goed();
     // Begroeting nadat de gast is binnengelopen.
     setTimeout(function(){
       speel("blij", 1800, "blij");
-      zeg("Hoi " + s.n + "! Welkom! 👋", 3400);
-      setTimeout(function(){ gastSpeel("blij", 1600); gastZeg("Hallo " + naam() + "! 😊", 3000); }, 500);
+      zeg(huidigeT.zegWelkomGast(s.n), 3400);
+      setTimeout(function(){ gastSpeel("blij", 1600); gastZeg(huidigeT.gastHallo(), 3000); }, 500);
     }, 1000);
   }
   // Samen spelen: beide Bottys huppelen, hartjes vliegen rond en de gastheer-Botty
@@ -1403,7 +1832,7 @@
     state.geluk = klem(state.geluk + 8);
     state.band  = klem(state.band + 5);
     flitsBalk(".b-geluk"); flitsBalk(".b-band");
-    var jubel = ["Samen spelen is het allerleukst! 😄","Wat een feestje! 🎉","Jullie hebben lol samen! 😁","Vriendjes maken blij! 💚"];
+    var jubel = huidigeT.jubel;
     zeg(jubel[samenTeller % jubel.length], 2600);
     gastZeg(["Jippie! 🎉","Hihi! 😄","Nog een keer! 🤸","Leuk! ✨"][samenTeller % 4], 2400);
     samenTeller++;
@@ -1413,8 +1842,8 @@
   function eindigBezoek(){
     if(!bezoekActief) return;
     bezoekActief = false;
-    gastZeg("Tot ziens! 👋", 2200);
-    zeg("Dag! Kom snel weer spelen! 💚", 2800);
+    gastZeg(huidigeT.gastTotziens, 2200);
+    zeg(huidigeT.zegTotZiens, 2800);
     el("scene").classList.remove("op-bezoek");   // gast schuift uit beeld, host naar midden
     var gast = el("gast");
     setTimeout(function(){
@@ -1428,23 +1857,11 @@
   el("btn-totziens").addEventListener("click", function(){ sfx.klik(); eindigBezoek(); });
 
   // ================= VOEREN =================
-  var voedsel = [
-    {em:"📊", nm:"Anonieme leerresultaten", goed:true},
-    {em:"📚", nm:"Open leermateriaal", goed:true},
-    {em:"✅", nm:"Toestemming gevraagd", goed:true},
-    {em:"🌍", nm:"Diverse voorbeelden", goed:true},
-    {em:"🔎", nm:"Gecontroleerde feiten", goed:true},
-    {em:"🔋", nm:"Energiezuinig getraind", goed:true},
-    {em:"🤝", nm:"Eerlijk gedeelde data", goed:true},
-    {em:"📰", nm:"Nepnieuws", goed:false},
-    {em:"⚖️", nm:"Bevooroordeelde data", goed:false},
-    {em:"🕵️", nm:"Gestolen gegevens", goed:false},
-    {em:"🗑️", nm:"Verouderde info", goed:false},
-    {em:"🚫", nm:"Discriminerende voorbeelden", goed:false}
-  ];
+  // voedsel comes from huidigeT.voedsel
   function shuffle(a){ a=a.slice(); for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;} return a; }
 
   function vulKaarten(){
+    var voedsel = huidigeT.voedsel;
     var goed = shuffle(voedsel.filter(function(v){return v.goed;})).slice(0,3);
     var slecht = shuffle(voedsel.filter(function(v){return !v.goed;})).slice(0,1);
     var set = shuffle(goed.concat(slecht));
@@ -1478,14 +1895,14 @@
       state.geluk = klem(state.geluk + 5);
       state.band = klem(state.band + (doorAI?0:1));  // band alleen bij jóuw voeren
       floater("+data", "#2f8f86");
-      if(!doorAI) zeg("Mmm, duurzame data! 😋", 2600);
+      if(!doorAI) zeg(huidigeT.zegDuurzaam, 2600);
       setTimeout(sfx.goed, 200); sparkles(); flitsBalk(".b-data"); flitsBalk(".b-energie");
     }else{                                        // vervuilde data → straf + kans op ziekte
       state.data = klem(state.data - 6);
       state.energie = klem(state.energie - 6);
       state.geluk = klem(state.geluk - 12);          // geluk krijgt de grootste klap
       floater("⚠ vervuild", "#c8472f");
-      zeg("Bah! Deze data is vervuild… 🤢", 2800);
+      zeg(huidigeT.zegVervuild, 2800);
       setTimeout(sfx.fout, 200); schud();
       if(Math.random() < 0.3) setTimeout(wordZiek, 900);  // 30% kans dat vervuilde data ziek maakt
     }
@@ -1495,7 +1912,6 @@
   el("sluit-voer").addEventListener("click", function(){ el("overlay-voer").classList.remove("open"); });
 
   // ================= BEWEGEN =================
-  var bewegingen = ["Jumping jacks! 🤸","Even surfen op de datagolf! 🏄","Dansje erbij! 💃","Stretchen en strekken! 🙆","Rondje rennen! 🏃"];
   // Bewegen verhoogt fitheid/energie/geluk, maar kost een beetje data (denkkracht).
   function beweegActie(doorAI){
     speel("beweeg", 3000, "blij");
@@ -1507,41 +1923,18 @@
     state.data = klem(state.data - 3);              // lichte data-kost als tegenwicht
     state.band = klem(state.band + (doorAI?0:1));   // band alleen bij jóuw zorg
     floater("+fit", "#57b85f"); flitsBalk(".b-fit"); flitsBalk(".b-energie");
+    var bewegingen = huidigeT.bewegingen;
     if(!doorAI) zeg(bewegingen[Math.floor(Math.random()*bewegingen.length)], 2800);
     bewaar(); render();
   }
   el("btn-beweeg").addEventListener("click", function(){ beweegActie(false); });
 
   // ================= DILEMMA'S =================
-  var dilemmas = [
-    {v:"Een leerling laat AI haar opstel schrijven. Wat raad jij de school aan?",keuzes:[
-      {t:"AI helemaal verbieden", w:1, r:"Verbieden lijkt veilig, maar leerlingen leren dan niet hoe ze AI verstandig en eerlijk gebruiken. Beter: samen leren."},
-      {t:"Leren hóe je AI eerlijk gebruikt", w:3, r:"Goed gekozen! Leerlingen leren AI als hulpmiddel te gebruiken én eerlijk te zijn over wat ze zelf deden."},
-      {t:"Niks doen", w:0, r:"Zonder afspraken weet niemand wat mag. Duidelijke, eerlijke afspraken helpen iedereen."}]},
-    {v:"Een AI voorspelt welke leerlingen dreigen uit te vallen. Hoe gebruik je dat?",keuzes:[
-      {t:"Gebruiken om extra hulp te bieden", w:3, r:"Mooi! Voorspellingen mogen helpen, nooit een stempel zijn. De mens beslist, AI ondersteunt."},
-      {t:"Leerlingen apart zetten", w:0, r:"Dat is een stempel dat oneerlijk uitpakt. Voorspellingen mogen kansen niet wegnemen."},
-      {t:"Helemaal niet vertrouwen", w:1, r:"Voorzichtig zijn is goed, maar als de data eerlijk is kan het ook helpen. Blijf wel kritisch."}]},
-    {v:"Een gratis AI-tool wil álle leerlinggegevens, in ruil voor gratis gebruik.",keuzes:[
-      {t:"Doen, het is gratis!", w:0, r:"Niets is écht gratis: je betaalt met privacy. Persoonsgegevens van kinderen verdienen bescherming."},
-      {t:"Alleen geven wat echt nodig is", w:3, r:"Top! Verzamel zo min mogelijk data (dataminimalisatie). Dat is duurzaam én privacyvriendelijk."},
-      {t:"Eerst toestemming en uitleg vragen", w:3, r:"Heel goed! Transparantie en toestemming horen bij eerlijke data."}]},
-    {v:"De AI geeft één groep leerlingen steeds makkelijkere opdrachten. Wat is er aan de hand?",keuzes:[
-      {t:"Prima, lekker makkelijk", w:0, r:"Dit kan bias zijn: vooroordelen in de data. Dat is oneerlijk en houdt verschillen in stand."},
-      {t:"Onderzoeken of de data scheef is", w:3, r:"Precies! Controleer altijd op bias zodat iedereen eerlijke kansen krijgt."},
-      {t:"De AI gewoon uitzetten", w:1, r:"Begrijpelijk, maar eerst onderzoeken is slimmer. Misschien is de data te repareren."}]},
-    {v:"Een AI-model kost enorm veel energie om te trainen. Wat weegt mee?",keuzes:[
-      {t:"Alleen of het goed werkt", w:1, r:"Werken is belangrijk, maar duurzaamheid telt óók. Energie en milieu horen bij de keuze."},
-      {t:"Ook de energie en het milieu", w:3, r:"Goed! Duurzame AI kijkt ook naar energieverbruik. Soms is een kleiner model genoeg."},
-      {t:"Maakt niet uit", w:0, r:"Het maakt wél uit: AI heeft een echte voetafdruk op onze planeet."}]},
-    {v:"Een chatbot geeft leerlingen soms een fout antwoord met veel zelfvertrouwen.",keuzes:[
-      {t:"Altijd geloven wat AI zegt", w:0, r:"AI kan overtuigend én fout zijn. Blijf altijd zelf nadenken en controleer feiten."},
-      {t:"Leerlingen leren controleren", w:3, r:"Sterk! Kritisch denken en feiten checken is de beste bescherming tegen fouten."},
-      {t:"De chatbot verbieden", w:1, r:"Kan, maar leren omgaan met fouten is waardevoller dan vermijden."}]}
-  ];
+  // dilemmas comes from huidigeT.dilemmas
 
   var actiefDilemma = null;
   function toonDilemma(){
+    var dilemmas = huidigeT.dilemmas;
     actiefDilemma = dilemmas[Math.floor(Math.random()*dilemmas.length)];
     el("dilemma-vraag").textContent = actiefDilemma.v;
     el("dilemma-na").style.display = "none";
@@ -1579,7 +1972,7 @@
     el("dilemma-keuzes").style.display = "none";
     var na = el("dilemma-na");
     var kleur = k.w >= 3 ? "#2f9e58" : (k.w === 0 ? "#c8472f" : "#f6a623");
-    var label = k.w >= 3 ? "Wijs gekozen" : (k.w === 0 ? "Denk er nog eens over" : "Bijna");
+    var label = k.w >= 3 ? huidigeT.dilemmaWijs : (k.w === 0 ? huidigeT.dilemmaNog : huidigeT.dilemmaBijna);
     el("dilemma-reactie").innerHTML = '<span class="label" style="background:'+kleur+'">'+label+'</span><br>'+k.r;
     na.style.display = "block";
     state.laatsteDilemma = nu();
@@ -1589,11 +1982,11 @@
   el("sluit-dilemma").addEventListener("click", function(){ el("overlay-dilemma").classList.remove("open"); });
 
   // ================= SPONTANE BEWEGING =================
-  var groetjes = ["👀","Hoi!","🎵","Lekker weer hè?","🤖"];
   function spontaneBeweging(){
     if(!state.geboren || huidigeAnim || modalOpen()) return;
     var h=new Date().getHours();
-    if((h<8 || h>20) && Math.random()<0.5){ gezicht("slaap", 2200); zeg("*gaap* 😴", 2200); return; }
+    if((h<8 || h>20) && Math.random()<0.5){ gezicht("slaap", 2200); zeg(huidigeT.zegGaap, 2200); return; }
+    var groetjes = huidigeT.groetjes;
     if(Math.random() < 0.5){ speel("wuif", 1600, "blij"); if(Math.random()<0.6) zeg(groetjes[Math.floor(Math.random()*groetjes.length)], 2000); }
     else { speel("kijk", 2000, "neutraal"); }
   }
@@ -1640,11 +2033,11 @@
     if(bezigBouwen) return;
     bezigBouwen = true;
     el("start-ai").disabled = true;
-    el("geb-titel").textContent = "AI wordt geïnitialiseerd…";
+    el("geb-titel").textContent = huidigeT.gebTitel2;
     el("bouw-botty").classList.add("gebouwd");   // onderdelen klikken samen
     setTimeout(function(){
       confetti(2800);
-      el("geb-titel").textContent = "🎉 Botty is in elkaar gezet! 🎉";
+      el("geb-titel").textContent = huidigeT.gebTitel3;
       el("geb-titel").classList.add("groot");
       el("geboorte-gen").textContent = "Generatie " + state.generatie;
       el("geboorte-gen").style.display = "";
@@ -1674,7 +2067,7 @@
     pasGroeiToe();
     bepaalGezondheid();
     if(!state.tutorialKlaar){ setTimeout(startTut, 400); }
-    setTimeout(function(){ zeg("Hoi, ik ben " + naam() + "! Geef me duurzame data 🍃", 4500); }, 500);
+    setTimeout(function(){ zeg(huidigeT.zegHoi(), 4500); }, 500);
   });
 
   // ================= LEVENSCYCLUS =================
@@ -1682,10 +2075,11 @@
   // Grenzen: < 30 min baby, < 4 uur kind, < 24 uur tiener, daarna volwassen.
   function stadium(){
     var min = (nu() - state.geboortetijd)/60000;   // leeftijd in minuten
-    if(min < 30)   return {key:"baby",      label:"baby 👶",  groei:0.66};
-    if(min < 240)  return {key:"kind",      label:"kind",     groei:0.80};
-    if(min < 1440) return {key:"tiener",    label:"tiener",   groei:0.92};
-    return                {key:"volwassen", label:"volwassen",groei:1.0};
+    var sl = huidigeT.stadiumLabels;
+    if(min < 30)   return {key:"baby",      label:sl.baby,      groei:0.66};
+    if(min < 240)  return {key:"kind",      label:sl.kind,      groei:0.80};
+    if(min < 1440) return {key:"tiener",    label:sl.tiener,    groei:0.92};
+    return                {key:"volwassen", label:sl.volwassen,  groei:1.0};
   }
   // ================= SPRITE-WISSELING =================
   // Baby en tiener krijgen een eigen SVG-sprite; kind en volwassen gebruiken de standaard.
@@ -1863,7 +2257,7 @@
     el("ziek-balk").style.display = "";
     el("ziek-icoon").style.display = "";
     botty.classList.add("ziek-look");
-    zeg("Oei… ik heb een bug! 🤒 Herstel me alsjeblieft.", 4000);
+    zeg(huidigeT.zegBug, 4000);
     sfx.fout();
   }
   function herstel(){
@@ -1874,27 +2268,18 @@
     el("ziek-icoon").style.display = "none";
     botty.classList.remove("ziek-look");
     speel("blij", 1600, "blij"); sfx.goed(); sparkles(); flitsBalk(".b-geluk");
-    zeg("Pff, gepatcht! Dankjewel 💚", 3000);
+    zeg(huidigeT.zegGepatcht, 3000);
     bewaar(); render();
   }
   el("btn-herstel").addEventListener("click", function(){ telZorg(false); herstel(); });   // jij verhelpt de bug
 
-  function doodTekst(oorzaak){
-    if(oorzaak === "ouderdom") return "Na een lang en wijs leven is " + naam() + " vredig uitgeschakeld. 🌙";
-    if(oorzaak === "ziekte")   return "De bug van " + naam() + " werd niet op tijd verholpen. 💔";
-    return naam() + " kreeg te weinig aandacht en is uitgevallen. 💔";
-  }
-  // Reflectie aan het einde van een leven: koppelt het automatiseringsgedrag aan de band.
-  // Maakt het leerdoel expliciet — hoe meer je liet automatiseren, hoe minder de band groeide.
+  function doodTekst(oorzaak){ return huidigeT.doodTekst(oorzaak); }
   function reflectieTekst(){
     var totaal = state.zorgAi + state.zorgJij;
     var band = Math.round(state.band);
-    if(totaal === 0) return "Er was te weinig zorg om iets over te zeggen.";
+    if(totaal === 0) return huidigeT.reflectieLeeg;
     var pctAi = Math.round(100 * state.zorgAi / totaal);
-    var regel = "🤖 De AI deed " + pctAi + "% van de zorg, jij " + (100 - pctAi) + "%. Jullie band werd " + band + "%. ";
-    if(pctAi <= 20)      return regel + "Je deed bijna alles zelf — zie je hoe persoonlijke aandacht de band sterk maakt? 💚";
-    else if(pctAi <= 60) return regel + "Je deelde de zorg met de AI. Een mooie balans tussen hulp en eigen aandacht. 🤝";
-    else                 return regel + "Je liet veel aan de AI over. Handig — maar echte band vraagt jóuw aandacht. 🧡";
+    return huidigeT.reflectieTekst(pctAi, band);
   }
   function gaDood(oorzaak){
     var leeftijd = leeftijdTekst();
@@ -1902,9 +2287,10 @@
     el("ziek-balk").style.display = "none";
     el("ziek-icoon").style.display = "none";
     botty.classList.remove("ziek-look");
-    el("einde-titel").textContent = naam() + " is uitgevallen";
+    el("einde-titel").textContent = naam() + huidigeT.eindeTitelSuffix;
     el("einde-tekst").textContent = doodTekst(oorzaak);
-    el("einde-leeftijd").textContent = "Generatie " + state.generatie + " · " + leeftijd + " geworden";
+    var gewordentxt = huidigeLang === "en" ? ("Generation " + state.generatie + " · aged " + leeftijd) : ("Generatie " + state.generatie + " · " + leeftijd + " geworden");
+    el("einde-leeftijd").textContent = gewordentxt;
     el("einde-reflectie").textContent = reflectieTekst();   // koppel automatisering aan de band
     bewaar();
     el("overlay-einde").classList.add("open");
@@ -1939,7 +2325,7 @@
     el("bouw-botty").classList.remove("gebouwd");
     el("start-ai").disabled = false; el("start-ai").style.display = "";
     el("start-knop").style.display = "none";
-    el("geb-titel").textContent = "Een stapel losse materialen…";
+    el("geb-titel").textContent = huidigeT.gebTitel1;
     el("geb-titel").classList.remove("groot");
     el("geboorte-gen").style.display = "none";
     el("geb-sub").style.display = "none";
@@ -1959,23 +2345,16 @@
   // De controle verschuift per niveau van jou naar de AI; de band groeit alleen door jóuw aandacht,
   // dus hoe hoger het niveau, hoe minder ruimte er is om de band te laten groeien.
   var aiTipGetoond = false;
-  // De zes niveaus van automatisering (naar Molenaar, gebaseerd op SAE J3016), van mens-stuurt naar AI-stuurt.
-  var aiNiveaus = [
-    {naam:"Uit",            tag:"jij doet alles",   uitleg:"Jij verzorgt " + "Botty" + " volledig zelf en let zelf op de meters.",                                  band:"groeit volledig 💚"},
-    {naam:"Signalering",    tag:"AI geeft seintje",  uitleg:"De AI houdt de meters in de gaten en laat de knop oplichten die aandacht nodig heeft. Jij beslist en handelt zelf.",  band:"groeit volledig 💚"},
-    {naam:"Advisering",     tag:"AI tipt",           uitleg:"De AI geeft je een tip over wat je het beste kunt doen. Jij beslist en handelt zelf.",                                          band:"groeit volledig 💚"},
-    {naam:"Gedeeltelijk",   tag:"samen",             uitleg:"De AI doet het voeren en bewegen. Geluk, bugs én dilemma's blijven aan jou.",                                                   band:"groeit nog goed 💚"},
-    {naam:"Voorwaardelijk", tag:"AI met vangnet",    uitleg:"De AI verzorgt Botty zelf en bewaakt de meters, maar bij een dilemma vraagt ze jóu om te beslissen.",                          band:"groeit beperkt 🧡"},
-    {naam:"Volledig",       tag:"AI doet alles",     uitleg:"De AI neemt alles over, ook de dilemma's. Jij kijkt toe. Alleen Botty aaien laat de band nog groeien.",                       band:"groeit niet meer 🤍"}
-  ];
-  function niveauNaam(n){ return aiNiveaus[n] ? aiNiveaus[n].naam.toLowerCase() : "uit"; }
+  // De zes niveaus komen uit huidigeT.aiNiveaus
+  function aiNiveaus(){ return huidigeT.aiNiveaus; }
+  function niveauNaam(n){ var niv=aiNiveaus(); return niv[n] ? niv[n].naam.toLowerCase() : "uit"; }
   // Vult het info-blok in het paneel voor het getoonde niveau (los van wat actief is, voor live preview bij slepen).
   function toonNiveauInfo(n){
-    var info = aiNiveaus[n]; if(!info) return;
+    var niv=aiNiveaus(); var info = niv[n]; if(!info) return;
     el("ai-niv-tag2").textContent = info.tag;
     el("ai-niv-titel").textContent = n + " · " + info.naam;
     el("ai-niv-uitleg2").textContent = info.uitleg.replace(/Botty/g, naam());
-    el("ai-niv-band").textContent = "Band: " + info.band;
+    el("ai-niv-band").textContent = (huidigeLang==="en"?"Bond: ":"Band: ") + info.band;
     var t = el("ai-slider-ticks").children;                    // de tick onder de actieve stand oplichten
     for(var i=0;i<t.length;i++){ t[i].classList.toggle("actief", i === n); }
   }
@@ -1984,15 +2363,15 @@
     var actief = state.aiNiveau > 0;
     btn.classList.toggle("aan", actief);
     el("ai-badge").textContent = actief ? state.aiNiveau : "";
-    btn.title = "AI-assistent: " + niveauNaam(state.aiNiveau);
+    btn.title = (huidigeLang === "en" ? "AI assistant: " : "AI-assistent: ") + niveauNaam(state.aiNiveau);
     botty.classList.toggle("ai-zorg", state.aiNiveau >= 3);   // gloed alleen als de AI écht handelt
     el("ai-slider").value = state.aiNiveau;                    // schuif gelijkzetten
     toonNiveauInfo(state.aiNiveau);
     el("xai-toggle").checked = !!state.uitlegbaar;
     // De AI-ticker geeft de huidige stand van de assistent weer (look & feel uit de verse).
-    var inf = aiNiveaus[state.aiNiveau] || aiNiveaus[0];
-    if(state.aiNiveau === 0) setTicker("AI-assistent staat <b>uit</b> — jij verzorgt " + naam() + " zelf.");
-    else setTicker("AI · niveau " + state.aiNiveau + " — <b>" + inf.naam + "</b> · " + inf.tag);
+    var niv=aiNiveaus(); var inf = niv[state.aiNiveau] || niv[0];
+    if(state.aiNiveau === 0) setTicker(huidigeT.aiTickerUit());
+    else setTicker(huidigeT.aiTickerAan(state.aiNiveau, inf));
   }
   // Schrijft een statusregel in de AI-ticker, met de knipperende cursor ervoor.
   function setTicker(html){ var t = el("ai-ticker"); if(t) t.innerHTML = '<span class="knip">▌</span> ' + html; }
@@ -2004,18 +2383,18 @@
     var dataBefore = Math.round(state.data);
     var goeden = voedsel.filter(function(v){ return v.goed; });
     eet(goeden[Math.floor(Math.random()*goeden.length)], true);
-    aiZeg(state.uitlegbaar ? "🔍 Data was " + dataBefore + "% — ik voer duurzame data 🍃" : "🤖 AI voert duurzame data");
+    aiZeg(huidigeT.aiVoerTekst(dataBefore));
   }
   function aiBeweeg(){
     markeerKnop("btn-beweeg");
     var fitBefore = Math.round(state.fit);
     beweegActie(true);
-    aiZeg(state.uitlegbaar ? "🔍 Fitheid was " + fitBefore + "% — ik laat " + naam() + " bewegen 🤸" : "🤖 AI laat " + naam() + " bewegen");
+    aiZeg(huidigeT.aiBeweegTekst(fitBefore));
   }
   function aiHerstel(){
     markeerKnop("btn-herstel");
     telZorg(true); herstel();
-    aiZeg(state.uitlegbaar ? "🔍 Bug gedetecteerd → ik verhelp de fout 🛠️" : "🤖 AI verhelpt de bug");
+    aiZeg(huidigeT.aiHerstelTekst());
   }
   function aiTroost(){
     gezicht("verliefd", 1300, "blij");
@@ -2023,10 +2402,11 @@
     hartjes(); sfx.aai();
     var gelukBefore = Math.round(state.geluk);
     state.geluk = klem(state.geluk + 6);          // wel blij, maar géén band (dat is jóuw taak)
-    aiZeg(state.uitlegbaar ? "🔍 Geluk was " + gelukBefore + "% — ik troost " + naam() + " 💙" : "🤖 AI houdt " + naam() + " blij");
+    aiZeg(huidigeT.aiTroostTekst(gelukBefore));
     bewaar(); render();
   }
   function aiDilemma(){
+    var dilemmas = huidigeT.dilemmas;
     var d = dilemmas[Math.floor(Math.random()*dilemmas.length)];
     var beste = d.keuzes[0];
     d.keuzes.forEach(function(k){ if(k.w > beste.w) beste = k; });
@@ -2034,7 +2414,7 @@
     state.wijs += beste.w; state.geluk = klem(state.geluk + 8);
     markeerKnop("btn-dilemma");
     speel("blij", 1800, "blij"); flitsBalk(".b-wijs"); sfx.goed();
-    aiZeg(state.uitlegbaar ? "🔍 AI koos '" + beste.t + "' (+" + beste.w + " wijsheid) ⚖️" : "🤖 AI koos wijs bij een dilemma");
+    aiZeg(huidigeT.aiDilemmaTekst(beste));
     state.laatsteDilemma = nu(); bewaar(); render();
   }
   // Niveau 1 (signalering): de AI handelt NIET, maar licht alleen de knop op die aandacht nodig heeft.
@@ -2045,7 +2425,7 @@
     laatsSignalering = nu();
     if(state.ziek){
       markeerKnop("btn-herstel");
-      if(state.uitlegbaar) zeg("🔍 Bug gedetecteerd — herstelknop licht op 🔦", 3000);
+      if(state.uitlegbaar) zeg(huidigeT.signaleringBug, 3000);
       return;
     }
     var items=[["data",state.data],["energie",state.energie],["fit",state.fit]];
@@ -2053,10 +2433,11 @@
     if(items[0][1] >= 60) return;
     if(items[0][0]==="fit"){
       markeerKnop("btn-beweeg");
-      if(state.uitlegbaar) zeg("🔍 Fitheid " + Math.round(state.fit) + "% laag — beweegknop licht op 🔦", 3000);
+      if(state.uitlegbaar) zeg(huidigeT.signaleringFit(Math.round(state.fit)), 3000);
     } else {
       markeerKnop("btn-voer");
-      if(state.uitlegbaar) zeg("🔍 " + (items[0][0]==="data" ? "Data" : "Energie") + " " + Math.round(items[0][1]) + "% laag — voerknop licht op 🔦", 3000);
+      var label = items[0][0]==="data" ? "Data" : "Energie";
+      if(state.uitlegbaar) zeg(huidigeT.signaleringData(label, Math.round(items[0][1])), 3000);
     }
   }
 
@@ -2065,16 +2446,15 @@
   var laatsAdvies = 0;
   function aiAdvies(){
     if(nu() - laatsAdvies < 11000) return;
-    if(state.ziek){ laatsAdvies = nu(); markeerKnop("btn-herstel"); zeg(state.uitlegbaar ? "🔍 Bug aanwezig — tip: herstel de fout 🛠️" : "💡 Tip: herstel de bug van " + naam() + ".", 3200); return; }
+    if(state.ziek){ laatsAdvies = nu(); markeerKnop("btn-herstel"); zeg(huidigeT.adviesBug(), 3200); return; }
     var items=[["data",state.data],["energie",state.energie],["fit",state.fit],["geluk",state.geluk]];
     items.sort(function(a,b){ return a[1]-b[1]; });
     if(items[0][1] >= 60) return;                  // niets dringends → geen advies
     laatsAdvies = nu();
     var k = items[0][0], pct = Math.round(items[0][1]);
-    var pre = state.uitlegbaar ? "🔍 " : "💡 Tip: ";
-    if(k==="fit"){ markeerKnop("btn-beweeg"); zeg(pre + (state.uitlegbaar ? "Fitheid " + pct + "% laag — laat " : "Laat ") + naam() + " bewegen.", 3200); }
-    else if(k==="geluk"){ zeg(pre + (state.uitlegbaar ? "Geluk " + pct + "% laag — geef " : "Geef ") + naam() + " aandacht — aai haar.", 3200); }
-    else { markeerKnop("btn-voer"); zeg(pre + (state.uitlegbaar ? (k==="data"?"Data":"Energie") + " " + pct + "% laag — voer " : "Voer ") + naam() + " duurzame data.", 3200); }
+    if(k==="fit"){ markeerKnop("btn-beweeg"); zeg(huidigeT.adviesFit(pct), 3200); }
+    else if(k==="geluk"){ zeg(huidigeT.adviesGeluk(pct), 3200); }
+    else { var lbl = k==="data"?"Data":"Energie"; markeerKnop("btn-voer"); zeg(huidigeT.adviesData(lbl, pct), 3200); }
   }
 
   // Eén stap van de assistent (loopt elke 4,5s). Het niveau bepaalt hoeveel de AI zélf doet:
@@ -2108,16 +2488,8 @@
   function setNiveau(n){
     if(n === state.aiNiveau) return;
     state.aiNiveau = n; bewaar(); updateAiUI();
-    var berichten = [
-      "Je zorgt weer helemaal zelf voor " + naam() + "! 💚",
-      "De AI geeft een seintje als een knop aandacht nodig heeft. Jij beslist en handelt zelf. 🔦",
-      "De AI geeft tips over wat je kunt doen. Jij beslist en handelt zelf. 💡",
-      "De AI doet het voeren en bewegen. Geluk, bugs en dilemma's blijven aan jou. 🤖",
-      "De AI verzorgt " + naam() + " zelf, maar vraagt jóu bij dilemma's. 🤖",
-      "De AI verzorgt " + naam() + " volledig, ook de dilemma's. Jij houdt toezicht. 🤖"
-    ];
-    zeg(berichten[n], 3600);
-    if(n >= 3 && !aiTipGetoond){ aiTipGetoond = true; setTimeout(function(){ toastMsg("Let op: jullie band groeit alleen door jóuw aandacht 💚"); }, 1200); }
+    zeg(huidigeT.berichten(n), 3600);
+    if(n >= 3 && !aiTipGetoond){ aiTipGetoond = true; setTimeout(function(){ toastMsg(huidigeT.toastAi); }, 1200); }
     if(n >= 3) setTimeout(aiStap, 900);   // meteen een eerste verzorgstap, niet wachten op het interval
   }
   el("ai-toggle").addEventListener("click", function(){ sfx.klik(); updateAiUI(); el("overlay-ai").classList.add("open"); });
@@ -2127,7 +2499,7 @@
   el("sluit-ai").addEventListener("click", function(){ el("overlay-ai").classList.remove("open"); });
   el("xai-toggle").addEventListener("change", function(){
     state.uitlegbaar = this.checked; bewaar();
-    toastMsg(this.checked ? "Uitlegbare AI aan 🔍 — ik leg uit waarom ik handel." : "Uitlegbare AI uit.");
+    toastMsg(this.checked ? huidigeT.xaiAan : huidigeT.xaiUit);
   });
   setInterval(aiStap, 4500);   // assistent doet elke 4,5s hooguit één stap (advies of actie)
 
@@ -2146,15 +2518,16 @@
     // Niet elke 3s opslaan: verval wordt bij herladen toch uit de tijdstempel herberekend,
     // dus periodiek bewaren (≈15s) volstaat. Acties zelf slaan al direct op.
     if((++hartTik % 5) === 0) bewaar();
-    if(state.ziek && Math.random() < 0.3 && !modalOpen()){ zeg("Ik voel me niet lekker… 🤒", 2800); }
+    if(state.ziek && Math.random() < 0.3 && !modalOpen()){ zeg(huidigeT.zegZiek, 2800); }
     // Hooguit één hint per ronde (else-if), alleen als er geen animatie/modal actief is.
     // Een verwaarloosde Botty klaagt het eerst dat ze zich niet lekker voelt.
     if(!huidigeAnim && !modalOpen()){
       var gemH = gemWelzijn();
-      if(gemH < 35 && Math.random() < 0.3){ zeg(["Ik voel me niet zo lekker… 🥺","Ik piep en kraak een beetje… 🛠️","Volgens mij heb ik wat roest… 😟"][Math.floor(Math.random()*3)], 2800); }
-      else if(state.energie < 25 && Math.random() < 0.3){ zeg("Mijn energie loopt op… blijf met me bezig! ⚡", 2800); }
-      else if(state.data < 25 && Math.random() < 0.25){ zeg("Ik heb honger naar goede data… 🍃", 2600); }
-      else if(state.fit < 25 && Math.random() < 0.25){ zeg("Ik wil graag bewegen! 🤸", 2600); }
+      var zegNietLekker = huidigeT.zegNietLekker;
+      if(gemH < 35 && Math.random() < 0.3){ zeg(zegNietLekker[Math.floor(Math.random()*zegNietLekker.length)], 2800); }
+      else if(state.energie < 25 && Math.random() < 0.3){ zeg(huidigeT.zegEnergie, 2800); }
+      else if(state.data < 25 && Math.random() < 0.25){ zeg(huidigeT.zegHonger, 2600); }
+      else if(state.fit < 25 && Math.random() < 0.25){ zeg(huidigeT.zegBeweeg, 2600); }
     }
   }, 3000);
 
@@ -2169,24 +2542,19 @@
       state.laatsteDilemma = nu(); bewaar();
       if(state.aiNiveau >= 5){ aiDilemma(); return; }    // volledige automatisering → AI beslist (wijs)
       var vangnet = (state.aiNiveau === 4);              // AI verzorgt zelf maar geeft het dilemma aan jou terug
-      zeg(vangnet ? "🤖 De AI twijfelt — jij beslist dit dilemma. ⚖️" : "Ik heb een dilemma voor je… ⚖️", 2800);
+      zeg(vangnet ? huidigeT.zegAiTwijfelt : huidigeT.zegDilemma, 2800);
       setTimeout(function(){ if(!modalOpen()) toonDilemma(); }, 2600);  // korte aankondiging, dan de modal
     }
   }, 15000);
 
   function humanizeDuur(ms){
     var m=ms/60000, u=m/60, d=u/24;
-    if(d>=1) return Math.floor(d)+(Math.floor(d)===1?" dag":" dagen");
-    if(u>=1) return Math.floor(u)+" uur";
-    return Math.max(1,Math.floor(m))+" min";
+    if(d>=1) return huidigeT.humanizeDag(Math.floor(d));
+    if(u>=1) return huidigeT.humanizeUur(Math.floor(u));
+    return huidigeT.humanizeMin(Math.max(1,Math.floor(m)));
   }
   function dagdeelGroet(){
-    var h=new Date().getHours();
-    if(h<6)  return "Goedenacht";
-    if(h<12) return "Goedemorgen ☀️";
-    if(h<18) return "Goedemiddag";
-    if(h<22) return "Goedenavond 🌆";
-    return "Het is laat 😴";
+    return huidigeT.dagdeelGroet(new Date().getHours());
   }
 
   // ================= TOEGANKELIJKHEID: modals met toetsenbord =================
@@ -2251,32 +2619,57 @@
     else if(n === "4" && state.ziek) el("btn-herstel").click(); // alleen zinvol als er een bug is
   });
 
-  // ---------- Start ----------
-  var afwezig = state.geboren ? (nu() - state.t) : 0;
-  verval();
-  if(state.geboren) checkLeven();   // tijd verstreken sinds laatste bezoek?
-  render();
-  updateMuteIcon();
-  updateAiUI();
-  updateLucht();
-  planVolgendUur();
-  planVogels();
-  if(state.geboren){
-    pasGroeiToe();
-    bepaalGezondheid();   // begin met de juiste look op basis van het opgeslagen welzijn
-    if(state.ziek){ el("ziek-balk").style.display=""; el("ziek-icoon").style.display=""; botty.classList.add("ziek-look"); }
-    if(!state.tutorialKlaar){ setTimeout(startTut, 500); }
-    var welkom = afwezig > 300000
-      ? (dagdeelGroet()+"! Je was "+humanizeDuur(afwezig)+" weg — ik miste je! 💚")
-      : (dagdeelGroet()+"! Fijn dat je er bent! 👋");
-    setTimeout(function(){ zeg(welkom, 4200); }, 700);
-  } else if(!el("overlay-einde").classList.contains("open")){
-    el("overlay-geboorte").classList.add("open");
+  // ---------- Taal-kiezer ----------
+  function startNaLang(){
+    var afwezig = state.geboren ? (nu() - state.t) : 0;
+    verval();
+    if(state.geboren) checkLeven();
+    render();
+    updateMuteIcon();
+    updateAiUI();
+    updateLucht();
+    planVolgendUur();
+    planVogels();
+    if(state.geboren){
+      pasGroeiToe();
+      bepaalGezondheid();
+      if(state.ziek){ el("ziek-balk").style.display=""; el("ziek-icoon").style.display=""; botty.classList.add("ziek-look"); }
+      if(!state.tutorialKlaar){ setTimeout(startTut, 500); }
+      var groet = dagdeelGroet();
+      var welkom = afwezig > 300000
+        ? huidigeT.welkomAfwezig(groet, humanizeDuur(afwezig))
+        : huidigeT.welkomTerug(groet);
+      setTimeout(function(){ zeg(welkom, 4200); }, 700);
+    } else if(!el("overlay-einde").classList.contains("open")){
+      el("overlay-geboorte").classList.add("open");
+    }
+    var gedeeld = leesGedeeld();
+    if(gedeeld){ toonGedeeld(gedeeld); }
+    bewaar();
   }
-  // Geopend via een deellink (#b=…)? Toon de meegedeelde Botty bovenop het eigen spel.
-  var gedeeld = leesGedeeld();
-  if(gedeeld){ toonGedeeld(gedeeld); }
-  bewaar();
+
+  function kiesTaal(lang){
+    schrijfRuw("botty-taal", lang);
+    setLang(lang);
+    el("overlay-taal").classList.remove("open");
+    startNaLang();
+  }
+
+  el("taal-nl").addEventListener("click", function(){ kiesTaal("nl"); });
+  el("taal-en").addEventListener("click", function(){ kiesTaal("en"); });
+
+  // ---------- Start ----------
+  var opgeslagenTaal = leesRuw("botty-taal");
+  if(opgeslagenTaal === "nl" || opgeslagenTaal === "en"){
+    setLang(opgeslagenTaal);
+    el("overlay-taal").classList.remove("open");
+    startNaLang();
+  } else {
+    // Toon de taal-picker; setLang wordt pas aangeroepen als de gebruiker kiest.
+    // We zetten alvast een standaardtaal zodat de vertaalfuncties niet crashen.
+    setLang("nl");
+    // Verberg geboorte-overlay totdat taal gekozen is.
+  }
 })();
 </script>
 </body>
