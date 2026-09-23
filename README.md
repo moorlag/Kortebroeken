@@ -1,41 +1,41 @@
 # Kortebroeken — Botty
 
-Een speelse mini-site rond **Botty**, de robot van NOLAI (Nationaal OnderwijsLab AI).
-Over duurzame data, ethische dilemma's en de niveaus van automatisering.
+A playful mini-site around **Botty**, the robot of NOLAI (Nationaal OnderwijsLab AI).
+About sustainable data, ethical dilemmas and the levels of automation.
 
 🔗 **Live:** https://moorlag.github.io/Kortebroeken/
 
-## Wat staat er in deze repo?
+## What's in this repo?
 
-| Pagina | Wat het is |
+| Page | What it is |
 |---|---|
-| [`index.html`](index.html) | De **Kortebroekenmeter** — landingspagina met links naar alle pagina's. |
-| [`botty.html`](botty.html) | De **Tamagotchi**: verzorg één Botty, met automatiseringsniveaus (0–5) en Uitlegbare AI. |
-| [`kaarten.html`](kaarten.html) | **Botty TCG** — verzamelkaarten in Pokémon-stijl (Serie 1 + de Alumni-collectie van vertrokken Botty's). |
+| [`index.html`](index.html) | The **Shorts meter** — landing page with links to all pages. |
+| [`botty.html`](botty.html) | The **Tamagotchi**: care for a single Botty, with automation levels (0–5) and Explainable AI. |
+| [`kaarten.html`](kaarten.html) | **Botty TCG** — collectible cards in Pokémon style (Series 1 + the Alumni collection of departed Bottys). |
 
-## Botty-verse (verhuisd)
+## Botty-verse (moved)
 
-De **Botty-verse** ("de Singularity") woont niet meer in deze repo. Live op
-**https://hive.ramonmoorlag.nl/**, broncode in
-[`Botty-verse/singularity`](https://github.com/Botty-verse/singularity). De laatste
-in-repo momentopname staat in [`archive/`](archive/).
+The **Botty-verse** ("the Singularity") no longer lives in this repo. Live at
+**https://hive.ramonmoorlag.nl/**, source code in
+[`Botty-verse/singularity`](https://github.com/Botty-verse/singularity). The last
+in-repo snapshot is in [`archive/`](archive/).
 
-## Verder
+## More
 
-- [`PLAN.md`](PLAN.md) — levende roadmap met plannen en gemaakte ontwerpkeuzes.
-- `Kortebroek.jpeg`, `social-preview.jpg` — beeld voor de site en social sharing.
-- `orga-avatar*` — profielfoto's voor de Botty-verse GitHub-organisatie.
+- [`PLAN.md`](PLAN.md) — living roadmap with plans and design choices made.
+- `Kortebroek.jpeg`, `social-preview.jpg` — imagery for the site and social sharing.
+- `orga-avatar*` — profile pictures for the Botty-verse GitHub organisation.
 
-Alle pagina's zijn losse HTML-bestanden zonder build-stap, geserveerd via GitHub Pages.
+All pages are standalone HTML files with no build step, served via GitHub Pages.
 
-## ⭐ Sterrengeschiedenis
+## ⭐ Star history
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/shieldcn/star-chart-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset=".github/shieldcn/star-chart-light.svg">
-  <img alt="Star history van moorlag/Kortebroeken" src=".github/shieldcn/star-chart-light.svg">
+  <img alt="Star history of moorlag/Kortebroeken" src=".github/shieldcn/star-chart-light.svg">
 </picture>
 
-*Automatisch bijgewerkt via de [Star chart](.github/workflows/star-chart.yml)-workflow
-(shadcn-stijl, light/dark). De grafiek verschijnt zodra de workflow voor het eerst heeft
-gedraaid.*
+*Updated automatically via the [Star chart](.github/workflows/star-chart.yml) workflow
+(shadcn style, light/dark). The chart appears once the workflow has run for the first
+time.*
