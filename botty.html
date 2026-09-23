@@ -725,8 +725,8 @@
     </div>
   </div>
 
-  <!-- Taal-modal -->
-  <div class="overlay open" id="overlay-taal" style="z-index:1000">
+  <!-- Taal-modal (niet meer geforceerd: English-first + vast vlaggetje; blijft als fallback) -->
+  <div class="overlay" id="overlay-taal" style="z-index:1000">
     <div class="modal" style="text-align:center;max-width:300px">
       <p style="font-size:18px;font-weight:900;color:var(--groen);margin-bottom:1.2rem">Kies je taal · Choose your language</p>
       <button class="sluit" id="taal-nl" style="width:100%;margin-bottom:.7rem;font-size:16px">🇳🇱 Nederlands</button>
@@ -876,7 +876,7 @@
 
   // ================= VERTALINGEN =================
   var huidigeT = null;
-  var huidigeLang = "nl";
+  var huidigeLang = "en";
   var T = {
     nl: {
       ondertitel: "Voer haar duurzame data, laat haar bewegen en denk samen na.",
@@ -2695,18 +2695,41 @@
   el("taal-nl").addEventListener("click", function(){ kiesTaal("nl"); });
   el("taal-en").addEventListener("click", function(){ kiesTaal("en"); });
 
-  // ---------- Start ----------
-  var opgeslagenTaal = leesRuw("botty-taal");
-  if(opgeslagenTaal === "nl" || opgeslagenTaal === "en"){
-    setLang(opgeslagenTaal);
-    el("overlay-taal").classList.remove("open");
-    startNaLang();
-  } else {
-    // Toon de taal-picker; setLang wordt pas aangeroepen als de gebruiker kiest.
-    // We zetten alvast een standaardtaal zodat de vertaalfuncties niet crashen.
-    setLang("nl");
-    // Verberg geboorte-overlay totdat taal gekozen is.
+  // ---------- Vast vlaggetje: taal wisselen tijdens het spelen ----------
+  // Consistent met de andere pagina's: toont de vlag van de taal waar je NAARTOE switcht.
+  function bouwVlag(){
+    var f = document.createElement("button");
+    f.id = "lang-flag"; f.type = "button";
+    var s = f.style;
+    s.position="fixed"; s.top="10px"; s.right="10px"; s.zIndex="99999";
+    s.font="20px/1 sans-serif"; s.lineHeight="1"; s.background="rgba(0,0,0,.45)";
+    s.border="1px solid rgba(255,255,255,.4)"; s.borderRadius="10px";
+    s.padding="5px 8px"; s.cursor="pointer"; s.boxShadow="0 2px 8px rgba(0,0,0,.25)";
+    function ververs(){
+      var naarNL = huidigeLang === "en";
+      f.textContent = naarNL ? "🇳🇱" : "🇬🇧";
+      var label = naarNL ? "Schakel over naar Nederlands" : "Switch to English";
+      f.setAttribute("aria-label", label); f.title = label;
+    }
+    f.addEventListener("click", function(){
+      var nieuw = huidigeLang === "en" ? "nl" : "en";
+      schrijfRuw("botty-taal", nieuw);
+      setLang(nieuw);
+      ververs();
+    });
+    document.body.appendChild(f);
+    ververs();
   }
+
+  // ---------- Start ----------
+  // English-first: zonder opgeslagen keuze start het spel gewoon in het Engels
+  // (geen geforceerde taalkiezer meer); met het vlaggetje wissel je naar Nederlands.
+  var opgeslagenTaal = leesRuw("botty-taal");
+  var startTaal = (opgeslagenTaal === "nl" || opgeslagenTaal === "en") ? opgeslagenTaal : "en";
+  setLang(startTaal);
+  el("overlay-taal").classList.remove("open");
+  bouwVlag();
+  startNaLang();
 })();
 </script>
 </body>
