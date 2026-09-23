@@ -27,3 +27,15 @@ in-repo momentopname staat in [`archive/`](archive/).
 - `orga-avatar*` — profielfoto's voor de Botty-verse GitHub-organisatie.
 
 Alle pagina's zijn losse HTML-bestanden zonder build-stap, geserveerd via GitHub Pages.
+
+## ⭐ Sterrengeschiedenis
+
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset=".github/shieldcn/star-chart-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset=".github/shieldcn/star-chart-light.svg">
+  <img alt="Star history van moorlag/Kortebroeken" src=".github/shieldcn/star-chart-light.svg">
+</picture>
+
+*Automatisch bijgewerkt via de [Star chart](.github/workflows/star-chart.yml)-workflow
+(shadcn-stijl, light/dark). De grafiek verschijnt zodra de workflow voor het eerst heeft
+gedraaid.*
